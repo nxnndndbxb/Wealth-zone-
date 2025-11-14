@@ -478,6 +478,9 @@
         .input-group input:not([type="password"]) {
              padding-left: 20px; /* No toggle icon on the left */
         }
+        .input-group input[type="file"] {
+             padding-left: 20px !important; /* File input cannot use 60px padding */
+        }
         .input-group input::placeholder { color: var(--text-secondary); opacity: 0.8; }
         .input-group input:focus { 
             /* System Scan/Access Look */
@@ -1449,6 +1452,33 @@
         <a href="https://t.me/automining009" target="_blank" class="telegram-fab" id="telegram-fab" title="Contact Support on Telegram">
             <i class="fab fa-telegram"></i>
         </a>
+        
+        <!-- NEW: Email Verification Page -->
+        <section id="email-verification-page" class="page">
+            <div class="page-header">
+                <h3>Account Verification Required</h3>
+            </div>
+            <div class="content-panel invite-box" style="padding-top: 50px;">
+                <div class="icon" style="color: var(--warning-color); text-shadow: 0 0 20px rgba(255, 158, 11, 0.5);">
+                    <i class="fas fa-envelope-open-text"></i>
+                </div>
+                <h2>Verify Your Email</h2>
+                <p>A verification link has been sent to your registered email address (<span id="verification-email-display" style="font-weight: 600;">...</span>). Please click the link to gain full access to your Wealth Zone account.</p>
+                <div class="stat-card" style="margin: 25px 0;">
+                    <div class="label">Status</div>
+                    <div class="value" id="verification-status" style="color: var(--danger-color);">Pending Verification</div>
+                </div>
+                <button class="btn full-width" id="resend-verification-btn" style="border-radius: 14px; margin-bottom: 15px;">
+                    <span class="btn-text">Resend Verification Email</span>
+                </button>
+                <button class="btn full-width" id="check-verification-btn" style="background: var(--success-color); border: none; border-radius: 14px;">
+                    <span class="btn-text">I Have Verified (Check Status)</span>
+                </button>
+                <p class="auth-switch">If you did not receive the email, please check your spam folder.</p>
+            </div>
+        </section>
+        <!-- END NEW: Email Verification Page -->
+
 
         <!-- Home Page (Dashboard/Plans) -->
         <main id="home-page" class="page active">
@@ -1595,6 +1625,7 @@
                 <!-- MODIFIED BUTTONS STYLE/SIZE -->
                 <div class="wallet-actions">
                     <button class="btn btn-buy" id="recharge-btn-modal" style="border-radius: 14px;"><i class="fas fa-plus-circle"></i>&nbsp; Recharge (PKR)</button>
+                    <!-- Withdraw button now triggers KYC check -->
                     <button class="btn btn-sell" id="withdraw-btn-modal" style="border-radius: 14px;"><i class="fas fa-paper-plane"></i>&nbsp; Withdraw (PKR)</button>
                 </div>
             </div>
@@ -1854,6 +1885,51 @@
         </div>
     </div>
     <!-- END MODAL FOR FORGOT PASSWORD -->
+
+    <!-- NEW: KYC Verification Modal -->
+    <div id="kyc-modal" class="modal-overlay">
+        <div class="modal-content content-panel" style="max-width: 500px;">
+            <button class="modal-close-btn" data-modal-id="kyc-modal">×</button>
+            <h3 id="kyc-modal-title">Withdrawal Security Verification (KYC)</h3>
+            
+            <div id="kyc-status-display" style="text-align: center; margin-bottom: 25px;">
+                 <!-- Status injected here (pending/approved/rejected) -->
+            </div>
+
+            <p class="info-text">To ensure high security for your first withdrawal, please upload proof of identity. Choose one document:</p>
+            
+            <form id="kyc-form">
+                <div class="option-group" style="grid-template-columns: 1fr 1fr;">
+                    <button type="button" class="option-btn kyc-type-btn" data-kyc-type="national_id">National ID Card 🪪</button>
+                    <button type="button" class="option-btn kyc-type-btn" data-kyc-type="driving_license">Driving License 🚗</button>
+                </div>
+                
+                <input type="hidden" id="kyc-selected-type" required>
+                
+                <div class="input-group">
+                    <input type="text" id="kyc-id-number" placeholder="Enter ID/License Number" required>
+                    <i class="fa-solid fa-id-card"></i>
+                </div>
+                
+                <p class="info-text" style="margin-top: 10px;">Upload Document Front Photo (JPG/PNG)</p>
+                <div class="input-group">
+                    <input type="file" id="kyc-front-photo" accept="image/jpeg,image/png" required style="padding: 15px;">
+                </div>
+                
+                <p class="info-text">Upload Document Back Photo (JPG/PNG)</p>
+                <div class="input-group">
+                    <input type="file" id="kyc-back-photo" accept="image/jpeg,image/png" required style="padding: 15px;">
+                </div>
+
+                <button id="submit-kyc-btn" type="submit" class="btn full-width" style="border-radius: 14px;">
+                    <span class="btn-text">Submit Verification Request</span><div class="spinner-sm"></div>
+                </button>
+            </form>
+            <p class="info-text" style="margin-top: 15px; font-size: 0.85em;">Verification usually takes 1-2 hours.</p>
+        </div>
+    </div>
+    <!-- END KYC Verification Modal -->
+
 
     <!-- MODIFIED RECHARGE MODAL FOR PKR (TWO STEPS) -->
     <div id="recharge-modal" class="modal-overlay">
@@ -2127,6 +2203,14 @@
                     sidebarEmailDisplay: document.getElementById('sidebar-email-display'),
                     sidebarUidDisplay: document.getElementById('sidebar-uid-display'),
                     sidebarLogoutBtn: document.getElementById('sidebar-logout-btn'),
+                    
+                    // NEW: Email Verification Elements
+                    emailVerificationPage: document.getElementById('email-verification-page'),
+                    verificationStatus: document.getElementById('verification-status'),
+                    verificationEmailDisplay: document.getElementById('verification-email-display'),
+                    resendVerificationBtn: document.getElementById('resend-verification-btn'),
+                    checkVerificationBtn: document.getElementById('check-verification-btn'),
+                    // END Email Verification Elements
 
                     welcomeUser: document.getElementById('welcome-user'), 
                     homePkrBalance: document.getElementById('home-pkr-balance'), 
@@ -2165,6 +2249,14 @@
                     
                     rechargeForm: document.getElementById('recharge-form'), 
                     withdrawalForm: document.getElementById('withdrawal-form'),
+                    withdrawBtnModal: document.getElementById('withdraw-btn-modal'), // Used to intercept clicks
+                    
+                    // KYC Modal Elements
+                    kycModal: document.getElementById('kyc-modal'),
+                    kycStatusDisplay: document.getElementById('kyc-status-display'),
+                    kycForm: document.getElementById('kyc-form'),
+                    kycSelectedType: document.getElementById('kyc-selected-type'),
+                    kycTypeBtns: document.querySelectorAll('.kyc-type-btn'),
                     
                     // Ranking UI Elements
                     rankingList: document.getElementById('ranking-list'),
@@ -2201,13 +2293,18 @@
             },
             
             showPage(pageId) { 
+                // Ensure email verification page overrides navigation if unverified
+                if (pageId !== 'email-verification-page' && this.state.currentUser && !this.state.currentUser.emailVerified) {
+                    pageId = 'email-verification-page';
+                }
+
                 document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
                 document.getElementById(pageId)?.classList.add('active'); 
                 
                 // Close sidebar when navigating to a page
                 this.closeSidebar(); 
                 
-                // Update bottom nav active state
+                // Update bottom nav active state (only if it's a main tab)
                 document.querySelectorAll('.nav-btn').forEach(b => {
                     const isMainTab = ['home-page', 'invite-page', 'ranking-page', 'wallet-page', 'profile-page'].includes(pageId);
                     b.classList.toggle('active', isMainTab && b.dataset.page === pageId);
@@ -2270,6 +2367,11 @@
                 this.updateNFTRequirementUI(); 
                 this.updateMyNftsUI();
                 this.updateRankingUI();
+                
+                // Update Email Verification UI if on that page
+                if (this.state.ui.emailVerificationPage.classList.contains('active')) {
+                    this.state.ui.verificationEmailDisplay.textContent = email;
+                }
             },
 
             calculateUserHoldings(userData) {
@@ -2389,6 +2491,14 @@
                 this.state.ui.loginForm.addEventListener('submit', (e) => this.handleLogin(e));
                 this.state.ui.registerForm.addEventListener('submit', (e) => this.handleRegister(e));
                 
+                // NEW: Email Verification Handlers
+                this.state.ui.resendVerificationBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.sendVerificationEmail();
+                });
+                this.state.ui.checkVerificationBtn.addEventListener('click', (e) => this.handleCheckVerification(e));
+
+                
                 // --- MODIFIED Password Toggle: Only react to icon click ---
                 document.querySelectorAll('.toggle-password').forEach(toggle => { 
                     // Ensures the click only works on the icon itself, not the input
@@ -2431,7 +2541,13 @@
                 // Modals
                 document.querySelectorAll('.modal-close-btn').forEach(btn => btn.addEventListener('click', () => this.hideModal(btn.dataset.modalId)));
                 document.getElementById('recharge-btn-modal').addEventListener('click', () => this.showRechargeStep1()); // MODIFIED: Call Step 1 function
-                document.getElementById('withdraw-btn-modal').addEventListener('click', () => this.showModal('withdrawal-modal'));
+                
+                // MODIFIED: Withdraw button now checks KYC
+                this.state.ui.withdrawBtnModal.addEventListener('click', (e) => this.checkKycStatus(e));
+
+                // KYC Listeners
+                this.state.ui.kycTypeBtns.forEach(btn => btn.addEventListener('click', (e) => this.selectKycType(e)));
+                this.state.ui.kycForm.addEventListener('submit', (e) => this.handleKycSubmission(e));
                 
                 // Core Features - MODIFIED Recharge flow
                 this.state.ui.rechargeStep1Form.addEventListener('submit', (e) => this.handleRechargeStep1(e)); // NEW listener
@@ -2514,6 +2630,21 @@
                 this.auth.onAuthStateChanged(user => { 
                     this.hidePreloader(); 
                     if (user) { 
+                        // CRITICAL NEW CHECK: Email Verification
+                        if (!user.emailVerified) {
+                            this.state.currentUser = user; 
+                            this.state.ui.landingPageContainer.style.display = 'none';
+                            this.state.ui.body.classList.remove('landing-visible');
+                            this.state.ui.authContainer.classList.remove('active'); 
+                            this.state.ui.appContainer.classList.add('active'); 
+                            this.state.ui.appHeader.style.display = 'flex'; 
+                            this.showPage('email-verification-page');
+                            // Ensure the email address is displayed
+                            this.state.ui.verificationEmailDisplay.textContent = user.email;
+                            return; // Stop processing until verified
+                        }
+                        // END CRITICAL NEW CHECK
+
                         this.state.currentUser = user; 
                         this.listenToUserData(); 
                         this.state.ui.landingPageContainer.style.display = 'none';
@@ -2531,6 +2662,10 @@
                         this.state.ui.body.classList.add('landing-visible');
                         this.state.ui.authContainer.classList.remove('active'); 
                         this.state.ui.appContainer.classList.remove('active'); 
+                        // Ensure auth container is visible for login/register
+                        this.state.ui.authContainer.classList.add('active');
+                        this.state.ui.loginPage.style.display = 'block';
+                        this.state.ui.registerPage.style.display = 'none';
                     } 
                 }); 
             },
@@ -2571,6 +2706,11 @@
 
                     const userCredential = await this.auth.createUserWithEmailAndPassword(email, password);
                     const user = userCredential.user;
+                    
+                    // --- NEW: SEND VERIFICATION EMAIL ---
+                    await user.sendEmailVerification();
+                    // --- END NEW ---
+
                     const referralCode = 'CDNC' + Math.random().toString(36).substring(2, 8).toUpperCase();
                     
                     await this.db.ref('users/' + user.uid).set({
@@ -2578,6 +2718,7 @@
                         pkr_balance: 0, 
                         balance_on_hold: 0,
                         unclaimed_invite_bonus: 0, active_referrals_count: 0,
+                        kyc_status: 'none', // NEW: KYC Status initialization
                         plans: { 
                             totalInvestmentPKR: 0, 
                             lastProfitClaimTimestamp: 0, 
@@ -2604,15 +2745,63 @@
                     }
                     
                     await user.updateProfile({ displayName: username });
-                    this.showToast('Registration successful! Please log in.', 'success');
+                    this.showToast('Registration successful! Please check your email for verification.', 'success');
                     this.state.ui.registerForm.reset();
-                    this.state.ui.registerPage.style.display = 'none';
-                    this.state.ui.loginPage.style.display = 'block';
+                    // handleAuth will catch the new session and direct to verification page
                 } catch (error) { this.showToast(error.message, 'danger');
                 } finally { this.setButtonLoading(btn, false); }
             },
 
-            async handleLogin(e) { e.preventDefault(); const btn = e.target.querySelector('button'); this.setButtonLoading(btn, true); const email = document.getElementById('login-email').value; const password = document.getElementById('login-password').value; try { await this.auth.signInWithEmailAndPassword(email, password); } catch (error) { this.showToast(error.message, 'danger'); } finally { this.setButtonLoading(btn, false); } },
+            async handleLogin(e) { 
+                e.preventDefault(); 
+                const btn = e.target.querySelector('button'); 
+                this.setButtonLoading(btn, true); 
+                const email = document.getElementById('login-email').value; 
+                const password = document.getElementById('login-password').value; 
+                try { 
+                    await this.auth.signInWithEmailAndPassword(email, password); 
+                } catch (error) { 
+                    this.showToast(error.message, 'danger'); 
+                } finally { 
+                    this.setButtonLoading(btn, false); 
+                } 
+            },
+            
+            // NEW: Email Verification Helpers
+            sendVerificationEmail(user = this.state.currentUser) {
+                if (user && !user.emailVerified) {
+                    user.sendEmailVerification().then(() => {
+                        this.showToast('Verification email sent/resent! Check your spam folder.', 'info');
+                    }).catch(error => {
+                        this.showToast(`Error sending verification email: ${error.message}`, 'danger');
+                    });
+                }
+            },
+
+            async handleCheckVerification(e) {
+                e.preventDefault();
+                const btn = e.currentTarget;
+                this.setButtonLoading(btn, true);
+
+                if (this.state.currentUser) {
+                    // Force reload the user data from Firebase Auth server
+                    await this.state.currentUser.reload(); 
+                    const user = this.auth.currentUser;
+
+                    if (user.emailVerified) {
+                        this.showToast('Email verified successfully! Entering application.', 'success');
+                        this.state.ui.verificationStatus.textContent = 'Verification Complete!';
+                        this.state.ui.verificationStatus.style.color = 'var(--success-color)';
+                        // Re-run the auth pipeline to redirect to home page and start data listeners
+                        this.handleAuth(); 
+                    } else {
+                        this.state.ui.verificationStatus.textContent = 'Pending Verification';
+                        this.state.ui.verificationStatus.style.color = 'var(--danger-color)';
+                        this.showToast('Email still unverified. Did you click the link?', 'warning');
+                    }
+                }
+                this.setButtonLoading(btn, false);
+            },
             
             // NEW: Forgot Password Handler
             async handleForgotPassword(e) {
@@ -2742,10 +2931,135 @@
                 } 
             },
 
-            // MODIFIED handleWithdraw for PKR - Sets status to 'pending'
+            // NEW: Step 1 handler for withdrawal (checks KYC)
+            checkKycStatus(e) {
+                const kycStatus = this.state.userData.kyc_status || 'none';
+                
+                if (kycStatus === 'approved') {
+                    this.showModal('withdrawal-modal');
+                    return;
+                }
+                
+                e.preventDefault(); // Stop default withdrawal modal open
+                this.updateKycModalUI(kycStatus);
+                this.showModal('kyc-modal');
+            },
+
+            updateKycModalUI(status) {
+                const statusEl = this.state.ui.kycStatusDisplay;
+                const form = this.state.ui.kycForm;
+                let message = '';
+                let color = 'var(--text-secondary)';
+                
+                // Reset form display
+                form.style.display = 'block';
+                document.getElementById('submit-kyc-btn').disabled = false;
+                
+                if (status === 'none') {
+                    message = 'Verification is required before your first withdrawal.';
+                    color = 'var(--warning-color)';
+                } else if (status === 'pending') {
+                    message = 'Verification Pending Review. Your request has been submitted. Withdrawals are currently disabled.';
+                    color = 'var(--warning-color)';
+                    form.style.display = 'none';
+                    document.getElementById('submit-kyc-btn').disabled = true;
+                } else if (status === 'approved') {
+                    message = 'Verification Approved! You can now proceed to withdrawal.';
+                    color = 'var(--success-color)';
+                    form.style.display = 'none'; 
+                    this.hideModal('kyc-modal');
+                    this.showModal('withdrawal-modal');
+                    return;
+                } else if (status === 'rejected') {
+                    message = 'Verification Rejected. Please resubmit your documents carefully.';
+                    color = 'var(--danger-color)';
+                    // Keep form visible for resubmission
+                }
+
+                statusEl.innerHTML = `<h4 style="color: ${color};">${status.toUpperCase()}</h4><p class="info-text">${message}</p>`;
+                
+                // Reset selected type styling if form is visible for submission/resubmission
+                if (form.style.display !== 'none') {
+                    this.state.ui.kycTypeBtns.forEach(btn => btn.classList.remove('active'));
+                    this.state.ui.kycSelectedType.value = '';
+                }
+            },
+
+            selectKycType(e) {
+                e.preventDefault();
+                const type = e.currentTarget.dataset.kycType;
+                this.state.ui.kycSelectedType.value = type;
+                this.state.ui.kycTypeBtns.forEach(btn => btn.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+            },
+
+            async handleKycSubmission(e) {
+                e.preventDefault();
+                const btn = document.getElementById('submit-kyc-btn');
+                this.setButtonLoading(btn, true);
+
+                const type = this.state.ui.kycSelectedType.value;
+                const idNumber = document.getElementById('kyc-id-number').value.trim();
+                const frontFile = document.getElementById('kyc-front-photo').files[0];
+                const backFile = document.getElementById('kyc-back-photo').files[0];
+
+                if (!type || !idNumber || !frontFile || !backFile) {
+                    this.showToast('Please select a document type, enter the ID number, and upload both photos.', 'danger');
+                    this.setButtonLoading(btn, false);
+                    return;
+                }
+                
+                // Mock File Size Check (10MB limit)
+                const MAX_SIZE = 10 * 1024 * 1024;
+                if (frontFile.size > MAX_SIZE || backFile.size > MAX_SIZE) {
+                    this.showToast('Files must be under 10MB each.', 'danger');
+                    this.setButtonLoading(btn, false);
+                    return;
+                }
+
+                try {
+                    // 1. Update user status to pending immediately
+                    await this.state.userRef.child('kyc_status').set('pending');
+                    
+                    // 2. Submit request data (Mocking file data as real storage is outside scope)
+                    await this.db.ref('kyc_requests').push({
+                        userId: this.state.currentUser.uid,
+                        email: this.state.currentUser.email,
+                        kycType: type,
+                        idNumber: idNumber,
+                        timestamp: firebase.database.ServerValue.TIMESTAMP,
+                        status: 'pending',
+                        // Mocking file storage references:
+                        mock_front_file: { name: frontFile.name, size: frontFile.size, type: frontFile.type },
+                        mock_back_file: { name: backFile.name, size: backFile.size, type: backFile.type }
+                    });
+
+                    this.showToast('KYC Request submitted successfully! Please wait for admin review.', 'success');
+                    this.state.ui.kycForm.reset();
+                    this.updateKycModalUI('pending'); // Update modal display
+                } catch (error) {
+                    this.showToast(`KYC submission failed: ${error.message}`, 'danger');
+                    // IMPORTANT: Rollback status if submission failed
+                    await this.state.userRef.child('kyc_status').set('none');
+                } finally {
+                    this.setButtonLoading(btn, false);
+                }
+            },
+            
+            // MODIFIED handleWithdraw for PKR - Adds KYC check
             async handleWithdraw(e) { 
                 e.preventDefault(); 
                 const btn = e.currentTarget.querySelector('button'); 
+                
+                // CRITICAL KYC CHECK
+                if (this.state.userData.kyc_status !== 'approved') {
+                    this.showToast('KYC verification is required before your first withdrawal. Please submit your documents.', 'danger'); 
+                    this.hideModal('withdrawal-modal');
+                    this.checkKycStatus(e); // Redirects to KYC modal
+                    this.setButtonLoading(btn, false); 
+                    return; 
+                }
+
                 const pkrAmount = parseFloat(document.getElementById('withdraw-amount').value); 
                 const network = document.getElementById('withdraw-network').value;
                 const accountNumber = document.getElementById('withdraw-account-number').value.trim();
@@ -3513,6 +3827,10 @@
                     this.state.userData = snapshot.val(); 
                     if (this.state.userData) { 
                         this.updateUI(); 
+                        // If KYC status changes (e.g., from pending to approved by admin), update the modal UI immediately
+                        if (this.state.ui.kycModal.classList.contains('active')) {
+                             this.updateKycModalUI(this.state.userData.kyc_status);
+                        }
                     } else { 
                         this.auth.signOut(); 
                     } 
