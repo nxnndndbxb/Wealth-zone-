@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -673,7 +674,7 @@
         .transaction-item.bonus { border-left-color: var(--primary-accent); }
         .transaction-item .icon { font-size: 1.8em; width: 40px; text-align: center; margin-right: 15px; }
         .transaction-item.buy .icon, .transaction-item.deposit .icon, .transaction-item.plan_profit .icon, .transaction-item.invite_bonus .icon, .transaction-item.nft_profit .icon { color: var(--success-color); }
-        .transaction-item.sell .icon, .transaction-item.withdrawal .icon, .transaction-item.nft_purchase .icon, .transaction-item.plan_invest .icon { color: var(--danger-color); }
+        .transaction-item.sell .icon, .transaction-item.withdrawal .icon, .transaction-item.nft_purchase .icon, .transaction-item.plan_invest { color: var(--danger-color); }
         .transaction-item.bonus .icon { color: var(--primary-accent); }
         .transaction-item.pending .icon { color: var(--warning-color); }
         .transaction-item .details { flex-grow: 1; }
@@ -2166,47 +2167,6 @@
         </div>
     </div>
 
-    <!-- KYC Verification Modal -->
-    <div id="kyc-modal" class="modal-overlay">
-        <div class="modal-content content-panel" style="max-width: 500px;">
-            <button class="modal-close-btn" data-modal-id="kyc-modal">×</button>
-            <h3 id="kyc-modal-title">Withdrawal Security Verification (KYC)</h3>
-            
-            <div id="kyc-status-display" style="text-align: center; margin-bottom: 25px;"></div>
-
-            <p class="info-text">To ensure high security for your first withdrawal, please upload proof of identity. Choose one document:</p>
-            
-            <form id="kyc-form">
-                <div class="option-group" style="grid-template-columns: 1fr 1fr;">
-                    <button type="button" class="option-btn kyc-type-btn" data-kyc-type="national_id">National ID Card 🪪</button>
-                    <button type="button" class="option-btn kyc-type-btn" data-kyc-type="driving_license">Driving License 🚗</button>
-                </div>
-                
-                <input type="hidden" id="kyc-selected-type" required>
-                
-                <div class="input-group">
-                    <input type="text" id="kyc-id-number" placeholder="Enter ID/License Number" required>
-                    <i class="fa-solid fa-id-card"></i>
-                </div>
-                
-                <p class="info-text" style="margin-top: 10px;">Upload Document Front Photo (JPG/PNG)</p>
-                <div class="input-group">
-                    <input type="file" id="kyc-front-photo" accept="image/jpeg,image/png" required style="padding: 15px;">
-                </div>
-                
-                <p class="info-text">Upload Document Back Photo (JPG/PNG)</p>
-                <div class="input-group">
-                    <input type="file" id="kyc-back-photo" accept="image/jpeg,image/png" required style="padding: 15px;">
-                </div>
-
-                <button id="submit-kyc-btn" type="submit" class="btn full-width" style="border-radius: 14px;">
-                    <span class="btn-text">Submit Verification Request</span><div class="spinner-sm"></div>
-                </button>
-            </form>
-            <p class="info-text" style="margin-top: 15px; font-size: 0.85em;">Verification usually takes 1-2 hours.</p>
-        </div>
-    </div>
-
     <!-- Recharge Modal -->
     <div id="recharge-modal" class="modal-overlay">
         <div class="modal-content content-panel">
@@ -2499,11 +2459,6 @@
                     rechargeForm: document.getElementById('recharge-form'),
                     withdrawalForm: document.getElementById('withdrawal-form'),
                     withdrawBtnModal: document.getElementById('withdraw-btn-modal'),
-                    kycModal: document.getElementById('kyc-modal'),
-                    kycStatusDisplay: document.getElementById('kyc-status-display'),
-                    kycForm: document.getElementById('kyc-form'),
-                    kycSelectedType: document.getElementById('kyc-selected-type'),
-                    kycTypeBtns: document.querySelectorAll('.kyc-type-btn'),
                     rankingList: document.getElementById('ranking-list'),
                     myNetWorthValue: document.getElementById('my-net-worth-value'),
                     myGlobalRankValue: document.getElementById('my-global-rank-value'),
@@ -2779,12 +2734,8 @@
                 document.querySelectorAll('.modal-close-btn').forEach(btn => btn.addEventListener('click', () => this.hideModal(btn.dataset.modalId)));
                 document.getElementById('recharge-btn-modal').addEventListener('click', () => this.showRechargeStep1());
                 
-                this.state.ui.withdrawBtnModal.addEventListener('click', (e) => this.checkKycStatus(e));
+                this.state.ui.withdrawBtnModal.addEventListener('click', () => this.showModal('withdrawal-modal'));
 
-                // KYC Listeners
-                this.state.ui.kycTypeBtns.forEach(btn => btn.addEventListener('click', (e) => this.selectKycType(e)));
-                this.state.ui.kycForm.addEventListener('submit', (e) => this.handleKycSubmission(e));
-                
                 // Core Features
                 this.state.ui.rechargeStep1Form.addEventListener('submit', (e) => this.handleRechargeStep1(e));
                 this.state.ui.rechargeStep2BackLink.addEventListener('click', (e) => { e.preventDefault(); this.showRechargeStep1(); });
@@ -2967,7 +2918,6 @@
                         pkr_balance: 0, 
                         balance_on_hold: 0,
                         unclaimed_invite_bonus: 0, active_referrals_count: 0,
-                        kyc_status: 'none',
                         plans: { 
                             totalInvestmentPKR: 0, 
                             lastProfitClaimTimestamp: 0, 
@@ -3170,124 +3120,10 @@
                 } 
             },
 
-            checkKycStatus(e) {
-                const kycStatus = this.state.userData.kyc_status || 'none';
-                
-                if (kycStatus === 'approved') {
-                    this.showModal('withdrawal-modal');
-                    return;
-                }
-                
-                e.preventDefault();
-                this.updateKycModalUI(kycStatus);
-                this.showModal('kyc-modal');
-            },
-
-            updateKycModalUI(status) {
-                const statusEl = this.state.ui.kycStatusDisplay;
-                const form = this.state.ui.kycForm;
-                let message = '';
-                let color = 'var(--text-secondary)';
-                
-                form.style.display = 'block';
-                document.getElementById('submit-kyc-btn').disabled = false;
-                
-                if (status === 'none') {
-                    message = 'Verification is required before your first withdrawal.';
-                    color = 'var(--warning-color)';
-                } else if (status === 'pending') {
-                    message = 'Verification Pending Review. Your request has been submitted. Withdrawals are currently disabled.';
-                    color = 'var(--warning-color)';
-                    form.style.display = 'none';
-                    document.getElementById('submit-kyc-btn').disabled = true;
-                } else if (status === 'approved') {
-                    message = 'Verification Approved! You can now proceed to withdrawal.';
-                    color = 'var(--success-color)';
-                    form.style.display = 'none'; 
-                    this.hideModal('kyc-modal');
-                    this.showModal('withdrawal-modal');
-                    return;
-                } else if (status === 'rejected') {
-                    message = 'Verification Rejected. Please resubmit your documents carefully.';
-                    color = 'var(--danger-color)';
-                }
-
-                statusEl.innerHTML = `<h4 style="color: ${color};">${status.toUpperCase()}</h4><p class="info-text">${message}</p>`;
-                
-                if (form.style.display !== 'none') {
-                    this.state.ui.kycTypeBtns.forEach(btn => btn.classList.remove('active'));
-                    this.state.ui.kycSelectedType.value = '';
-                }
-            },
-
-            selectKycType(e) {
-                e.preventDefault();
-                const type = e.currentTarget.dataset.kycType;
-                this.state.ui.kycSelectedType.value = type;
-                this.state.ui.kycTypeBtns.forEach(btn => btn.classList.remove('active'));
-                e.currentTarget.classList.add('active');
-            },
-
-            async handleKycSubmission(e) {
-                e.preventDefault();
-                const btn = document.getElementById('submit-kyc-btn');
-                this.setButtonLoading(btn, true);
-
-                const type = this.state.ui.kycSelectedType.value;
-                const idNumber = document.getElementById('kyc-id-number').value.trim();
-                const frontFile = document.getElementById('kyc-front-photo').files[0];
-                const backFile = document.getElementById('kyc-back-photo').files[0];
-
-                if (!type || !idNumber || !frontFile || !backFile) {
-                    this.showToast('Please select a document type, enter the ID number, and upload both photos.', 'danger');
-                    this.setButtonLoading(btn, false);
-                    return;
-                }
-                
-                const MAX_SIZE = 10 * 1024 * 1024;
-                if (frontFile.size > MAX_SIZE || backFile.size > MAX_SIZE) {
-                    this.showToast('Files must be under 10MB each.', 'danger');
-                    this.setButtonLoading(btn, false);
-                    return;
-                }
-
-                try {
-                    await this.state.userRef.child('kyc_status').set('pending');
-                    
-                    await this.db.ref('kyc_requests').push({
-                        userId: this.state.currentUser.uid,
-                        email: this.state.currentUser.email,
-                        kycType: type,
-                        idNumber: idNumber,
-                        timestamp: firebase.database.ServerValue.TIMESTAMP,
-                        status: 'pending',
-                        mock_front_file: { name: frontFile.name, size: frontFile.size, type: frontFile.type },
-                        mock_back_file: { name: backFile.name, size: backFile.size, type: backFile.type }
-                    });
-
-                    this.showToast('KYC Request submitted successfully! Please wait for admin review.', 'success');
-                    this.state.ui.kycForm.reset();
-                    this.updateKycModalUI('pending');
-                } catch (error) {
-                    this.showToast(`KYC submission failed: ${error.message}`, 'danger');
-                    await this.state.userRef.child('kyc_status').set('none');
-                } finally {
-                    this.setButtonLoading(btn, false);
-                }
-            },
-            
             async handleWithdraw(e) { 
                 e.preventDefault(); 
                 const btn = e.currentTarget.querySelector('button'); 
                 
-                if (this.state.userData.kyc_status !== 'approved') {
-                    this.showToast('KYC verification is required before your first withdrawal. Please submit your documents.', 'danger'); 
-                    this.hideModal('withdrawal-modal');
-                    this.checkKycStatus(e);
-                    this.setButtonLoading(btn, false); 
-                    return; 
-                }
-
                 const pkrAmount = parseFloat(document.getElementById('withdraw-amount').value); 
                 const network = document.getElementById('withdraw-network').value;
                 const accountNumber = document.getElementById('withdraw-account-number').value.trim();
@@ -4216,9 +4052,6 @@ Earning: PKR ${task.reward || this.config.GMAIL_TASK_REWARD}
                     this.state.userData = snapshot.val(); 
                     if (this.state.userData) { 
                         this.updateUI(); 
-                        if (this.state.ui.kycModal.classList.contains('active')) {
-                             this.updateKycModalUI(this.state.userData.kyc_status);
-                        }
                     } else { 
                         this.auth.signOut(); 
                     } 
