@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -630,14 +629,14 @@
         .history-list { list-style-type: none; max-height: 400px; overflow-y: auto; padding-right: 10px; }
         .transaction-item { display: flex; align-items: center; padding: 18px; margin-bottom: 12px; background-color: var(--background-secondary); border-radius: 16px; border-left: 5px solid var(--text-secondary); transition: background-color 0.3s ease, transform 0.3s ease; }
         .transaction-item:hover { background-color: var(--surface-bg-darker); transform: translateX(3px); }
-        .transaction-item.buy, .transaction-item.deposit, .transaction-item.plan_profit, .transaction-item.invite_bonus, .transaction-item.nft_profit { border-left-color: var(--success-color); }
+        .transaction-item.buy, .transaction-item.deposit, .transaction-item.plan_profit, .transaction-item.invite_bonus, .transaction-item.nft_profit, .transaction-item.ad_reward, .transaction-item.task_reward { border-left-color: var(--success-color); }
         .transaction-item.sell, .transaction-item.withdrawal, .transaction-item.nft_purchase, .transaction-item.plan_invest { border-left-color: var(--danger-color); }
         .transaction-item.pending { border-left-color: var(--warning-color); opacity: 0.9; }
         .transaction-item.rejected { border-left-color: var(--danger-color); opacity: 0.7; }
         .transaction-item.approved { border-left-color: var(--success-color); opacity: 1.0; }
         .transaction-item.bonus { border-left-color: var(--primary-accent); }
         .transaction-item .icon { font-size: 1.8em; width: 40px; text-align: center; margin-right: 15px; }
-        .transaction-item.buy .icon, .transaction-item.deposit .icon, .transaction-item.plan_profit .icon, .transaction-item.invite_bonus .icon, .transaction-item.nft_profit .icon { color: var(--success-color); }
+        .transaction-item.buy .icon, .transaction-item.deposit .icon, .transaction-item.plan_profit .icon, .transaction-item.invite_bonus .icon, .transaction-item.nft_profit .icon, .transaction-item.ad_reward .icon, .transaction-item.task_reward .icon { color: var(--success-color); }
         .transaction-item.sell .icon, .transaction-item.withdrawal .icon, .transaction-item.nft_purchase .icon, .transaction-item.plan_invest .icon { color: var(--danger-color); }
         .transaction-item.bonus .icon { color: var(--primary-accent); }
         .transaction-item.pending .icon { color: var(--warning-color); }
@@ -1131,6 +1130,67 @@
             border-radius: 3px;
             transition: width 0.5s ease;
         }
+        
+        /* --- NEW: Task System Styles --- */
+        .task-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        .task-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background: var(--background-secondary);
+            border-radius: 16px;
+            border-left: 5px solid var(--primary-accent);
+            transition: all 0.3s ease;
+            gap: 15px;
+        }
+        .task-card:hover {
+            background-color: var(--surface-bg-darker);
+            transform: translateX(3px);
+        }
+        .task-card-details {
+            flex-grow: 1;
+        }
+        .task-card-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        .task-card-reward {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: var(--success-color);
+        }
+        .task-card-action .btn-task {
+            padding: 12px 25px;
+            font-size: 1em;
+            border-radius: 10px;
+            background: linear-gradient(45deg, var(--primary-accent), var(--secondary-accent));
+            color: var(--text-on-accent);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 80px;
+            text-align: center;
+        }
+        .task-card-action .btn-task:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 195, 0, 0.5);
+        }
+        .task-card-action .btn-task:disabled {
+            background: var(--surface-border);
+            cursor: not-allowed;
+            color: var(--text-secondary);
+        }
+
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -2121,10 +2181,13 @@
             <div class="page-header">
                 <h3>Task Center</h3>
             </div>
-            <div class="content-panel invite-box">
-                <div class="icon" style="color: var(--warning-color);"><i class="fas fa-tasks"></i></div>
-                <h2>Coming Soon!</h2>
-                <p>A new task center is on its way. Complete simple tasks from our partners to earn more rewards. Stay tuned!</p>
+            <div class="content-panel">
+                <h3>Available Tasks</h3>
+                <p class="info-text" style="margin-bottom: 25px;">Complete simple tasks from our partners to earn more rewards. New tasks are added regularly.</p>
+                <div id="ni-task-list" class="task-list-container">
+                    <!-- Tasks will be dynamically inserted here by JavaScript -->
+                </div>
+                <p class="info-text" id="no-tasks-msg" style="display: none; text-align: center; padding: 20px 0;">No new tasks available right now. Please check back later!</p>
             </div>
         </section>
         
@@ -2322,6 +2385,8 @@
                 adWindow: null,
                 adStartTime: null,
                 adProgressInterval: null,
+                allTasks: {},
+                completedTasks: {},
             },
 
             async init() {
@@ -2441,6 +2506,10 @@
                     adProgressRing: document.getElementById('ad-progress-ring'),
                     dailyProgressText: document.getElementById('daily-progress-text'),
                     dailyProgressBar: document.getElementById('daily-progress-bar'),
+                    
+                    // Task System UI
+                    niTaskList: document.getElementById('ni-task-list'),
+                    noTasksMsg: document.getElementById('no-tasks-msg'),
                 };
             },
             
@@ -2567,7 +2636,7 @@
                     else if (status === 'rejected') statusClass = 'rejected';
                     
                     item.className = `transaction-item ${tx.type.toLowerCase().replace('mining', 'plan')} ${statusClass}`;
-                    const icons = { deposit: 'fa-arrow-down', withdrawal: 'fa-paper-plane', bonus: 'fa-gift', plan_profit: 'fa-arrow-up-right-dots', plan_invest: 'fa-sack-dollar', invite_bonus: 'fa-users', nft_purchase: 'fa-gem', nft_profit: 'fa-hand-holding-usd', ad_reward: 'fa-video' };
+                    const icons = { deposit: 'fa-arrow-down', withdrawal: 'fa-paper-plane', bonus: 'fa-gift', plan_profit: 'fa-arrow-up-right-dots', plan_invest: 'fa-sack-dollar', invite_bonus: 'fa-users', nft_purchase: 'fa-gem', nft_profit: 'fa-hand-holding-usd', ad_reward: 'fa-video', task_reward: 'fa-tasks' };
                     let amountDisplay;
                     let typeText = tx.type.replace(/_/g, ' ');
                     
@@ -2645,6 +2714,14 @@
                 
                 // Ad system listeners
                 window.addEventListener('message', (e) => this.handleAdMessage(e));
+
+                // Task System Listener
+                this.state.ui.niTaskList.addEventListener('click', e => {
+                    const btn = e.target.closest('.btn-task');
+                    if (btn && !btn.disabled) {
+                        this.handleTaskComplete(btn.dataset.taskId, btn);
+                    }
+                });
             },
             
             initLandingPageAnimations() {
@@ -2673,6 +2750,7 @@
                         this.state.currentUser = user; 
                         this.listenToUserData();
                         this.listenToNewInterfaceData();
+                        this.listenToTasks();
                         this.listenToWithdrawalHistory();
                         this.state.ui.landingPageContainer.style.display = 'none';
                         this.state.ui.body.classList.remove('landing-visible');
@@ -2726,7 +2804,7 @@
                     const referralCode = 'CDNC' + Math.random().toString(36).substring(2, 8).toUpperCase();
                     
                     await this.db.ref('users/' + user.uid).set({ username, email, uid: user.uid, referralCode, referredBy: refCode || null, pkr_balance: 0, balance_on_hold: 0, unclaimed_invite_bonus: 0, active_referrals_count: 0, kyc_status: 'none', plans: { totalInvestmentPKR: 0, lastProfitClaimTimestamp: 0, firstInvestmentProcessed: false, totalProfitGeneratedPKR: 0, active_plan: null }, nfts: {}, ancestry, referrals_by_level: {}, referrals_data: {}, miningGateActive: false, miningGateProgress: { activatedReferralsCount: 0, activatedReferralUIDs: {} } });
-                    await this.db.ref('users_new_interface/' + user.uid).set({ balance_usd: 0, balance_on_hold_usd: 0, ads_watched_today: 0, total_ad_earnings: 0, last_ad_watch_date: '' });
+                    await this.db.ref('users_new_interface/' + user.uid).set({ balance_usd: 0, balance_on_hold_usd: 0, ads_watched_today: 0, total_ad_earnings: 0, last_ad_watch_date: '', completed_tasks: {} });
                     
                     if(Object.keys(ancestry).length > 0){
                         const updates = {};
@@ -2789,7 +2867,7 @@
             updateSingleNftCard(key) { const nft = this.state.userData?.nfts?.[key]; if (!nft) { clearInterval(this.state.nftIntervals[key]); return; } const claimableEl = document.getElementById(`claimable-${key}`), timerEl = document.getElementById(`timer-${key}`), progressEl = document.getElementById(`progress-${key}`), claimBtn = document.querySelector(`.btn-claim-nft[data-nft-key="${key}"]`); if (!claimableEl) { clearInterval(this.state.nftIntervals[key]); return; } const dailyProfit = nft.investment * this.config.NFT_DAILY_RATE_PERCENT, cap = nft.investment * this.config.NFT_TOTAL_RETURN_PERCENT; if (nft.totalProfitClaimed >= cap) { claimableEl.textContent = 'PKR 0'; timerEl.textContent = 'Completed (300% Return)'; claimBtn.disabled = true; claimBtn.querySelector('.btn-text').textContent = 'Completed'; progressEl.style.width = '100%'; clearInterval(this.state.nftIntervals[key]); return; } const elapsed = Date.now() - nft.lastClaimTimestamp, fullDay = 24 * 60 * 60 * 1000; let claimable = Math.min((elapsed / fullDay) * dailyProfit, dailyProfit, cap - nft.totalProfitClaimed); claimableEl.textContent = `PKR ${claimable.toLocaleString()}`; progressEl.style.width = `${(nft.totalProfitClaimed / cap) * 100}%`; if (elapsed >= fullDay) { timerEl.textContent = 'Ready to Claim!'; timerEl.style.color = 'var(--success-color)'; claimBtn.disabled = false; } else { const rem = fullDay - elapsed, h = Math.floor((rem/(1000*60*60))%24).toString().padStart(2,'0'), m = Math.floor((rem/(1000*60))%60).toString().padStart(2,'0'), s = Math.floor((rem/1000)%60).toString().padStart(2,'0'); timerEl.textContent = `Next claim in: ${h}:${m}:${s}`; timerEl.style.color = 'var(--warning-color)'; claimBtn.disabled = true; } },
             async handleClaimNftProfit(nftKey, btn) { const nft = this.state.userData?.nfts?.[nftKey]; if (!nft || (Date.now() - nft.lastClaimTimestamp) < 24*60*60*1000) return this.showToast('Not yet time to claim.', 'info'); this.setButtonLoading(btn, true); try { const profit = Math.min(nft.investment * this.config.NFT_DAILY_RATE_PERCENT, (nft.investment * this.config.NFT_TOTAL_RETURN_PERCENT) - nft.totalProfitClaimed); if (profit <= 0) { this.showToast('No profit to claim.', 'info'); this.setButtonLoading(btn, false); return; } const updates = {}; updates[`/users/${this.state.currentUser.uid}/pkr_balance`] = firebase.database.ServerValue.increment(profit); updates[`/users/${this.state.currentUser.uid}/nfts/${nftKey}/totalProfitClaimed`] = firebase.database.ServerValue.increment(profit); updates[`/users/${this.state.currentUser.uid}/nfts/${nftKey}/lastClaimTimestamp`] = firebase.database.ServerValue.TIMESTAMP; await this.db.ref().update(updates); await this.logTransaction('nft_profit', profit, { reason: `${nft.nftId} NFT Earning`, status: 'approved', currency: 'PKR' }); this.showToast(`Claimed PKR ${profit.toLocaleString()}!`, 'success'); } catch (error) { this.showToast(`Claim failed: ${error.message}`, 'danger'); } finally { this.setButtonLoading(btn, false); } },
 
-            // --- [5.4] ENHANCED AD SYSTEM ---
+            // --- [5.4] ENHANCED AD & TASK SYSTEMS ---
             toggleInterface(showNew) {
                 if (showNew) {
                     this.state.ui.appContainer.style.display = 'none';
@@ -2921,6 +2999,102 @@
                 }
             },
 
+            renderTasks() {
+                const { allTasks, completedTasks } = this.state;
+                const { niTaskList, noTasksMsg } = this.state.ui;
+                
+                if (!niTaskList) return;
+                niTaskList.innerHTML = '';
+                
+                const availableTasks = Object.keys(allTasks).filter(taskId => !completedTasks[taskId] && allTasks[taskId].isActive);
+                
+                if (availableTasks.length === 0) {
+                    noTasksMsg.style.display = 'block';
+                    niTaskList.style.display = 'none';
+                    return;
+                }
+                
+                noTasksMsg.style.display = 'none';
+                niTaskList.style.display = 'flex';
+                
+                availableTasks.forEach(taskId => {
+                    const task = allTasks[taskId];
+                    const taskCard = document.createElement('div');
+                    taskCard.className = 'task-card';
+                    taskCard.innerHTML = `
+                        <div class="task-card-details">
+                            <div class="task-card-title">${task.title || 'Untitled Task'}</div>
+                            <div class="task-card-reward">Reward: $${(task.reward || 0).toFixed(3)}</div>
+                        </div>
+                        <div class="task-card-action">
+                            <button class="btn-task" data-task-id="${taskId}">Click</button>
+                        </div>
+                    `;
+                    niTaskList.appendChild(taskCard);
+                });
+            },
+
+            handleTaskComplete(taskId, btn) {
+                const task = this.state.allTasks[taskId];
+                if (!task || !task.link || !this.state.currentUser) {
+                    this.showToast('Task is no longer available.', 'danger');
+                    return;
+                }
+
+                // ***MODIFICATION START: Disable all task buttons***
+                const allTaskButtons = this.state.ui.niTaskList.querySelectorAll('.btn-task');
+                allTaskButtons.forEach(button => {
+                    button.disabled = true;
+                    if (button !== btn) {
+                        button.textContent = 'Waiting...';
+                    }
+                });
+                // ***MODIFICATION END***
+
+                btn.textContent = '10s'; // Keep countdown on the clicked button
+                window.open(task.link, '_blank');
+                
+                let countdown = 9;
+                const interval = setInterval(() => {
+                    btn.textContent = `${countdown}s`;
+                    countdown--;
+                    if (countdown < 0) {
+                        clearInterval(interval);
+                        btn.textContent = 'Done!';
+                    }
+                }, 1000);
+                
+                setTimeout(async () => {
+                    try {
+                        const reward = parseFloat(task.reward || 0);
+                        
+                        const updates = {};
+                        updates[`/users_new_interface/${this.state.currentUser.uid}/balance_usd`] = firebase.database.ServerValue.increment(reward);
+                        updates[`/users_new_interface/${this.state.currentUser.uid}/completed_tasks/${taskId}`] = true;
+                        
+                        await this.db.ref().update(updates);
+                        
+                        await this.logNewInterfaceTransaction('task_reward', reward, { 
+                            reason: `Completed Task: ${task.title}`, 
+                            taskId: taskId,
+                            status: 'approved', 
+                            currency: 'USD' 
+                        });
+                        
+                        this.showToast(`Task complete! You earned $${reward.toFixed(3)}`, 'success');
+                        
+                        // No need to manually re-enable buttons.
+                        // The Firebase listener on `completed_tasks` will trigger `renderTasks`,
+                        // which rebuilds the list with the remaining tasks enabled.
+                        
+                    } catch (error) {
+                        this.showToast(`Error completing task: ${error.message}`, 'danger');
+                        // If there's an error, re-rendering will fix the button states.
+                        this.renderTasks(); 
+                    }
+                }, 10000);
+            },
+
             async handleNewInterfaceWithdrawal(e) {
                 e.preventDefault();
                 const btn = e.target.querySelector('button');
@@ -2999,6 +3173,22 @@
                     this.populateHistoryList({list: this.state.ui.niHistoryList, msg: this.state.ui.noNiTransactionsMsg}, txs);
                 });
             },
+            
+            listenToTasks() {
+                if (!this.state.currentUser) return;
+                const tasksRef = this.db.ref('tasks');
+                const completedTasksRef = this.db.ref(`users_new_interface/${this.state.currentUser.uid}/completed_tasks`);
+
+                tasksRef.on('value', snapshot => {
+                    this.state.allTasks = snapshot.val() || {};
+                    this.renderTasks();
+                });
+
+                completedTasksRef.on('value', snapshot => {
+                    this.state.completedTasks = snapshot.val() || {};
+                    this.renderTasks();
+                });
+            },
 
             listenToWithdrawalHistory() {
                 if (!this.state.currentUser) return;
@@ -3061,6 +3251,8 @@
                 if (this.state.txRef) this.state.txRef.off(); 
                 if (this.state.userNewInterfaceRef) this.state.userNewInterfaceRef.off();
                 if (this.state.txNewInterfaceRef) this.state.txNewInterfaceRef.off();
+                this.db.ref('tasks').off();
+                if(this.state.userNewInterfaceRef) this.state.userNewInterfaceRef.child('completed_tasks').off();
                 this.db.ref('withdrawal_requests').off();
                 this.db.ref('new_interface_withdrawals').off();
                 if(this.state.planProfitInterval) clearInterval(this.state.planProfitInterval); 
