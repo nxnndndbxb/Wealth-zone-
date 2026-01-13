@@ -1066,7 +1066,7 @@
             border-radius: 10px;
             background: white;
         }
-        #ad-timer-display {
+        #ad-timer-display, #web-ad-timer-display {
             margin-top: 20px;
             font-size: 2em;
             color: var(--warning-color);
@@ -1132,6 +1132,9 @@
         }
         
         /* --- NEW: Task System Styles --- */
+        .page-header .menu-btn-ni {
+            margin-right: 15px;
+        }
         .task-list-container {
             display: flex;
             flex-direction: column;
@@ -2108,7 +2111,7 @@
             </div>
         </section>
 
-        <!-- Enhanced Ads Page with Automatic Click -->
+        <!-- Old Ads Page -->
         <section id="ni-ads-page" class="ni-page">
             <div class="page-header">
                 <h3>Watch Ads, Earn Money</h3>
@@ -2124,7 +2127,6 @@
                 </div>
             </div>
             
-            <!-- Daily Limit Indicator -->
             <div class="daily-limit-indicator">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                     <span>Daily Progress</span>
@@ -2156,7 +2158,6 @@
                 </p>
             </div>
             
-            <!-- Quick Earnings Stats -->
             <div class="content-panel" style="margin-top: 20px;">
                 <h3>Quick Earnings</h3>
                 <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
@@ -2179,6 +2180,7 @@
         <!-- New Interface Task Page -->
         <section id="ni-task-page" class="ni-page">
             <div class="page-header">
+                <button class="menu-btn menu-btn-ni" id="go-to-web-ads-btn"><i class="fas fa-ad"></i></button>
                 <h3>Task Center</h3>
             </div>
             <div class="content-panel">
@@ -2190,8 +2192,34 @@
                 <p class="info-text" id="no-tasks-msg" style="display: none; text-align: center; padding: 20px 0;">No new tasks available right now. Please check back later!</p>
             </div>
         </section>
+
+        <!-- NEW: Web Ads Page -->
+        <section id="ni-web-ads-page" class="ni-page">
+            <div class="page-header">
+                <button class="back-btn" data-ni-target="ni-task-page"><i class="fas fa-arrow-left"></i></button>
+                <h3>Web Ads Earning</h3>
+            </div>
+            <div class="content-panel">
+                <h3>Earn by Clicking Banner Ads</h3>
+                <p class="info-text" style="margin-bottom: 25px;">Click on any banner ad below. A 20-second timer will start. Once the timer ends, you will earn <strong>$0.001</strong>.</p>
+                
+                <div id="web-ad-timer-container" style="text-align: center; display: none;">
+                    <div id="web-ad-timer-display">20s</div>
+                </div>
+                
+                <div id="native-ad-container-wrapper" style="margin-top: 20px; padding: 10px; background: var(--background-secondary); border-radius: 16px;">
+                    <!-- Native Banner Ad -->
+                    <script async="async" data-cfasync="false" src="https://disappearinghew.com/547c3b756a4d4743f0c417d06d24606e/invoke.js"></script>
+                    <div id="container-547c3b756a4d4743f0c417d06d24606e"></div>
+                </div>
+
+                 <p class="info-text" style="margin-top: 15px; text-align: center;">
+                    <i class="fas fa-info-circle"></i> Please wait for the timer to finish before clicking another ad.
+                </p>
+            </div>
+        </section>
         
-        <!-- Ad Watch Container -->
+        <!-- Ad Watch Container (For old ad system) -->
         <div id="ad-watch-container">
             <iframe id="ad-iframe" src="about:blank" sandbox="allow-scripts allow-same-origin"></iframe>
             <div id="ad-timer-display">30s</div>
@@ -2201,7 +2229,7 @@
         <nav class="bottom-nav-new">
             <button class="ni-nav-btn active" data-ni-page="ni-assets-page"><i class="fas fa-wallet"></i><span>Assets</span></button>
             <button class="ni-nav-btn" data-ni-page="ni-game-page"><i class="fas fa-gamepad"></i><span>Game</span></button>
-            <button class="ni-nav-btn" data-ni-page="ni-ads-page"><i class="fas fa-ad"></i><span>Ads</span></button>
+            <button class="ni-nav-btn" data-ni-page="ni-ads-page"><i class="fas fa-video"></i><span>Ads</span></button>
             <button class="ni-nav-btn" data-ni-page="ni-task-page"><i class="fas fa-tasks"></i><span>Task</span></button>
         </nav>
     </div>
@@ -2355,13 +2383,17 @@
                     jazzcash: { name: 'JazzCash', accountNumber: '03199242314', accountHolder: 'Kinza Tariq', qrUrl: 'https://iili.io/KLcpcla.jpg' }
                 },
 
-                // ENHANCED AD SYSTEM CONFIG
+                // Video Ad System Config
                 AD_URL: "https://disappearinghew.com/c9mi3mg6?key=13cf6390570322374500aca53556dd58",
                 AD_DURATION_SECONDS: 30,
                 AD_REWARD_USD: 0.001,
                 DAILY_AD_LIMIT: 50,
                 AD_AUTO_CLOSE: true,
                 AD_AUTO_CLICK: true,
+                
+                // Web (Banner) Ad System Config
+                WEB_AD_DURATION_SECONDS: 20,
+                WEB_AD_REWARD_USD: 0.001,
             },
 
             // --- [2] STATE MANAGEMENT ---
@@ -2382,6 +2414,8 @@
                 recharge: { network: null, amount: 0 },
                 carouselInterval: null,
                 adTimerInterval: null,
+                webAdTimerInterval: null, // New timer for web ads
+                isWebAdTimerRunning: false, // Flag to prevent multiple timers
                 adWindow: null,
                 adStartTime: null,
                 adProgressInterval: null,
@@ -2466,14 +2500,12 @@
                     walletPkrBalance: document.getElementById('wallet-pkr-balance'), walletOnHoldBalance: document.getElementById('wallet-on-hold-balance'), 
                     rechargeStep1: document.getElementById('recharge-step-1'), rechargeStep1Form: document.getElementById('recharge-step-1-form'), rechargeNetworkSelect: document.getElementById('recharge-network-select'), rechargeAmountStep1: document.getElementById('recharge-amount-step1'), rechargeStep2: document.getElementById('recharge-step-2'), rechargeDetailsContainer: document.getElementById('recharge-details-container'), rechargeNetworkHidden: document.getElementById('recharge-network-hidden'), rechargeAmountHidden: document.getElementById('recharge-amount-hidden'), rechargeStep2BackLink: document.getElementById('recharge-step-2-back-link'), rechargeModalTitle: document.getElementById('recharge-modal-title'),
                     rechargeForm: document.getElementById('recharge-form'), 
-                    // New Withdrawal Elements
                     withdrawBtnPage: document.getElementById('withdraw-btn-page'),
                     withdrawalPageBalance: document.getElementById('withdrawal-page-balance'),
                     withdrawalForm: document.getElementById('withdrawal-form'),
                     viewWithdrawalHistoryBtn: document.getElementById('view-withdrawal-history-btn'),
                     withdrawalHistoryList: document.getElementById('withdrawal-history-list'),
                     noWithdrawalHistoryMsg: document.getElementById('no-withdrawal-history-msg'),
-                    // KYC & Wallet
                     kycModal: document.getElementById('kyc-modal'), kycStatusDisplay: document.getElementById('kyc-status-display'), kycForm: document.getElementById('kyc-form'), kycSelectedType: document.getElementById('kyc-selected-type'), kycTypeBtns: document.querySelectorAll('.kyc-type-btn'),
                     rankingList: document.getElementById('ranking-list'), myNetWorthValue: document.getElementById('my-net-worth-value'), myGlobalRankValue: document.getElementById('my-global-rank-value'),
                     profileUsernameDisplay: document.getElementById('profile-username-display'), profileEmailDisplay: document.getElementById('profile-email-display'), profileUidDisplay: document.getElementById('profile-uid-display'),
@@ -2507,7 +2539,11 @@
                     dailyProgressText: document.getElementById('daily-progress-text'),
                     dailyProgressBar: document.getElementById('daily-progress-bar'),
                     
-                    // Task System UI
+                    // Task System & Web Ad System UI
+                    goToWebAdsBtn: document.getElementById('go-to-web-ads-btn'),
+                    webAdTimerContainer: document.getElementById('web-ad-timer-container'),
+                    webAdTimerDisplay: document.getElementById('web-ad-timer-display'),
+                    nativeAdContainer: document.getElementById('native-ad-container-wrapper'),
                     niTaskList: document.getElementById('ni-task-list'),
                     noTasksMsg: document.getElementById('no-tasks-msg'),
                 };
@@ -2636,7 +2672,7 @@
                     else if (status === 'rejected') statusClass = 'rejected';
                     
                     item.className = `transaction-item ${tx.type.toLowerCase().replace('mining', 'plan')} ${statusClass}`;
-                    const icons = { deposit: 'fa-arrow-down', withdrawal: 'fa-paper-plane', bonus: 'fa-gift', plan_profit: 'fa-arrow-up-right-dots', plan_invest: 'fa-sack-dollar', invite_bonus: 'fa-users', nft_purchase: 'fa-gem', nft_profit: 'fa-hand-holding-usd', ad_reward: 'fa-video', task_reward: 'fa-tasks' };
+                    const icons = { deposit: 'fa-arrow-down', withdrawal: 'fa-paper-plane', bonus: 'fa-gift', plan_profit: 'fa-arrow-up-right-dots', plan_invest: 'fa-sack-dollar', invite_bonus: 'fa-users', nft_purchase: 'fa-gem', nft_profit: 'fa-hand-holding-usd', ad_reward: 'fa-video', task_reward: 'fa-tasks', web_ad_reward: 'fa-ad' };
                     let amountDisplay;
                     let typeText = tx.type.replace(/_/g, ' ');
                     
@@ -2712,16 +2748,10 @@
                 this.state.ui.niViewWithdrawalHistoryBtn.addEventListener('click', () => this.showNewInterfacePage('ni-withdrawal-history-page'));
                 this.state.ui.niWithdrawalForm.addEventListener('submit', (e) => this.handleNewInterfaceWithdrawal(e));
                 
-                // Ad system listeners
-                window.addEventListener('message', (e) => this.handleAdMessage(e));
-
-                // Task System Listener
-                this.state.ui.niTaskList.addEventListener('click', e => {
-                    const btn = e.target.closest('.btn-task');
-                    if (btn && !btn.disabled) {
-                        this.handleTaskComplete(btn.dataset.taskId, btn);
-                    }
-                });
+                // New Web Ad & Task System Listeners
+                this.state.ui.goToWebAdsBtn.addEventListener('click', () => this.showNewInterfacePage('ni-web-ads-page'));
+                this.state.ui.nativeAdContainer.addEventListener('click', () => this.handleWebAdClick());
+                this.state.ui.niTaskList.addEventListener('click', e => { const btn = e.target.closest('.btn-task'); if (btn && !btn.disabled) this.handleTaskComplete(btn.dataset.taskId, btn); });
             },
             
             initLandingPageAnimations() {
@@ -2867,7 +2897,7 @@
             updateSingleNftCard(key) { const nft = this.state.userData?.nfts?.[key]; if (!nft) { clearInterval(this.state.nftIntervals[key]); return; } const claimableEl = document.getElementById(`claimable-${key}`), timerEl = document.getElementById(`timer-${key}`), progressEl = document.getElementById(`progress-${key}`), claimBtn = document.querySelector(`.btn-claim-nft[data-nft-key="${key}"]`); if (!claimableEl) { clearInterval(this.state.nftIntervals[key]); return; } const dailyProfit = nft.investment * this.config.NFT_DAILY_RATE_PERCENT, cap = nft.investment * this.config.NFT_TOTAL_RETURN_PERCENT; if (nft.totalProfitClaimed >= cap) { claimableEl.textContent = 'PKR 0'; timerEl.textContent = 'Completed (300% Return)'; claimBtn.disabled = true; claimBtn.querySelector('.btn-text').textContent = 'Completed'; progressEl.style.width = '100%'; clearInterval(this.state.nftIntervals[key]); return; } const elapsed = Date.now() - nft.lastClaimTimestamp, fullDay = 24 * 60 * 60 * 1000; let claimable = Math.min((elapsed / fullDay) * dailyProfit, dailyProfit, cap - nft.totalProfitClaimed); claimableEl.textContent = `PKR ${claimable.toLocaleString()}`; progressEl.style.width = `${(nft.totalProfitClaimed / cap) * 100}%`; if (elapsed >= fullDay) { timerEl.textContent = 'Ready to Claim!'; timerEl.style.color = 'var(--success-color)'; claimBtn.disabled = false; } else { const rem = fullDay - elapsed, h = Math.floor((rem/(1000*60*60))%24).toString().padStart(2,'0'), m = Math.floor((rem/(1000*60))%60).toString().padStart(2,'0'), s = Math.floor((rem/1000)%60).toString().padStart(2,'0'); timerEl.textContent = `Next claim in: ${h}:${m}:${s}`; timerEl.style.color = 'var(--warning-color)'; claimBtn.disabled = true; } },
             async handleClaimNftProfit(nftKey, btn) { const nft = this.state.userData?.nfts?.[nftKey]; if (!nft || (Date.now() - nft.lastClaimTimestamp) < 24*60*60*1000) return this.showToast('Not yet time to claim.', 'info'); this.setButtonLoading(btn, true); try { const profit = Math.min(nft.investment * this.config.NFT_DAILY_RATE_PERCENT, (nft.investment * this.config.NFT_TOTAL_RETURN_PERCENT) - nft.totalProfitClaimed); if (profit <= 0) { this.showToast('No profit to claim.', 'info'); this.setButtonLoading(btn, false); return; } const updates = {}; updates[`/users/${this.state.currentUser.uid}/pkr_balance`] = firebase.database.ServerValue.increment(profit); updates[`/users/${this.state.currentUser.uid}/nfts/${nftKey}/totalProfitClaimed`] = firebase.database.ServerValue.increment(profit); updates[`/users/${this.state.currentUser.uid}/nfts/${nftKey}/lastClaimTimestamp`] = firebase.database.ServerValue.TIMESTAMP; await this.db.ref().update(updates); await this.logTransaction('nft_profit', profit, { reason: `${nft.nftId} NFT Earning`, status: 'approved', currency: 'PKR' }); this.showToast(`Claimed PKR ${profit.toLocaleString()}!`, 'success'); } catch (error) { this.showToast(`Claim failed: ${error.message}`, 'danger'); } finally { this.setButtonLoading(btn, false); } },
 
-            // --- [5.4] ENHANCED AD & TASK SYSTEMS ---
+            // --- [5.4] NEW & ENHANCED AD/TASK SYSTEMS ---
             toggleInterface(showNew) {
                 if (showNew) {
                     this.state.ui.appContainer.style.display = 'none';
@@ -2883,66 +2913,34 @@
             async handleWatchAd() {
                 const btn = this.state.ui.watchAdBtn;
                 const adsWatchedToday = this.state.newInterfaceData.ads_watched_today || 0;
-                
-                if (adsWatchedToday >= this.config.DAILY_AD_LIMIT) {
-                    this.showToast('Daily ad limit reached! Come back tomorrow.', 'warning');
-                    return;
-                }
-
+                if (adsWatchedToday >= this.config.DAILY_AD_LIMIT) { this.showToast('Daily ad limit reached! Come back tomorrow.', 'warning'); return; }
                 this.setButtonLoading(btn, true);
-                
                 try {
                     const today = new Date().toISOString().split('T')[0];
-                    if (this.state.newInterfaceData.last_ad_watch_date !== today) {
-                        await this.state.userNewInterfaceRef.update({ 
-                            ads_watched_today: 0, 
-                            last_ad_watch_date: today 
-                        });
-                    }
+                    if (this.state.newInterfaceData.last_ad_watch_date !== today) { await this.state.userNewInterfaceRef.update({ ads_watched_today: 0, last_ad_watch_date: today }); }
                     this.startAdProgressAnimation();
                     this.openAdWithAutoClick();
                     this.startAdTimer();
-                } catch (error) {
-                    this.showToast(`Error starting ad: ${error.message}`, 'danger');
-                    this.setButtonLoading(btn, false);
-                }
+                } catch (error) { this.showToast(`Error starting ad: ${error.message}`, 'danger'); this.setButtonLoading(btn, false); }
             },
 
             startAdProgressAnimation() {
                 const circle = this.state.ui.adProgressRing.querySelector('.ad-progress-ring-circle');
-                const totalLength = 314; 
-                let progress = 0;
+                const totalLength = 314; let progress = 0;
                 if (this.state.adProgressInterval) clearInterval(this.state.adProgressInterval);
                 this.state.adProgressInterval = setInterval(() => {
                     progress += (100 / this.config.AD_DURATION_SECONDS);
                     const dashoffset = totalLength - (totalLength * Math.min(progress, 100) / 100);
                     circle.style.strokeDashoffset = dashoffset;
-                    if (progress >= 100) {
-                        clearInterval(this.state.adProgressInterval);
-                        circle.style.strokeDashoffset = totalLength;
-                    }
+                    if (progress >= 100) { clearInterval(this.state.adProgressInterval); circle.style.strokeDashoffset = totalLength; }
                 }, 1000);
             },
 
             openAdWithAutoClick() {
                 const adWindow = window.open(this.config.AD_URL, '_blank', 'width=800,height=600');
-                if (!adWindow) {
-                    this.showToast('Please allow pop-ups to watch ads.', 'warning');
-                    this.setButtonLoading(this.state.ui.watchAdBtn, false);
-                    if (this.state.adProgressInterval) clearInterval(this.state.adProgressInterval);
-                    return;
-                }
-                this.state.adWindow = adWindow;
-                this.state.adStartTime = Date.now();
-                setTimeout(() => {
-                    try {
-                        if (this.state.adWindow && !this.state.adWindow.closed) {
-                            this.state.adWindow.focus();
-                        }
-                    } catch (e) {
-                        console.log('Browser security prevents automatic interaction with popup');
-                    }
-                }, 3000);
+                if (!adWindow) { this.showToast('Please allow pop-ups to watch ads.', 'warning'); this.setButtonLoading(this.state.ui.watchAdBtn, false); if (this.state.adProgressInterval) clearInterval(this.state.adProgressInterval); return; }
+                this.state.adWindow = adWindow; this.state.adStartTime = Date.now();
+                setTimeout(() => { try { if (this.state.adWindow && !this.state.adWindow.closed) { this.state.adWindow.focus(); } } catch (e) { console.log('Browser security prevents automatic interaction with popup'); } }, 3000);
             },
 
             startAdTimer() {
@@ -2953,145 +2951,104 @@
                 this.state.adTimerInterval = setInterval(async () => {
                     timeLeft--;
                     this.state.ui.adTimerDisplay.textContent = `${timeLeft}s`;
-                    if (timeLeft <= 0) {
-                        clearInterval(this.state.adTimerInterval);
-                        this.finishAdWatching();
-                    }
+                    if (timeLeft <= 0) { clearInterval(this.state.adTimerInterval); this.finishAdWatching(); }
                 }, 1000);
             },
 
             async finishAdWatching() {
-                const btn = this.state.ui.watchAdBtn;
-                if (this.state.adWindow && !this.state.adWindow.closed) {
-                    try { this.state.adWindow.close(); } catch (e) { console.log('Could not close ad window'); }
-                }
-                
-                this.state.ui.adWatchContainer.style.display = 'none';
-                this.state.ui.adTimerDisplay.textContent = '30s';
-                
+                if (this.state.adWindow && !this.state.adWindow.closed) { try { this.state.adWindow.close(); } catch (e) { console.log('Could not close ad window'); } }
+                this.state.ui.adWatchContainer.style.display = 'none'; this.state.ui.adTimerDisplay.textContent = '30s';
                 if (this.state.adProgressInterval) clearInterval(this.state.adProgressInterval);
                 if (this.state.adTimerInterval) clearInterval(this.state.adTimerInterval);
-                
                 const reward = this.config.AD_REWARD_USD;
+                try {
+                    await this.state.userNewInterfaceRef.update({ balance_usd: firebase.database.ServerValue.increment(reward), total_ad_earnings: firebase.database.ServerValue.increment(reward), ads_watched_today: firebase.database.ServerValue.increment(1) });
+                    await this.logNewInterfaceTransaction('ad_reward', reward, { reason: 'Watched Video Ad', status: 'approved', currency: 'USD' });
+                    this.showToast(`You earned $${reward.toFixed(3)}!`, 'success');
+                } catch (error) { this.showToast(`Error awarding reward: ${error.message}`, 'danger');
+                } finally { this.setButtonLoading(this.state.ui.watchAdBtn, false); this.state.adWindow = null; this.state.adStartTime = null; }
+            },
+
+            handleWebAdClick() {
+                if (this.state.isWebAdTimerRunning) {
+                    this.showToast('An ad timer is already running.', 'info');
+                    return;
+                }
+                this.startWebAdTimer();
+            },
+
+            startWebAdTimer() {
+                this.state.isWebAdTimerRunning = true;
+                let timeLeft = this.config.WEB_AD_DURATION_SECONDS;
+                this.state.ui.webAdTimerContainer.style.display = 'block';
+                this.state.ui.webAdTimerDisplay.textContent = `${timeLeft}s`;
+                
+                if (this.state.webAdTimerInterval) clearInterval(this.state.webAdTimerInterval);
+
+                this.state.webAdTimerInterval = setInterval(() => {
+                    timeLeft--;
+                    this.state.ui.webAdTimerDisplay.textContent = `${timeLeft}s`;
+                    if (timeLeft <= 0) {
+                        clearInterval(this.state.webAdTimerInterval);
+                        this.finishWebAdWatching();
+                    }
+                }, 1000);
+            },
+
+            async finishWebAdWatching() {
+                const reward = this.config.WEB_AD_REWARD_USD;
                 try {
                     await this.state.userNewInterfaceRef.update({
                         balance_usd: firebase.database.ServerValue.increment(reward),
-                        total_ad_earnings: firebase.database.ServerValue.increment(reward),
-                        ads_watched_today: firebase.database.ServerValue.increment(1)
                     });
-                    
-                    await this.logNewInterfaceTransaction('ad_reward', reward, { 
-                        reason: 'Watched Ad', status: 'approved', currency: 'USD', duration: this.config.AD_DURATION_SECONDS
+                    await this.logNewInterfaceTransaction('web_ad_reward', reward, {
+                        reason: 'Clicked Web Ad', status: 'approved', currency: 'USD'
                     });
-                    this.showToast(`You earned $${reward.toFixed(3)}!`, 'success');
+                    this.showToast(`You earned $${reward.toFixed(3)} from the banner ad!`, 'success');
                 } catch (error) {
-                    this.showToast(`Error awarding reward: ${error.message}`, 'danger');
+                    this.showToast(`Error awarding web ad reward: ${error.message}`, 'danger');
                 } finally {
-                    this.setButtonLoading(btn, false);
-                    this.state.adWindow = null;
-                    this.state.adStartTime = null;
-                }
-            },
-
-            handleAdMessage(e) {
-                if (e.data && e.data.type === 'ad_completed') {
-                    this.finishAdWatching();
+                    this.state.ui.webAdTimerContainer.style.display = 'none';
+                    this.state.isWebAdTimerRunning = false;
                 }
             },
 
             renderTasks() {
                 const { allTasks, completedTasks } = this.state;
                 const { niTaskList, noTasksMsg } = this.state.ui;
-                
                 if (!niTaskList) return;
                 niTaskList.innerHTML = '';
-                
                 const availableTasks = Object.keys(allTasks).filter(taskId => !completedTasks[taskId] && allTasks[taskId].isActive);
-                
-                if (availableTasks.length === 0) {
-                    noTasksMsg.style.display = 'block';
-                    niTaskList.style.display = 'none';
-                    return;
-                }
-                
-                noTasksMsg.style.display = 'none';
-                niTaskList.style.display = 'flex';
-                
+                if (availableTasks.length === 0) { noTasksMsg.style.display = 'block'; niTaskList.style.display = 'none'; return; }
+                noTasksMsg.style.display = 'none'; niTaskList.style.display = 'flex';
                 availableTasks.forEach(taskId => {
                     const task = allTasks[taskId];
                     const taskCard = document.createElement('div');
                     taskCard.className = 'task-card';
-                    taskCard.innerHTML = `
-                        <div class="task-card-details">
-                            <div class="task-card-title">${task.title || 'Untitled Task'}</div>
-                            <div class="task-card-reward">Reward: $${(task.reward || 0).toFixed(3)}</div>
-                        </div>
-                        <div class="task-card-action">
-                            <button class="btn-task" data-task-id="${taskId}">Click</button>
-                        </div>
-                    `;
+                    taskCard.innerHTML = `<div class="task-card-details"><div class="task-card-title">${task.title || 'Untitled Task'}</div><div class="task-card-reward">Reward: $${(task.reward || 0).toFixed(3)}</div></div><div class="task-card-action"><button class="btn-task" data-task-id="${taskId}">Click</button></div>`;
                     niTaskList.appendChild(taskCard);
                 });
             },
 
             handleTaskComplete(taskId, btn) {
                 const task = this.state.allTasks[taskId];
-                if (!task || !task.link || !this.state.currentUser) {
-                    this.showToast('Task is no longer available.', 'danger');
-                    return;
-                }
-
-                // ***MODIFICATION START: Disable all task buttons***
+                if (!task || !task.link || !this.state.currentUser) { this.showToast('Task is no longer available.', 'danger'); return; }
                 const allTaskButtons = this.state.ui.niTaskList.querySelectorAll('.btn-task');
-                allTaskButtons.forEach(button => {
-                    button.disabled = true;
-                    if (button !== btn) {
-                        button.textContent = 'Waiting...';
-                    }
-                });
-                // ***MODIFICATION END***
-
-                btn.textContent = '10s'; // Keep countdown on the clicked button
+                allTaskButtons.forEach(button => { button.disabled = true; if (button !== btn) button.textContent = 'Waiting...'; });
+                btn.textContent = '10s';
                 window.open(task.link, '_blank');
-                
                 let countdown = 9;
-                const interval = setInterval(() => {
-                    btn.textContent = `${countdown}s`;
-                    countdown--;
-                    if (countdown < 0) {
-                        clearInterval(interval);
-                        btn.textContent = 'Done!';
-                    }
-                }, 1000);
-                
+                const interval = setInterval(() => { btn.textContent = `${countdown}s`; countdown--; if (countdown < 0) { clearInterval(interval); btn.textContent = 'Done!'; } }, 1000);
                 setTimeout(async () => {
                     try {
                         const reward = parseFloat(task.reward || 0);
-                        
                         const updates = {};
                         updates[`/users_new_interface/${this.state.currentUser.uid}/balance_usd`] = firebase.database.ServerValue.increment(reward);
                         updates[`/users_new_interface/${this.state.currentUser.uid}/completed_tasks/${taskId}`] = true;
-                        
                         await this.db.ref().update(updates);
-                        
-                        await this.logNewInterfaceTransaction('task_reward', reward, { 
-                            reason: `Completed Task: ${task.title}`, 
-                            taskId: taskId,
-                            status: 'approved', 
-                            currency: 'USD' 
-                        });
-                        
+                        await this.logNewInterfaceTransaction('task_reward', reward, { reason: `Completed Task: ${task.title}`, taskId: taskId, status: 'approved', currency: 'USD' });
                         this.showToast(`Task complete! You earned $${reward.toFixed(3)}`, 'success');
-                        
-                        // No need to manually re-enable buttons.
-                        // The Firebase listener on `completed_tasks` will trigger `renderTasks`,
-                        // which rebuilds the list with the remaining tasks enabled.
-                        
-                    } catch (error) {
-                        this.showToast(`Error completing task: ${error.message}`, 'danger');
-                        // If there's an error, re-rendering will fix the button states.
-                        this.renderTasks(); 
-                    }
+                    } catch (error) { this.showToast(`Error completing task: ${error.message}`, 'danger'); this.renderTasks(); }
                 }, 10000);
             },
 
@@ -3102,40 +3059,20 @@
                 const network = document.getElementById('ni-withdraw-network').value;
                 const accountNumber = document.getElementById('ni-withdraw-account-number').value.trim();
                 const accountHolderName = document.getElementById('ni-withdraw-account-holder-name').value.trim();
-
-                if (isNaN(amount) || amount <= 0 || !network || !accountNumber || !accountHolderName || !/^\d{11}$/.test(accountNumber)) {
-                    return this.showToast('Please fill all fields with a valid 11-digit account number.', 'danger');
-                }
-                if (amount > (this.state.newInterfaceData.balance_usd || 0)) {
-                    return this.showToast('Insufficient USD balance.', 'danger');
-                }
-
+                if (isNaN(amount) || amount <= 0 || !network || !accountNumber || !accountHolderName || !/^\d{11}$/.test(accountNumber)) { return this.showToast('Please fill all fields with a valid 11-digit account number.', 'danger'); }
+                if (amount > (this.state.newInterfaceData.balance_usd || 0)) { return this.showToast('Insufficient USD balance.', 'danger'); }
                 this.setButtonLoading(btn, true);
                 try {
-                    await this.state.userNewInterfaceRef.update({
-                        balance_usd: firebase.database.ServerValue.increment(-amount),
-                        balance_on_hold_usd: firebase.database.ServerValue.increment(amount)
-                    });
-                    
-                    await this.db.ref('new_interface_withdrawals').push({
-                        userId: this.state.currentUser.uid, userEmail: this.state.currentUser.email,
-                        usdAmount: amount, network, accountNumber, accountHolderName,
-                        status: 'pending', timestamp: firebase.database.ServerValue.TIMESTAMP
-                    });
-
+                    await this.state.userNewInterfaceRef.update({ balance_usd: firebase.database.ServerValue.increment(-amount), balance_on_hold_usd: firebase.database.ServerValue.increment(amount) });
+                    await this.db.ref('new_interface_withdrawals').push({ userId: this.state.currentUser.uid, userEmail: this.state.currentUser.email, usdAmount: amount, network, accountNumber, accountHolderName, status: 'pending', timestamp: firebase.database.ServerValue.TIMESTAMP });
                     await this.logNewInterfaceTransaction('withdrawal', amount, { network, accountNumber, status: 'pending', currency: 'USD' });
                     this.showToast(`Withdrawal request for $${amount.toFixed(3)} submitted!`, 'success');
                     this.state.ui.niWithdrawalForm.reset();
                     this.showNewInterfacePage('ni-withdrawal-history-page');
                 } catch (err) {
                     this.showToast(`Withdrawal failed: ${err.message}`, 'danger');
-                     await this.state.userNewInterfaceRef.update({
-                        balance_usd: firebase.database.ServerValue.increment(amount),
-                        balance_on_hold_usd: firebase.database.ServerValue.increment(-amount)
-                    });
-                } finally {
-                    this.setButtonLoading(btn, false);
-                }
+                     await this.state.userNewInterfaceRef.update({ balance_usd: firebase.database.ServerValue.increment(amount), balance_on_hold_usd: firebase.database.ServerValue.increment(-amount) });
+                } finally { this.setButtonLoading(btn, false); }
             },
 
             // --- [6] DATA LISTENERS ---
@@ -3178,30 +3115,18 @@
                 if (!this.state.currentUser) return;
                 const tasksRef = this.db.ref('tasks');
                 const completedTasksRef = this.db.ref(`users_new_interface/${this.state.currentUser.uid}/completed_tasks`);
-
-                tasksRef.on('value', snapshot => {
-                    this.state.allTasks = snapshot.val() || {};
-                    this.renderTasks();
-                });
-
-                completedTasksRef.on('value', snapshot => {
-                    this.state.completedTasks = snapshot.val() || {};
-                    this.renderTasks();
-                });
+                tasksRef.on('value', snapshot => { this.state.allTasks = snapshot.val() || {}; this.renderTasks(); });
+                completedTasksRef.on('value', snapshot => { this.state.completedTasks = snapshot.val() || {}; this.renderTasks(); });
             },
 
             listenToWithdrawalHistory() {
                 if (!this.state.currentUser) return;
                 const uid = this.state.currentUser.uid;
-                
-                // PKR Withdrawals
                 const pkrRef = this.db.ref('withdrawal_requests').orderByChild('userId').equalTo(uid);
                 pkrRef.on('value', snapshot => {
                     const data = snapshot.val() ? Object.values(snapshot.val()).sort((a,b) => b.timestamp - a.timestamp) : [];
                     this.populateWithdrawalHistoryList(this.state.ui.withdrawalHistoryList, this.state.ui.noWithdrawalHistoryMsg, data, 'PKR');
                 });
-                
-                // USD Withdrawals
                 const usdRef = this.db.ref('new_interface_withdrawals').orderByChild('userId').equalTo(uid);
                 usdRef.on('value', snapshot => {
                     const data = snapshot.val() ? Object.values(snapshot.val()).sort((a,b) => b.timestamp - a.timestamp) : [];
@@ -3211,37 +3136,19 @@
 
             populateWithdrawalHistoryList(listElement, noMsgElement, data, currency) {
                 listElement.innerHTML = '';
-                if (data.length === 0) {
-                    listElement.appendChild(noMsgElement);
-                    return;
-                }
+                if (data.length === 0) { listElement.appendChild(noMsgElement); return; }
                 if (noMsgElement.parentElement === listElement) noMsgElement.remove();
-
                 data.forEach(req => {
                     const item = document.createElement('li');
                     const status = req.status.toLowerCase();
                     let statusClass = '';
-                    if (status === 'pending') statusClass = 'pending';
-                    else if (status === 'approved') statusClass = 'approved';
-                    else if (status === 'rejected') statusClass = 'rejected';
-
+                    if (status === 'pending') statusClass = 'pending'; else if (status === 'approved') statusClass = 'approved'; else if (status === 'rejected') statusClass = 'rejected';
                     item.className = `transaction-item withdrawal ${statusClass}`;
                     const amount = currency === 'PKR' ? req.pkrAmount : req.usdAmount;
                     const amountDisplay = `${currency === 'PKR' ? 'PKR' : '$'} ${currency === 'PKR' ? Math.round(amount).toLocaleString() : amount.toFixed(3)}`;
-
                     let statusDisplay = '';
-                    if (status === 'pending') statusDisplay = `<span style="color: var(--warning-color);">(Pending)</span>`;
-                    else if (status === 'rejected') statusDisplay = `<span style="color: var(--danger-color);">(Rejected)</span>`;
-                    else if (status === 'approved') statusDisplay = `<span style="color: var(--success-color);">(Approved)</span>`;
-
-                    item.innerHTML = `
-                        <div class="icon"><i class="fas fa-paper-plane"></i></div>
-                        <div class="details">
-                            <div class="type">Withdrawal via ${req.network} ${statusDisplay}</div>
-                            <div class="date">${new Date(req.timestamp).toLocaleString()}</div>
-                        </div>
-                        <div class="amount">-${amountDisplay}</div>
-                    `;
+                    if (status === 'pending') statusDisplay = `<span style="color: var(--warning-color);">(Pending)</span>`; else if (status === 'rejected') statusDisplay = `<span style="color: var(--danger-color);">(Rejected)</span>`; else if (status === 'approved') statusDisplay = `<span style="color: var(--success-color);">(Approved)</span>`;
+                    item.innerHTML = `<div class="icon"><i class="fas fa-paper-plane"></i></div><div class="details"><div class="type">Withdrawal via ${req.network} ${statusDisplay}</div><div class="date">${new Date(req.timestamp).toLocaleString()}</div></div><div class="amount">-${amountDisplay}</div>`;
                     listElement.appendChild(item);
                 });
             },
@@ -3258,6 +3165,7 @@
                 if(this.state.planProfitInterval) clearInterval(this.state.planProfitInterval); 
                 if(this.state.carouselInterval) clearInterval(this.state.carouselInterval);
                 if(this.state.adTimerInterval) clearInterval(this.state.adTimerInterval);
+                if(this.state.webAdTimerInterval) clearInterval(this.state.webAdTimerInterval);
                 if(this.state.adProgressInterval) clearInterval(this.state.adProgressInterval);
                 Object.values(this.state.nftIntervals).forEach(clearInterval); 
                 this.state.nftIntervals = {}; 
