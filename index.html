@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -981,31 +982,299 @@
             from { opacity: 0; } to { opacity: 1; }
         }
 
-        .exit-new-interface-btn {
+        .ni-menu-btn {
             position: fixed;
             top: 20px;
             right: 20px;
+            left: auto;
             width: 45px;
             height: 45px;
-            background-color: var(--danger-color);
-            color: white;
-            border: none;
+            background-color: var(--surface-bg);
+            color: var(--primary-accent);
+            border: 1px solid var(--surface-border);
             border-radius: 50%;
-            font-size: 1.5em;
+            font-size: 1.3em;
             cursor: pointer;
             z-index: 5050;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.7);
-            transition: transform 0.3s ease;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
         }
-        .exit-new-interface-btn:hover {
-            transform: scale(1.1) rotate(90deg);
+        .ni-menu-btn:hover {
+            background-color: var(--surface-highlight);
+            transform: scale(1.1);
         }
+
+        /* New Interface Sidebar */
+        #ni-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0; 
+            height: 100vh;
+            width: 280px;
+            background: var(--surface-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-right: 2px solid var(--surface-border);
+            z-index: 6000;
+            transform: translateX(-100%); 
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            padding: 20px;
+            padding-top: 80px;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.8);
+            overflow-y: auto; 
+        }
+        #ni-sidebar.active {
+            transform: translateX(0); 
+        }
+        #ni-sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 5500;
+            display: none;
+        }
+        #ni-sidebar.active ~ #ni-sidebar-overlay {
+            display: block;
+        }
+        .ni-sidebar-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .ni-sidebar-header h3 {
+            color: var(--primary-accent);
+            font-weight: 700;
+            font-size: 1.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .ni-sidebar-list {
+            list-style: none;
+            padding: 0;
+        }
+        .ni-sidebar-list li {
+            margin-bottom: 15px;
+        }
+        .ni-sidebar-list button {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            background: var(--background-secondary);
+            border: 1px solid var(--surface-border);
+            border-radius: 12px;
+            padding: 15px;
+            color: var(--text-primary);
+            font-size: 1.1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .ni-sidebar-list button:hover {
+            background: var(--surface-highlight);
+            color: var(--primary-accent);
+            border-color: var(--primary-accent);
+            transform: translateX(5px);
+        }
+        .ni-sidebar-list button i {
+            width: 35px;
+            font-size: 1.4em;
+            color: var(--primary-accent);
+        }
+        #ni-exit-btn i { color: var(--danger-color); }
+        .ni-sidebar-list .ni-home-btn i { color: var(--tertiary-accent); }
+
+
+        /* --- NEW: Task System V2 Styles --- */
+        .task-page-container .instruction-container {
+            text-align: center;
+            padding: 20px;
+        }
+        .task-page-container .instruction-video {
+            width: 100%;
+            max-width: 560px;
+            aspect-ratio: 16/9;
+            border-radius: 15px;
+            border: 2px solid var(--surface-border);
+            margin-bottom: 25px;
+        }
+        .task-page-container .task-details-container {
+            display: none; /* Initially hidden */
+        }
+        .task-detail-card {
+            background: var(--surface-bg-darker);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-accent);
+        }
+        .task-detail-card .label {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .task-detail-card .value {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--text-primary);
+            word-break: break-all;
+        }
+        .task-detail-card .value a {
+            color: var(--primary-accent);
+            text-decoration: none;
+        }
+         .task-detail-card .value a:hover {
+            text-decoration: underline;
+        }
+        .task-detail-card .reward-value {
+            color: var(--success-color);
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+        .proof-upload-label {
+            display: block;
+            padding: 20px;
+            background: var(--background-secondary);
+            border: 2px dashed var(--surface-border);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .proof-upload-label:hover {
+            border-color: var(--primary-accent);
+            background: var(--surface-highlight);
+        }
+        .proof-upload-label i {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: var(--primary-accent);
+        }
+        .proof-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .task-list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: var(--background-secondary);
+            border: 1px solid var(--surface-border);
+            border-radius: 14px;
+            margin-bottom: 10px;
+        }
+        .task-list-item .task-info {
+            flex-grow: 1;
+            margin-right: 15px;
+        }
+        .task-list-item .task-title {
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        .task-list-item .task-reward {
+            font-weight: 700;
+            color: var(--success-color);
+        }
+        .task-action-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            min-width: 120px;
+            text-align: center;
+        }
+
+
+        /* --- NEW: Task History Styles --- */
+        .task-history-list {
+            list-style: none;
+            padding: 0;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        .task-history-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: var(--background-secondary);
+            border-radius: 16px;
+            border-left: 5px solid;
+            transition: all 0.3s ease;
+        }
+        .task-history-item:hover {
+            transform: translateX(4px);
+            background: var(--surface-bg-darker);
+        }
+        .task-history-item .icon {
+            font-size: 1.8em;
+        }
+        .task-history-item .details {
+            flex-grow: 1;
+        }
+        .task-history-item .title {
+            font-weight: 600;
+            font-size: 1.1em;
+            color: var(--text-primary);
+        }
+        .task-history-item .date {
+            font-size: 0.8em;
+            color: var(--text-secondary);
+        }
+        .task-history-item .status {
+            font-weight: 700;
+            font-size: 1.1em;
+            text-align: right;
+            min-width: 100px;
+        }
+        .task-history-item.pending { border-color: var(--warning-color); }
+        .task-history-item.pending .icon, .task-history-item.pending .status { color: var(--warning-color); }
+        .task-history-item.approved { border-color: var(--success-color); }
+        .task-history-item.approved .icon, .task-history-item.approved .status { color: var(--success-color); }
+        .task-history-item.rejected { border-color: var(--danger-color); }
+        .task-history-item.rejected .icon, .task-history-item.rejected .status { color: var(--danger-color); }
+        .task-history-item .proof-link {
+            font-size: 1.2em;
+            color: var(--primary-accent);
+            text-decoration: none;
+        }
+        .task-history-item .proof-link:hover {
+            transform: scale(1.1);
+        }
+
+        /* --- NEW: NI HOME PAGE --- */
+        .ni-home-hero {
+            text-align: center;
+            padding: 50px 0;
+        }
+        .ni-home-hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, var(--primary-accent), var(--text-primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(255, 195, 0, 0.5);
+        }
+        .ni-home-hero p {
+            font-size: 1.2em;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
 
         .ni-page {
             display: none;
             padding: 25px 20px;
             padding-top: 80px;
-            padding-bottom: 120px;
+            padding-bottom: 40px;
             max-width: 1200px;
             margin: 0 auto;
             animation: pageFadeIn 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -1013,189 +1282,10 @@
         .ni-page.active {
             display: block;
         }
-
         .bottom-nav-new {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 40px);
-            max-width: 500px;
-            height: 85px;
-            background: var(--surface-bg);
-            border: 1px solid var(--surface-border);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border-radius: var(--border-radius);
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), var(--shadow-glow);
-            z-index: 5020;
-            padding: 0 10px;
-        }
-        
-        .ni-nav-btn {
-            background: none; border: none; color: var(--text-secondary);
-            display: flex; flex-direction: column; align-items: center;
-            font-size: 0.8em; font-weight: 500; cursor: pointer;
-            transition: all var(--transition-speed) ease; position: relative;
-            padding: 8px 5px; width: 70px;
-        }
-        .ni-nav-btn i { font-size: 1.8em; margin-bottom: 5px; }
-        .ni-nav-btn.active { color: var(--text-primary); transform: translateY(-8px); }
-        .ni-nav-btn.active i { color: var(--primary-accent); text-shadow: 0 0 10px var(--primary-accent); }
-
-        /* Enhanced Ad System Styles */
-        #ad-watch-container {
             display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 6000;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        #ad-iframe {
-            width: 95%;
-            height: 80%;
-            max-width: 800px;
-            border: 2px solid var(--primary-accent);
-            border-radius: 10px;
-            background: white;
-        }
-        #ad-timer-display, #web-ad-timer-display {
-            margin-top: 20px;
-            font-size: 2em;
-            color: var(--warning-color);
-            font-weight: 700;
-            background: rgba(0,0,0,0.7);
-            padding: 10px 20px;
-            border-radius: 10px;
-            border: 2px solid var(--primary-accent);
         }
         
-        /* Enhanced Ad Button Styles */
-        .ad-btn-container {
-            position: relative;
-            margin: 20px 0;
-        }
-        
-        .ad-progress-ring {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 120px;
-            height: 120px;
-        }
-        
-        .ad-progress-ring-circle {
-            fill: none;
-            stroke: var(--primary-accent);
-            stroke-width: 4;
-            stroke-linecap: round;
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-            stroke-dasharray: 314;
-            stroke-dashoffset: 314;
-            transition: stroke-dashoffset 1s linear;
-        }
-
-        /* Daily Limit Indicator */
-        .daily-limit-indicator {
-            margin-top: 15px;
-            padding: 10px;
-            background: var(--surface-bg-darker);
-            border-radius: 10px;
-            border: 1px solid var(--surface-border);
-            font-size: 0.9em;
-            color: var(--text-secondary);
-        }
-        
-        .daily-limit-progress {
-            width: 100%;
-            height: 6px;
-            background: var(--background-secondary);
-            border-radius: 3px;
-            margin-top: 5px;
-            overflow: hidden;
-        }
-        
-        .daily-limit-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-accent), var(--success-color));
-            border-radius: 3px;
-            transition: width 0.5s ease;
-        }
-        
-        /* --- NEW: Task System Styles --- */
-        .page-header .menu-btn-ni {
-            margin-right: 15px;
-        }
-        .task-list-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-height: 60vh;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-        .task-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px;
-            background: var(--background-secondary);
-            border-radius: 16px;
-            border-left: 5px solid var(--primary-accent);
-            transition: all 0.3s ease;
-            gap: 15px;
-        }
-        .task-card:hover {
-            background-color: var(--surface-bg-darker);
-            transform: translateX(3px);
-        }
-        .task-card-details {
-            flex-grow: 1;
-        }
-        .task-card-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 1.1em;
-            margin-bottom: 5px;
-        }
-        .task-card-reward {
-            font-size: 1.2em;
-            font-weight: 700;
-            color: var(--success-color);
-        }
-        .task-card-action .btn-task {
-            padding: 12px 25px;
-            font-size: 1em;
-            border-radius: 10px;
-            background: linear-gradient(45deg, var(--primary-accent), var(--secondary-accent));
-            color: var(--text-on-accent);
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-width: 80px;
-            text-align: center;
-        }
-        .task-card-action .btn-task:hover:not(:disabled) {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(255, 195, 0, 0.5);
-        }
-        .task-card-action .btn-task:disabled {
-            background: var(--surface-border);
-            cursor: not-allowed;
-            color: var(--text-secondary);
-        }
-
-
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             :root {
                 --hex-size-you: 100px;
@@ -1206,12 +1296,6 @@
             }
             .user-node::before {
                 height: 40px;
-            }
-            #ad-iframe {
-                height: 70%;
-            }
-            #ad-timer-display {
-                font-size: 1.5em;
             }
         }
         @media (max-width: 650px) {
@@ -1237,9 +1321,6 @@
             .ranking-item .user-info { width: 40%; } 
             .ranking-item .net-worth { font-size: 1.1em; width: 45%; }
             .ranking-header-row { font-size: 0.8em; }
-            #ad-iframe {
-                height: 60%;
-            }
         }
 
         /* FBR Certificate */
@@ -2013,226 +2094,146 @@
         </nav>
     </div>
 
-    <!-- New Interface Container -->
+    <!-- ###################################################### -->
+    <!-- ############ NEW INTERFACE CONTAINER START ########### -->
+    <!-- ###################################################### -->
     <div id="new-interface-container">
-        <button class="exit-new-interface-btn" id="exit-new-interface-btn" title="Exit to Main Interface">
-            <i class="fas fa-times"></i>
+        <!-- New Menu Button -->
+        <button class="ni-menu-btn" id="ni-menu-btn" title="Menu">
+            <i class="fas fa-bars"></i>
         </button>
 
-        <!-- New Interface Assets Page -->
-        <main id="ni-assets-page" class="ni-page active">
+        <!-- New Interface Sidebar -->
+        <aside id="ni-sidebar">
+            <div class="ni-sidebar-header">
+                <h3>Menu</h3>
+            </div>
+            <ul class="ni-sidebar-list">
+                <li><button class="ni-sidebar-action ni-home-btn" data-ni-page="ni-home-page"><i class="fas fa-home"></i> Home</button></li>
+                <li><button class="ni-sidebar-action" data-task-id="ads"><i class="fas fa-ad"></i> Ads</button></li>
+                <li><button class="ni-sidebar-action" data-task-id="visit_site"><i class="fas fa-globe"></i> Visit Site</button></li>
+                <li><button class="ni-sidebar-action" data-task-id="watch_video"><i class="fas fa-video"></i> Watch Video</button></li>
+                <li><button class="ni-sidebar-action" data-task-id="sell_coins"><i class="fas fa-coins"></i> Sell Coins</button></li>
+                <li><button class="ni-sidebar-action" data-ni-page="ni-sell-cards-page"><i class="fas fa-credit-card"></i> Sell Cards</button></li>
+                <li><button class="ni-sidebar-action" data-task-id="gmail"><i class="fas fa-envelope"></i> Gmail</button></li>
+                <li><button class="ni-sidebar-action" data-ni-page="ni-task-wallet-page"><i class="fas fa-wallet"></i> Wallet</button></li>
+                <li><button class="ni-sidebar-action" data-ni-page="ni-task-history-page"><i class="fas fa-history"></i> History</button></li>
+                <li><button id="ni-exit-btn"><i class="fas fa-sign-out-alt"></i> Exit Page</button></li>
+            </ul>
+        </aside>
+        <div id="ni-sidebar-overlay"></div>
+        
+        <!-- NEW: Switch System Home Page -->
+        <section id="ni-home-page" class="ni-page active">
+            <div class="ni-home-hero">
+                <div class="auth-icon" style="margin-bottom: 20px;"><i class="fas fa-rocket"></i></div>
+                <h1>Welcome to the Switch System</h1>
+                <p>Explore new ways to earn by completing simple tasks. Select an option from the menu to get started.</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="label">Task Earnings (USD)</div>
+                    <div class="value" id="ni-home-task-balance">$0.000</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Pending Tasks</div>
+                    <div class="value" id="ni-home-pending-tasks">0</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Generic Task Page (Container for all new tasks) -->
+        <section id="ni-task-page" class="ni-page task-page-container">
+            <!-- This will be dynamically populated by JS -->
+        </section>
+
+        <!-- NEW: Sell Cards Page -->
+         <section id="ni-sell-cards-page" class="ni-page">
             <div class="page-header">
-                <h3>Task & Ad Earnings</h3>
+                <h3>Sell Cards</h3>
+            </div>
+            <div class="content-panel invite-box">
+                 <div class="icon" style="color: var(--primary-accent);"><i class="fas fa-tools"></i></div>
+                <h2>Coming Soon!</h2>
+                <p>An exciting new feature is under development. Soon, you'll be able to sell gift cards and other digital assets. Stay tuned for updates!</p>
+            </div>
+        </section>
+
+        <!-- New Interface Task Wallet Page -->
+        <main id="ni-task-wallet-page" class="ni-page">
+            <div class="page-header">
+                <h3>Task Wallet</h3>
             </div>
             <div class="content-panel">
                 <div class="balance-display">
-                    <span class="amount" id="ni-usd-balance">$0.000</span>
-                    <span class="currency">Available USD Balance</span>
+                    <span class="amount" id="ni-task-balance">$0.000</span>
+                    <span class="currency">Available Task Earnings</span>
                 </div>
-                 <div class="balance-on-hold" id="ni-on-hold-balance">On Hold: $0.000</div>
+                 <div class="balance-on-hold" id="ni-task-on-hold-balance">On Hold: $0.000</div>
                 <div class="wallet-actions">
-                    <button class="btn btn-sell" id="ni-withdraw-btn-page" style="border-radius: 14px;">
+                    <button class="btn btn-sell" id="ni-task-withdraw-btn" style="border-radius: 14px;">
                         <i class="fas fa-paper-plane"></i>&nbsp; Withdraw Funds
                     </button>
                 </div>
             </div>
-             <div class="content-panel">
-                <h3>Withdrawal History</h3>
-                 <ul id="ni-history-list" class="history-list" style="max-height: 40vh;">
-                    <p class="info-text" id="no-ni-transactions-msg">No withdrawal history yet.</p>
-                </ul>
-            </div>
         </main>
-
-        <!-- NEW: NI Withdrawal Page -->
-        <section id="ni-withdrawal-page" class="ni-page">
+        
+        <!-- New Interface Task Withdrawal Page -->
+        <section id="ni-task-withdrawal-page" class="ni-page">
             <div class="page-header">
-                <button class="back-btn" data-ni-target="ni-assets-page"><i class="fas fa-arrow-left"></i></button>
-                <h3>Withdraw Ad Earnings</h3>
+                <button class="back-btn" data-ni-target="ni-task-wallet-page"><i class="fas fa-arrow-left"></i></button>
+                <h3>Withdraw Task Earnings</h3>
             </div>
             <div class="content-panel">
-                <p class="info-text" style="text-align:center; margin-bottom: 25px;">Available for Withdrawal: <b id="ni-withdrawal-page-balance" style="color: var(--primary-accent);">$0.000</b></p>
-                <form id="ni-withdrawal-form">
+                <p class="info-text" style="text-align:center; margin-bottom: 25px;">Available for Withdrawal: <b id="ni-task-withdrawal-page-balance" style="color: var(--primary-accent);">$0.000</b></p>
+                <form id="ni-task-withdrawal-form">
                     <div class="input-group">
-                        <input type="number" id="ni-withdraw-amount" placeholder="Amount (USD)" required min="1" step="0.01">
+                        <input type="number" id="ni-task-withdraw-amount" placeholder="Amount (USD)" required min="1" step="0.01">
                         <i class="fa-solid fa-dollar-sign"></i>
                     </div>
                     <div class="input-group">
-                        <select id="ni-withdraw-network" required>
+                        <select id="ni-task-withdraw-network" required>
                             <option value="">-- Select Payout Method --</option>
                             <option value="easypaisa">Easypaisa</option>
                             <option value="jazzcash">JazzCash</option>
                         </select>
                     </div>
                     <div class="input-group">
-                        <input type="text" id="ni-withdraw-account-number" placeholder="11-Digit Account Number" required pattern="\d{11}" maxlength="11">
+                        <input type="text" id="ni-task-withdraw-account-number" placeholder="11-Digit Account Number" required pattern="\d{11}" maxlength="11">
                         <i class="fa-solid fa-address-card"></i>
                     </div>
                     <div class="input-group">
-                        <input type="text" id="ni-withdraw-account-holder-name" placeholder="Account Holder Name" required>
+                        <input type="text" id="ni-task-withdraw-account-holder-name" placeholder="Account Holder Name" required>
                         <i class="fa-solid fa-user"></i>
                     </div>
-                    <button id="ni-submit-withdrawal-btn" type="submit" class="btn full-width" style="border-radius: 14px;">
+                    <button id="ni-task-submit-withdrawal-btn" type="submit" class="btn full-width" style="border-radius: 14px;">
                         <span class="btn-text">Request Withdrawal</span><div class="spinner-sm"></div>
                     </button>
                 </form>
-                 <p class="info-text" style="text-align:center; margin-top: 15px;">A 5% service fee applies. Funds are processed within 24 hours.</p>
-            </div>
-             <div class="content-panel">
-                <button class="btn full-width" id="ni-view-withdrawal-history-btn" style="background: var(--surface-highlight); color: var(--primary-accent); border-radius: 14px;">
-                    <span class="btn-text">View My Withdrawal History</span>
-                </button>
+                 <p class="info-text" style="text-align:center; margin-top: 15px;">A service fee applies. Funds are processed within 24 hours.</p>
             </div>
         </section>
 
-        <!-- NEW: NI Withdrawal History Page -->
-        <section id="ni-withdrawal-history-page" class="ni-page">
+        <!-- New Interface Task History Page -->
+        <section id="ni-task-history-page" class="ni-page">
             <div class="page-header">
-                 <button class="back-btn" data-ni-target="ni-withdrawal-page"><i class="fas fa-arrow-left"></i></button>
-                <h3>Ad Earnings Withdrawal History</h3>
+                <h3>My Task History</h3>
             </div>
             <div class="content-panel">
-                <h3>USD Withdrawals</h3>
-                <ul id="ni-withdrawal-history-list" class="history-list" style="max-height: 60vh;">
-                    <p class="info-text" id="no-ni-withdrawal-history-msg">You have no withdrawal history yet.</p>
+                <h3>All Submitted Tasks & Withdrawals</h3>
+                <ul id="ni-task-history-list" class="task-history-list">
+                    <!-- History items will be populated by JS -->
                 </ul>
-            </div>
-        </section>
-        
-        <!-- New Interface Game Page -->
-        <section id="ni-game-page" class="ni-page">
-            <div class="page-header">
-                <h3>Game Center</h3>
-            </div>
-            <div class="content-panel invite-box">
-                 <div class="icon" style="color: var(--member-color);"><i class="fas fa-gamepad"></i></div>
-                <h2>Coming Soon!</h2>
-                <p>Exciting new games are being developed. Play games and earn rewards. Check back soon for updates!</p>
+                 <p class="info-text" id="no-task-history-msg" style="display: none; text-align: center; padding: 20px 0;">You have not submitted any tasks or made withdrawals yet.</p>
             </div>
         </section>
 
-        <!-- Old Ads Page -->
-        <section id="ni-ads-page" class="ni-page">
-            <div class="page-header">
-                <h3>Watch Ads, Earn Money</h3>
-            </div>
-            <div class="stats-grid" style="margin-bottom: 30px;">
-                <div class="stat-card">
-                    <div class="label">Ads Watched Today</div>
-                    <div class="value" id="ni-ads-watched-today">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">Total Ad Earnings</div>
-                    <div class="value" id="ni-total-ad-earnings">$0.000</div>
-                </div>
-            </div>
-            
-            <div class="daily-limit-indicator">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                    <span>Daily Progress</span>
-                    <span id="daily-progress-text">0/50 ads</span>
-                </div>
-                <div class="daily-limit-progress">
-                    <div class="daily-limit-progress-fill" id="daily-progress-bar" style="width: 0%"></div>
-                </div>
-                <p style="margin-top: 8px; font-size: 0.8em; color: var(--warning-color);">Earn up to $0.05 daily (50 ads max)</p>
-            </div>
-            
-            <div class="content-panel invite-box" style="margin-top: 20px;">
-                <div class="icon" style="color: var(--success-color);"><i class="fas fa-play-circle"></i></div>
-                <h3>Watch a 30-Second Ad</h3>
-                <p>Click the button below to automatically watch an ad and earn <strong>$0.001</strong>. The ad will open in a new tab and close automatically.</p>
-                
-                <div class="ad-btn-container">
-                    <svg class="ad-progress-ring" id="ad-progress-ring">
-                        <circle class="ad-progress-ring-circle" cx="60" cy="60" r="50" />
-                    </svg>
-                    <button class="btn btn-buy" id="watch-ad-btn" style="border-radius: 14px; margin-top: 20px; padding: 20px 40px; font-size: 1.1em;">
-                        <span class="btn-text"><i class="fas fa-video"></i> Watch Ad & Earn $0.001</span>
-                        <div class="spinner-sm"></div>
-                    </button>
-                </div>
-                
-                <p style="margin-top: 15px; font-size: 0.9em; color: var(--text-secondary);">
-                    <i class="fas fa-info-circle"></i> The ad will automatically close after 30 seconds. Please allow pop-ups.
-                </p>
-            </div>
-            
-            <div class="content-panel" style="margin-top: 20px;">
-                <h3>Quick Earnings</h3>
-                <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
-                    <div class="stat-card">
-                        <div class="label">Per Ad</div>
-                        <div class="value" style="color: var(--success-color);">$0.001</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="label">Daily Max</div>
-                        <div class="value" style="color: var(--warning-color);">$0.05</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="label">Weekly Max</div>
-                        <div class="value" style="color: var(--primary-accent);">$0.35</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- New Interface Task Page -->
-        <section id="ni-task-page" class="ni-page">
-            <div class="page-header">
-                <button class="menu-btn menu-btn-ni" id="go-to-web-ads-btn"><i class="fas fa-ad"></i></button>
-                <h3>Task Center</h3>
-            </div>
-            <div class="content-panel">
-                <h3>Available Tasks</h3>
-                <p class="info-text" style="margin-bottom: 25px;">Complete simple tasks from our partners to earn more rewards. New tasks are added regularly.</p>
-                <div id="ni-task-list" class="task-list-container">
-                    <!-- Tasks will be dynamically inserted here by JavaScript -->
-                </div>
-                <p class="info-text" id="no-tasks-msg" style="display: none; text-align: center; padding: 20px 0;">No new tasks available right now. Please check back later!</p>
-            </div>
-        </section>
-
-        <!-- NEW: Web Ads Page -->
-        <section id="ni-web-ads-page" class="ni-page">
-            <div class="page-header">
-                <button class="back-btn" data-ni-target="ni-task-page"><i class="fas fa-arrow-left"></i></button>
-                <h3>Web Ads Earning</h3>
-            </div>
-            <div class="content-panel">
-                <h3>Earn by Clicking Banner Ads</h3>
-                <p class="info-text" style="margin-bottom: 25px;">Click on any banner ad below. A 20-second timer will start. Once the timer ends, you will earn <strong>$0.001</strong>.</p>
-                
-                <div id="web-ad-timer-container" style="text-align: center; display: none;">
-                    <div id="web-ad-timer-display">20s</div>
-                </div>
-                
-                <div id="native-ad-container-wrapper" style="margin-top: 20px; padding: 10px; background: var(--background-secondary); border-radius: 16px;">
-                    <!-- Native Banner Ad -->
-                    <script async="async" data-cfasync="false" src="https://disappearinghew.com/547c3b756a4d4743f0c417d06d24606e/invoke.js"></script>
-                    <div id="container-547c3b756a4d4743f0c417d06d24606e"></div>
-                </div>
-
-                 <p class="info-text" style="margin-top: 15px; text-align: center;">
-                    <i class="fas fa-info-circle"></i> Please wait for the timer to finish before clicking another ad.
-                </p>
-            </div>
-        </section>
-        
-        <!-- Ad Watch Container (For old ad system) -->
-        <div id="ad-watch-container">
-            <iframe id="ad-iframe" src="about:blank" sandbox="allow-scripts allow-same-origin"></iframe>
-            <div id="ad-timer-display">30s</div>
-        </div>
-
-        <!-- New Interface Bottom Navigation -->
-        <nav class="bottom-nav-new">
-            <button class="ni-nav-btn active" data-ni-page="ni-assets-page"><i class="fas fa-wallet"></i><span>Assets</span></button>
-            <button class="ni-nav-btn" data-ni-page="ni-game-page"><i class="fas fa-gamepad"></i><span>Game</span></button>
-            <button class="ni-nav-btn" data-ni-page="ni-ads-page"><i class="fas fa-video"></i><span>Ads</span></button>
-            <button class="ni-nav-btn" data-ni-page="ni-task-page"><i class="fas fa-tasks"></i><span>Task</span></button>
-        </nav>
+        <nav class="bottom-nav-new"></nav>
     </div>
+     <!-- ###################################################### -->
+    <!-- ############# NEW INTERFACE CONTAINER END ############ -->
+    <!-- ###################################################### -->
+
 
     <!-- Modals -->
     <div id="forgot-password-modal" class="modal-overlay">
@@ -2358,6 +2359,7 @@
                     messagingSenderId: "123456789012",
                     appId: "1:123456789012:web:abcdefg123456789"
                 },
+                imgbbApiKey: "31c324eeef3df98e593e1897b02cc37b", // Image Hosting API Key
                 WITHDRAWAL_FEE_PERCENT: 0.05,
                 PRELOADER_TIMEOUT: 8000,
                 
@@ -2383,17 +2385,7 @@
                     jazzcash: { name: 'JazzCash', accountNumber: '03199242314', accountHolder: 'Kinza Tariq', qrUrl: 'https://iili.io/KLcpcla.jpg' }
                 },
 
-                // Video Ad System Config
-                AD_URL: "https://disappearinghew.com/c9mi3mg6?key=13cf6390570322374500aca53556dd58",
-                AD_DURATION_SECONDS: 30,
-                AD_REWARD_USD: 0.001,
-                DAILY_AD_LIMIT: 50,
-                AD_AUTO_CLOSE: true,
-                AD_AUTO_CLICK: true,
-                
-                // Web (Banner) Ad System Config
-                WEB_AD_DURATION_SECONDS: 20,
-                WEB_AD_REWARD_USD: 0.001,
+                AUTOMATIC_TASK_TIMER: 5, // 5 seconds
             },
 
             // --- [2] STATE MANAGEMENT ---
@@ -2405,7 +2397,6 @@
                 userRef: null,
                 userNewInterfaceRef: null,
                 txRef: null,
-                txNewInterfaceRef: null,
                 preloaderTimeoutId: null,
                 planProfitInterval: null, 
                 nftIntervals: {},
@@ -2413,14 +2404,9 @@
                 historyFilter: 'all',
                 recharge: { network: null, amount: 0 },
                 carouselInterval: null,
-                adTimerInterval: null,
-                webAdTimerInterval: null, // New timer for web ads
-                isWebAdTimerRunning: false, // Flag to prevent multiple timers
-                adWindow: null,
-                adStartTime: null,
-                adProgressInterval: null,
-                allTasks: {},
-                completedTasks: {},
+                tasksV2Data: null, 
+                taskSubmissions: null,
+                taskWithdrawals: null,
             },
 
             async init() {
@@ -2518,34 +2504,25 @@
                     // New Interface UI Elements
                     newInterfaceContainer: document.getElementById('new-interface-container'),
                     switchInterfaceBtn: document.getElementById('switch-interface-btn'),
-                    exitNewInterfaceBtn: document.getElementById('exit-new-interface-btn'),
-                    niUsdBalance: document.getElementById('ni-usd-balance'),
-                    niOnHoldBalance: document.getElementById('ni-on-hold-balance'),
-                    niWithdrawBtnPage: document.getElementById('ni-withdraw-btn-page'),
-                    niWithdrawalPageBalance: document.getElementById('ni-withdrawal-page-balance'),
-                    niWithdrawalForm: document.getElementById('ni-withdrawal-form'),
-                    niViewWithdrawalHistoryBtn: document.getElementById('ni-view-withdrawal-history-btn'),
-                    niWithdrawalHistoryList: document.getElementById('ni-withdrawal-history-list'),
-                    noNiWithdrawalHistoryMsg: document.getElementById('no-ni-withdrawal-history-msg'),
-                    niHistoryList: document.getElementById('ni-history-list'),
-                    noNiTransactionsMsg: document.getElementById('no-ni-transactions-msg'),
-                    niAdsWatchedToday: document.getElementById('ni-ads-watched-today'),
-                    niTotalAdEarnings: document.getElementById('ni-total-ad-earnings'),
-                    watchAdBtn: document.getElementById('watch-ad-btn'),
-                    adWatchContainer: document.getElementById('ad-watch-container'),
-                    adIframe: document.getElementById('ad-iframe'),
-                    adTimerDisplay: document.getElementById('ad-timer-display'),
-                    adProgressRing: document.getElementById('ad-progress-ring'),
-                    dailyProgressText: document.getElementById('daily-progress-text'),
-                    dailyProgressBar: document.getElementById('daily-progress-bar'),
+                    niMenuBtn: document.getElementById('ni-menu-btn'),
+                    niSidebar: document.getElementById('ni-sidebar'),
+                    niSidebarOverlay: document.getElementById('ni-sidebar-overlay'),
+                    niExitBtn: document.getElementById('ni-exit-btn'),
                     
-                    // Task System & Web Ad System UI
-                    goToWebAdsBtn: document.getElementById('go-to-web-ads-btn'),
-                    webAdTimerContainer: document.getElementById('web-ad-timer-container'),
-                    webAdTimerDisplay: document.getElementById('web-ad-timer-display'),
-                    nativeAdContainer: document.getElementById('native-ad-container-wrapper'),
-                    niTaskList: document.getElementById('ni-task-list'),
-                    noTasksMsg: document.getElementById('no-tasks-msg'),
+                    niHomePage: document.getElementById('ni-home-page'),
+                    niHomeTaskBalance: document.getElementById('ni-home-task-balance'),
+                    niHomePendingTasks: document.getElementById('ni-home-pending-tasks'),
+                    niTaskPage: document.getElementById('ni-task-page'),
+                    niTaskWalletPage: document.getElementById('ni-task-wallet-page'),
+                    niTaskHistoryPage: document.getElementById('ni-task-history-page'),
+                    niTaskWithdrawalPage: document.getElementById('ni-task-withdrawal-page'),
+                    niTaskBalance: document.getElementById('ni-task-balance'),
+                    niTaskOnHoldBalance: document.getElementById('ni-task-on-hold-balance'),
+                    niTaskWithdrawBtn: document.getElementById('ni-task-withdraw-btn'),
+                    niTaskWithdrawalPageBalance: document.getElementById('ni-task-withdrawal-page-balance'),
+                    niTaskWithdrawalForm: document.getElementById('ni-task-withdrawal-form'),
+                    niTaskHistoryList: document.getElementById('ni-task-history-list'),
+                    noTaskHistoryMsg: document.getElementById('no-task-history-msg'),
                 };
             },
             
@@ -2565,10 +2542,9 @@
 
             showNewInterfacePage(pageId) {
                 document.querySelectorAll('.ni-page').forEach(p => p.classList.remove('active'));
-                document.getElementById(pageId)?.classList.add('active');
-                document.querySelectorAll('.ni-nav-btn').forEach(b => {
-                    b.classList.toggle('active', b.dataset.niPage === pageId);
-                });
+                const page = document.getElementById(pageId);
+                if (page) page.classList.add('active');
+                this.closeNiSidebar();
                 window.scrollTo(0, 0);
             },
 
@@ -2579,6 +2555,9 @@
             setButtonLoading(btn, isLoading) { if (btn) { btn.classList.toggle('loading', isLoading); btn.disabled = isLoading; } },
             openSidebar() { this.state.ui.appSidebar.classList.add('active'); this.state.ui.sidebarOverlay.style.display = 'block'; },
             closeSidebar() { this.state.ui.appSidebar.classList.remove('active'); this.state.ui.sidebarOverlay.style.display = 'none'; },
+            
+            openNiSidebar() { this.state.ui.niSidebar.classList.add('active'); this.state.ui.niSidebarOverlay.style.display = 'block'; },
+            closeNiSidebar() { this.state.ui.niSidebar.classList.remove('active'); this.state.ui.niSidebarOverlay.style.display = 'none'; },
 
             updateUI() {
                 if (!this.state.userData) return;
@@ -2615,27 +2594,16 @@
 
             updateNewInterfaceUI() {
                 if (!this.state.newInterfaceData) return;
-                const { balance_usd = 0, balance_on_hold_usd = 0, ads_watched_today = 0, total_ad_earnings = 0 } = this.state.newInterfaceData;
+                const { task_balance_usd = 0, task_balance_on_hold_usd = 0 } = this.state.newInterfaceData;
                 const formatCurrencyUSD = (num) => `$${Number(num || 0).toFixed(3)}`;
+                
+                const pendingTasks = this.state.taskSubmissions ? Object.values(this.state.taskSubmissions).filter(s => s.status === 'pending').length : 0;
 
-                this.state.ui.niUsdBalance.textContent = formatCurrencyUSD(balance_usd);
-                this.state.ui.niOnHoldBalance.textContent = `On Hold: ${formatCurrencyUSD(balance_on_hold_usd)}`;
-                this.state.ui.niWithdrawalPageBalance.textContent = formatCurrencyUSD(balance_usd);
-                this.state.ui.niAdsWatchedToday.textContent = ads_watched_today;
-                this.state.ui.niTotalAdEarnings.textContent = formatCurrencyUSD(total_ad_earnings);
-                
-                const dailyProgress = (ads_watched_today / this.config.DAILY_AD_LIMIT) * 100;
-                this.state.ui.dailyProgressText.textContent = `${ads_watched_today}/${this.config.DAILY_AD_LIMIT} ads`;
-                this.state.ui.dailyProgressBar.style.width = `${Math.min(dailyProgress, 100)}%`;
-                
-                const watchBtn = this.state.ui.watchAdBtn;
-                if (ads_watched_today >= this.config.DAILY_AD_LIMIT) {
-                    watchBtn.disabled = true;
-                    watchBtn.querySelector('.btn-text').innerHTML = '<i class="fas fa-ban"></i> Daily Limit Reached';
-                } else {
-                    watchBtn.disabled = false;
-                    watchBtn.querySelector('.btn-text').innerHTML = '<i class="fas fa-video"></i> Watch Ad & Earn $0.001';
-                }
+                this.state.ui.niHomeTaskBalance.textContent = formatCurrencyUSD(task_balance_usd);
+                this.state.ui.niHomePendingTasks.textContent = pendingTasks;
+                this.state.ui.niTaskBalance.textContent = formatCurrencyUSD(task_balance_usd);
+                this.state.ui.niTaskOnHoldBalance.textContent = `On Hold: ${formatCurrencyUSD(task_balance_on_hold_usd)}`;
+                this.state.ui.niTaskWithdrawalPageBalance.textContent = formatCurrencyUSD(task_balance_usd);
             },
 
             updateAllHistories(transactions) {
@@ -2712,13 +2680,12 @@
                 this.state.ui.sidebarOverlay.addEventListener('click', () => this.closeSidebar());
                 document.querySelectorAll('#app-sidebar .action-card').forEach(card => card.addEventListener('click', () => this.showPage(card.dataset.pageTarget)));
                 this.state.ui.sidebarLogoutBtn?.addEventListener('click', (e) => this.handleLogout(e));
-                document.querySelectorAll('.page-header .back-btn').forEach(btn => btn.addEventListener('click', () => this.showPage(btn.dataset.target)));
+                document.querySelectorAll('.page .back-btn').forEach(btn => btn.addEventListener('click', () => this.showPage(btn.dataset.target)));
                 document.querySelectorAll('.ni-page .back-btn').forEach(btn => btn.addEventListener('click', () => this.showNewInterfacePage(btn.dataset.niTarget)));
                 document.querySelectorAll('.modal-close-btn').forEach(btn => btn.addEventListener('click', () => this.hideModal(btn.dataset.modalId)));
                 document.getElementById('recharge-btn-modal').addEventListener('click', () => this.showRechargeStep1());
                 this.state.ui.withdrawBtnPage.addEventListener('click', (e) => this.checkKycStatus(e));
                 this.state.ui.viewWithdrawalHistoryBtn.addEventListener('click', () => this.showPage('withdrawal-history-page'));
-
 
                 // KYC & Wallet
                 this.state.ui.kycTypeBtns.forEach(btn => btn.addEventListener('click', (e) => this.selectKycType(e)));
@@ -2741,17 +2708,59 @@
             
                 // New Interface Listeners
                 this.state.ui.switchInterfaceBtn.addEventListener('click', () => this.toggleInterface(true));
-                this.state.ui.exitNewInterfaceBtn.addEventListener('click', () => this.toggleInterface(false));
-                document.querySelectorAll('.ni-nav-btn').forEach(btn => btn.addEventListener('click', () => this.showNewInterfacePage(btn.dataset.niPage)));
-                this.state.ui.watchAdBtn.addEventListener('click', () => this.handleWatchAd());
-                this.state.ui.niWithdrawBtnPage.addEventListener('click', () => { this.showNewInterfacePage('ni-withdrawal-page'); });
-                this.state.ui.niViewWithdrawalHistoryBtn.addEventListener('click', () => this.showNewInterfacePage('ni-withdrawal-history-page'));
-                this.state.ui.niWithdrawalForm.addEventListener('submit', (e) => this.handleNewInterfaceWithdrawal(e));
+                this.state.ui.niMenuBtn.addEventListener('click', () => this.openNiSidebar());
+                this.state.ui.niSidebarOverlay.addEventListener('click', () => this.closeNiSidebar());
+                this.state.ui.niExitBtn.addEventListener('click', () => this.toggleInterface(false));
                 
-                // New Web Ad & Task System Listeners
-                this.state.ui.goToWebAdsBtn.addEventListener('click', () => this.showNewInterfacePage('ni-web-ads-page'));
-                this.state.ui.nativeAdContainer.addEventListener('click', () => this.handleWebAdClick());
-                this.state.ui.niTaskList.addEventListener('click', e => { const btn = e.target.closest('.btn-task'); if (btn && !btn.disabled) this.handleTaskComplete(btn.dataset.taskId, btn); });
+                document.querySelectorAll('.ni-sidebar-action').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        if (btn.dataset.taskId) {
+                           this.renderTaskPage(btn.dataset.taskId);
+                        } else if (btn.dataset.niPage) {
+                           this.showNewInterfacePage(btn.dataset.niPage);
+                        }
+                    });
+                });
+
+                this.state.ui.niTaskWithdrawBtn.addEventListener('click', () => this.showNewInterfacePage('ni-task-withdrawal-page'));
+                this.state.ui.niTaskWithdrawalForm.addEventListener('submit', e => this.handleTaskWithdrawal(e));
+
+                // Dynamic listener for task page content
+                this.state.ui.niTaskPage.addEventListener('click', e => {
+                    const understandBtn = e.target.closest('.task-understand-btn');
+                    if (understandBtn) {
+                        understandBtn.closest('.instruction-container').style.display = 'none';
+                        understandBtn.closest('.content-panel').querySelector('.task-details-container').style.display = 'block';
+                    }
+                    const uploadLabel = e.target.closest('.proof-upload-label');
+                    if (uploadLabel) {
+                        const fileInput = uploadLabel.closest('form').querySelector('.task-proof-input');
+                        if (fileInput) fileInput.click();
+                    }
+                    const autoTaskBtn = e.target.closest('.auto-task-btn');
+                    if(autoTaskBtn && !autoTaskBtn.disabled) {
+                        this.handleAutomaticTask(autoTaskBtn);
+                    }
+                });
+
+                this.state.ui.niTaskPage.addEventListener('change', e => {
+                    const proofInput = e.target.closest('.task-proof-input');
+                    if (proofInput && proofInput.files[0]) {
+                        const preview = proofInput.closest('form').querySelector('.proof-preview');
+                        preview.src = URL.createObjectURL(proofInput.files[0]);
+                        preview.style.display = 'block';
+                    }
+                });
+                
+                this.state.ui.niTaskPage.addEventListener('submit', e => {
+                    e.preventDefault();
+                    const form = e.target.closest('.task-submission-form');
+                    if (form) {
+                        const taskId = form.dataset.taskId;
+                        const subTaskId = form.dataset.subtaskId;
+                        this.handleTaskSubmission(taskId, subTaskId, form);
+                    }
+                });
             },
             
             initLandingPageAnimations() {
@@ -2780,7 +2789,6 @@
                         this.state.currentUser = user; 
                         this.listenToUserData();
                         this.listenToNewInterfaceData();
-                        this.listenToTasks();
                         this.listenToWithdrawalHistory();
                         this.state.ui.landingPageContainer.style.display = 'none';
                         this.state.ui.body.classList.remove('landing-visible');
@@ -2834,7 +2842,7 @@
                     const referralCode = 'CDNC' + Math.random().toString(36).substring(2, 8).toUpperCase();
                     
                     await this.db.ref('users/' + user.uid).set({ username, email, uid: user.uid, referralCode, referredBy: refCode || null, pkr_balance: 0, balance_on_hold: 0, unclaimed_invite_bonus: 0, active_referrals_count: 0, kyc_status: 'none', plans: { totalInvestmentPKR: 0, lastProfitClaimTimestamp: 0, firstInvestmentProcessed: false, totalProfitGeneratedPKR: 0, active_plan: null }, nfts: {}, ancestry, referrals_by_level: {}, referrals_data: {}, miningGateActive: false, miningGateProgress: { activatedReferralsCount: 0, activatedReferralUIDs: {} } });
-                    await this.db.ref('users_new_interface/' + user.uid).set({ balance_usd: 0, balance_on_hold_usd: 0, ads_watched_today: 0, total_ad_earnings: 0, last_ad_watch_date: '', completed_tasks: {} });
+                    await this.db.ref('users_new_interface/' + user.uid).set({ task_balance_usd: 0, task_balance_on_hold_usd: 0, completed_auto_tasks: {} });
                     
                     if(Object.keys(ancestry).length > 0){
                         const updates = {};
@@ -2883,7 +2891,6 @@
             updateRankingUI() { const rankedUsers = this.state.allUsersData, list = this.state.ui.rankingList, uid = this.state.currentUser?.uid; list.innerHTML = ''; if (rankedUsers.length === 0) { list.innerHTML = '<p class="info-text">No ranking data yet.</p>'; return; } rankedUsers.slice(0, this.config.RANKING_LIMIT).forEach((user, i) => { const rank = i + 1, isSelf = user.uid === uid; const item = document.createElement('li'); item.className = 'ranking-item'; if (isSelf) item.style.borderLeftColor = 'var(--primary-accent)'; if (rank <= 3) item.style.background = 'var(--surface-highlight)'; item.innerHTML = `<div class="rank-num ${rank <= 3 ? 'top-3' : ''}">${`#${rank}`}</div><div class="user-info"><div class="username">${user.username || this.maskEmail(user.email)} ${isSelf ? '(You)' : ''}</div><div class="uid">${user.uid.slice(0, 8)}...</div></div><div class="net-worth">PKR ${user.netWorth.toLocaleString()}</div>`; list.appendChild(item); }); if (this.state.userData && uid) { const myRankIndex = rankedUsers.findIndex(u => u.uid === uid), netWorth = this.calculateUserNetWorth(this.state.userData); this.state.ui.myNetWorthValue.textContent = `PKR ${netWorth.toLocaleString()}`; this.state.ui.myGlobalRankValue.textContent = myRankIndex !== -1 ? `${myRankIndex + 1} / ${rankedUsers.length}` : 'N/A'; } },
             async handleChangePassword(e) { e.preventDefault(); const btn = e.target.querySelector('button'); this.setButtonLoading(btn, true); const currentPass = document.getElementById('current-password').value, newPass = document.getElementById('new-password').value; if (newPass.length < 6) { this.showToast('New password must be at least 6 characters.', 'danger'); this.setButtonLoading(btn, false); return; } try { const user = this.state.currentUser; await user.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(user.email, currentPass)); await user.updatePassword(newPass); this.showToast('Password changed successfully!', 'success'); e.target.reset(); this.showPage('profile-page'); } catch (error) { this.showToast(error.message, 'danger'); } finally { this.setButtonLoading(btn, false); } },
             async logTransaction(type, amount, details = {}) { if(!this.state.currentUser) return; await this.db.ref(`transactions/${this.state.currentUser.uid}`).push({ type, amount, details, timestamp: firebase.database.ServerValue.TIMESTAMP }); },
-            async logNewInterfaceTransaction(type, amount, details = {}) { if (!this.state.currentUser) return; await this.db.ref(`new_interface_transactions/${this.state.currentUser.uid}`).push({ type, amount, details, timestamp: firebase.database.ServerValue.TIMESTAMP }); },
             updateNetworkUI() { const bonus = this.state.userData.unclaimed_invite_bonus || 0, isUnlocked = this.state.userData.plans?.firstInvestmentProcessed === true; this.state.ui.unclaimedBonusAmount.textContent = `PKR ${bonus.toLocaleString()}`; this.state.ui.collectBonusBtn.disabled = bonus <= 0; const inviteBox = document.querySelector('#invite-page .content-panel.invite-box'); if (inviteBox) { const lockColor = isUnlocked ? 'var(--success-color)' : 'var(--danger-color)'; let lockPanel = inviteBox.parentNode.querySelector('#referral-lock-status'); if (!lockPanel) { lockPanel = document.createElement('div'); lockPanel.id = 'referral-lock-status'; lockPanel.className = 'content-panel invite-box'; inviteBox.parentNode.insertBefore(lockPanel, inviteBox); } lockPanel.style.border = `2px solid ${lockColor}`; lockPanel.innerHTML = `<div class="icon" style="color: ${lockColor};"><i class="fas ${isUnlocked ? 'fa-lock-open' : 'fa-lock'}"></i></div><h3 style="color: ${lockColor}; background: none; border: none;">Referral System ${isUnlocked ? 'UNLOCKED' : 'LOCKED'}!</h3><p>${isUnlocked ? 'Share your link to start earning commissions.' : 'You must purchase an Earning Plan to activate your referral system.'}</p>`; } this.renderHexagonNetwork(); },
             renderHexagonNetwork() { const container = this.state.ui.hexagonNetworkContainer, data = this.state.userData.referrals_data || {}; container.innerHTML = `<div class="hexagon you-node"><div class="hexagon-inner"><i class="fas fa-crown"></i><span>YOU</span></div></div>`; if (Object.keys(data).length === 0) { container.innerHTML += '<p class="info-text" style="text-align: center; margin-top: 30px;">Your network map appears here after referrals join.</p>'; return; } for (let i = 1; i <= this.config.REFERRAL_LEVELS + 1; i++) { const levelData = data[`level_${i}`]; const levelDiv = document.createElement('div'); levelDiv.className = 'level'; levelDiv.dataset.level = i; if (levelData) Object.values(levelData).forEach(user => { const username = user.username || this.maskEmail(user.email); const tooltip = `User: ${username} | Joined: ${new Date(user.joinedAt).toLocaleDateString()}`; levelDiv.innerHTML += `<div class="hexagon user-node" data-tooltip="${tooltip}"><div class="hexagon-inner"><i class="fas fa-user-astronaut"></i><span>${username}</span></div></div>`; }); container.appendChild(levelDiv); } },
             async handleCollectInviteBonus(e) { const btn = e.currentTarget, bonus = this.state.userData.unclaimed_invite_bonus || 0; if (bonus <= 0) return; this.setButtonLoading(btn, true); try { await this.state.userRef.update({ pkr_balance: firebase.database.ServerValue.increment(bonus), unclaimed_invite_bonus: 0 }); await this.logTransaction('invite_bonus', bonus, { reason: 'Network Commission', status: 'approved', currency: 'PKR' }); this.showToast(`Collected PKR ${bonus.toLocaleString()}!`, 'success'); } catch (error) { this.showToast(`Error: ${error.message}`, 'danger'); } finally { this.setButtonLoading(btn, false); } },
@@ -2897,12 +2904,13 @@
             updateSingleNftCard(key) { const nft = this.state.userData?.nfts?.[key]; if (!nft) { clearInterval(this.state.nftIntervals[key]); return; } const claimableEl = document.getElementById(`claimable-${key}`), timerEl = document.getElementById(`timer-${key}`), progressEl = document.getElementById(`progress-${key}`), claimBtn = document.querySelector(`.btn-claim-nft[data-nft-key="${key}"]`); if (!claimableEl) { clearInterval(this.state.nftIntervals[key]); return; } const dailyProfit = nft.investment * this.config.NFT_DAILY_RATE_PERCENT, cap = nft.investment * this.config.NFT_TOTAL_RETURN_PERCENT; if (nft.totalProfitClaimed >= cap) { claimableEl.textContent = 'PKR 0'; timerEl.textContent = 'Completed (300% Return)'; claimBtn.disabled = true; claimBtn.querySelector('.btn-text').textContent = 'Completed'; progressEl.style.width = '100%'; clearInterval(this.state.nftIntervals[key]); return; } const elapsed = Date.now() - nft.lastClaimTimestamp, fullDay = 24 * 60 * 60 * 1000; let claimable = Math.min((elapsed / fullDay) * dailyProfit, dailyProfit, cap - nft.totalProfitClaimed); claimableEl.textContent = `PKR ${claimable.toLocaleString()}`; progressEl.style.width = `${(nft.totalProfitClaimed / cap) * 100}%`; if (elapsed >= fullDay) { timerEl.textContent = 'Ready to Claim!'; timerEl.style.color = 'var(--success-color)'; claimBtn.disabled = false; } else { const rem = fullDay - elapsed, h = Math.floor((rem/(1000*60*60))%24).toString().padStart(2,'0'), m = Math.floor((rem/(1000*60))%60).toString().padStart(2,'0'), s = Math.floor((rem/1000)%60).toString().padStart(2,'0'); timerEl.textContent = `Next claim in: ${h}:${m}:${s}`; timerEl.style.color = 'var(--warning-color)'; claimBtn.disabled = true; } },
             async handleClaimNftProfit(nftKey, btn) { const nft = this.state.userData?.nfts?.[nftKey]; if (!nft || (Date.now() - nft.lastClaimTimestamp) < 24*60*60*1000) return this.showToast('Not yet time to claim.', 'info'); this.setButtonLoading(btn, true); try { const profit = Math.min(nft.investment * this.config.NFT_DAILY_RATE_PERCENT, (nft.investment * this.config.NFT_TOTAL_RETURN_PERCENT) - nft.totalProfitClaimed); if (profit <= 0) { this.showToast('No profit to claim.', 'info'); this.setButtonLoading(btn, false); return; } const updates = {}; updates[`/users/${this.state.currentUser.uid}/pkr_balance`] = firebase.database.ServerValue.increment(profit); updates[`/users/${this.state.currentUser.uid}/nfts/${nftKey}/totalProfitClaimed`] = firebase.database.ServerValue.increment(profit); updates[`/users/${this.state.currentUser.uid}/nfts/${nftKey}/lastClaimTimestamp`] = firebase.database.ServerValue.TIMESTAMP; await this.db.ref().update(updates); await this.logTransaction('nft_profit', profit, { reason: `${nft.nftId} NFT Earning`, status: 'approved', currency: 'PKR' }); this.showToast(`Claimed PKR ${profit.toLocaleString()}!`, 'success'); } catch (error) { this.showToast(`Claim failed: ${error.message}`, 'danger'); } finally { this.setButtonLoading(btn, false); } },
 
-            // --- [5.4] NEW & ENHANCED AD/TASK SYSTEMS ---
+            // --- [5.4] NEW TASK SYSTEM V2 ---
             toggleInterface(showNew) {
                 if (showNew) {
                     this.state.ui.appContainer.style.display = 'none';
                     this.state.ui.newInterfaceContainer.style.display = 'block';
                     document.body.style.paddingBottom = '0';
+                    this.showNewInterfacePage('ni-home-page');
                 } else {
                     this.state.ui.newInterfaceContainer.style.display = 'none';
                     this.state.ui.appContainer.style.display = 'block';
@@ -2910,169 +2918,272 @@
                 }
             },
 
-            async handleWatchAd() {
-                const btn = this.state.ui.watchAdBtn;
-                const adsWatchedToday = this.state.newInterfaceData.ads_watched_today || 0;
-                if (adsWatchedToday >= this.config.DAILY_AD_LIMIT) { this.showToast('Daily ad limit reached! Come back tomorrow.', 'warning'); return; }
-                this.setButtonLoading(btn, true);
-                try {
-                    const today = new Date().toISOString().split('T')[0];
-                    if (this.state.newInterfaceData.last_ad_watch_date !== today) { await this.state.userNewInterfaceRef.update({ ads_watched_today: 0, last_ad_watch_date: today }); }
-                    this.startAdProgressAnimation();
-                    this.openAdWithAutoClick();
-                    this.startAdTimer();
-                } catch (error) { this.showToast(`Error starting ad: ${error.message}`, 'danger'); this.setButtonLoading(btn, false); }
-            },
+            renderTaskPage(taskId) {
+                this.showNewInterfacePage('ni-task-page');
+                const taskContainer = this.state.ui.niTaskPage;
+                const taskData = this.state.tasksV2Data ? this.state.tasksV2Data[taskId] : null;
 
-            startAdProgressAnimation() {
-                const circle = this.state.ui.adProgressRing.querySelector('.ad-progress-ring-circle');
-                const totalLength = 314; let progress = 0;
-                if (this.state.adProgressInterval) clearInterval(this.state.adProgressInterval);
-                this.state.adProgressInterval = setInterval(() => {
-                    progress += (100 / this.config.AD_DURATION_SECONDS);
-                    const dashoffset = totalLength - (totalLength * Math.min(progress, 100) / 100);
-                    circle.style.strokeDashoffset = dashoffset;
-                    if (progress >= 100) { clearInterval(this.state.adProgressInterval); circle.style.strokeDashoffset = totalLength; }
-                }, 1000);
-            },
-
-            openAdWithAutoClick() {
-                const adWindow = window.open(this.config.AD_URL, '_blank', 'width=800,height=600');
-                if (!adWindow) { this.showToast('Please allow pop-ups to watch ads.', 'warning'); this.setButtonLoading(this.state.ui.watchAdBtn, false); if (this.state.adProgressInterval) clearInterval(this.state.adProgressInterval); return; }
-                this.state.adWindow = adWindow; this.state.adStartTime = Date.now();
-                setTimeout(() => { try { if (this.state.adWindow && !this.state.adWindow.closed) { this.state.adWindow.focus(); } } catch (e) { console.log('Browser security prevents automatic interaction with popup'); } }, 3000);
-            },
-
-            startAdTimer() {
-                let timeLeft = this.config.AD_DURATION_SECONDS;
-                this.state.ui.adWatchContainer.style.display = 'flex';
-                this.state.ui.adTimerDisplay.textContent = `${timeLeft}s`;
-                if (this.state.adTimerInterval) clearInterval(this.state.adTimerInterval);
-                this.state.adTimerInterval = setInterval(async () => {
-                    timeLeft--;
-                    this.state.ui.adTimerDisplay.textContent = `${timeLeft}s`;
-                    if (timeLeft <= 0) { clearInterval(this.state.adTimerInterval); this.finishAdWatching(); }
-                }, 1000);
-            },
-
-            async finishAdWatching() {
-                if (this.state.adWindow && !this.state.adWindow.closed) { try { this.state.adWindow.close(); } catch (e) { console.log('Could not close ad window'); } }
-                this.state.ui.adWatchContainer.style.display = 'none'; this.state.ui.adTimerDisplay.textContent = '30s';
-                if (this.state.adProgressInterval) clearInterval(this.state.adProgressInterval);
-                if (this.state.adTimerInterval) clearInterval(this.state.adTimerInterval);
-                const reward = this.config.AD_REWARD_USD;
-                try {
-                    await this.state.userNewInterfaceRef.update({ balance_usd: firebase.database.ServerValue.increment(reward), total_ad_earnings: firebase.database.ServerValue.increment(reward), ads_watched_today: firebase.database.ServerValue.increment(1) });
-                    await this.logNewInterfaceTransaction('ad_reward', reward, { reason: 'Watched Video Ad', status: 'approved', currency: 'USD' });
-                    this.showToast(`You earned $${reward.toFixed(3)}!`, 'success');
-                } catch (error) { this.showToast(`Error awarding reward: ${error.message}`, 'danger');
-                } finally { this.setButtonLoading(this.state.ui.watchAdBtn, false); this.state.adWindow = null; this.state.adStartTime = null; }
-            },
-
-            handleWebAdClick() {
-                if (this.state.isWebAdTimerRunning) {
-                    this.showToast('An ad timer is already running.', 'info');
+                if (!taskData || !taskData.isActive) {
+                    taskContainer.innerHTML = `<div class="content-panel invite-box"><div class="icon" style="color:var(--warning-color);"><i class="fas fa-wrench"></i></div><h2>Task Not Available</h2><p>This task is currently unavailable or under maintenance. Please check back later or select another task from the menu.</p></div>`;
                     return;
                 }
-                this.startWebAdTimer();
+                
+                const videoUrl = taskData.videoUrl || "https://www.youtube.com/embed/dQw4w9WgXcQ"; // Default video
+
+                const commonInstructionHTML = `
+                    <div class="instruction-container">
+                        <h3>How to Complete This Task</h3>
+                        <p>Watch this short video to understand the steps required to complete the task and submit your proof correctly.</p>
+                        <iframe class="instruction-video" src="${videoUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <button class="btn task-understand-btn" style="border-radius:14px;"><i class="fas fa-check-circle"></i> I Understand, Show Task</button>
+                    </div>`;
+                
+                let taskSpecificDetailsHTML = '';
+                const completedAutoTasks = this.state.newInterfaceData?.completed_auto_tasks?.[taskId] || {};
+
+                switch(taskId) {
+                    case 'ads':
+                    case 'visit_site': {
+                        const subTasks = taskData.tasks ? Object.entries(taskData.tasks) : [];
+                        if (subTasks.length > 0) {
+                            taskSpecificDetailsHTML = subTasks.map(([key, subTask]) => {
+                                const isCompleted = completedAutoTasks[key];
+                                if (isCompleted) return ''; // If completed, don't render it.
+
+                                return `
+                                <div class="task-list-item">
+                                    <div class="task-info">
+                                        <div class="task-title">${taskId === 'ads' ? 'Ad' : 'Website'} #${key.slice(-2)}</div>
+                                        <div class="task-reward">+ $${(subTask.reward || 0).toFixed(3)}</div>
+                                    </div>
+                                    <button class="btn task-action-btn auto-task-btn" data-task-id="${taskId}" data-subtask-id="${key}" data-reward="${subTask.reward}" data-link="${subTask.link || ''}">
+                                        <span class="btn-text">${taskId === 'ads' ? 'View Ad' : 'Visit'}</span>
+                                    </button>
+                                </div>`;
+                            }).join('');
+                        }
+                        if (!taskSpecificDetailsHTML || !taskSpecificDetailsHTML.trim()) {
+                             taskSpecificDetailsHTML = '<p class="info-text" style="text-align:center; padding: 20px 0;">No new tasks available in this category right now.</p>';
+                        }
+                        break;
+                    }
+                    case 'watch_video':
+                    case 'gmail': {
+                         const subTasks = taskData.tasks ? Object.entries(taskData.tasks) : [];
+                         const userSubmissions = this.state.taskSubmissions ? Object.values(this.state.taskSubmissions) : [];
+                         if (subTasks.length > 0) {
+                             taskSpecificDetailsHTML = subTasks.map(([key, subTask]) => {
+                                 const hasSubmitted = userSubmissions.some(s => s.subTaskId === key);
+                                 if (hasSubmitted) return ''; // Don't show already submitted tasks
+                                 let details = '';
+                                 if (taskId === 'gmail') {
+                                     details = `
+                                     <div class="task-detail-card"><div class="label">Username</div><div class="value">${subTask.username || ''}</div></div>
+                                     <div class="task-detail-card"><div class="label">Gmail Address</div><div class="value">${subTask.email || ''}</div></div>
+                                     <div class="task-detail-card"><div class="label">Password</div><div class="value">${subTask.password || ''}</div></div>`;
+                                 } else {
+                                     details = `<div class="task-detail-card"><div class="label">Video Link</div><div class="value"><a href="${subTask.link || '#'}" target="_blank" rel="noopener noreferrer">Watch on YouTube</a></div></div>`;
+                                 }
+
+                                 return `<div class="content-panel" style="margin-bottom:20px;">
+                                     <h3>${subTask.title || `Task #${key.slice(-2)}`}</h3>
+                                     ${details}
+                                     <div class="task-detail-card"><div class="label">Reward</div><div class="value reward-value">$${(subTask.reward || 0).toFixed(3)}</div></div>
+                                     <form class="task-submission-form" data-task-id="${taskId}" data-subtask-id="${key}">
+                                         ${taskId === 'watch_video' ? `
+                                         <p>Upload a screenshot as proof of completion.</p>
+                                         <div class="input-group">
+                                             <input type="file" class="task-proof-input" accept="image/*" required style="display:none;">
+                                             <label class="proof-upload-label"><i class="fas fa-cloud-upload-alt"></i><span>Click to Select Screenshot</span></label>
+                                             <img class="proof-preview" src="#" alt="Proof Preview"/>
+                                         </div>` : ''}
+                                         <button type="submit" class="btn full-width" style="border-radius:14px;"><span class="btn-text">Submit Task</span><div class="spinner-sm"></div></button>
+                                     </form>
+                                 </div>`;
+                             }).join('');
+                         }
+                         if (!taskSpecificDetailsHTML || !taskSpecificDetailsHTML.trim()) {
+                             taskSpecificDetailsHTML = '<p class="info-text" style="text-align:center; padding: 20px 0;">No new tasks available in this category right now.</p>';
+                         }
+                         break;
+                    }
+                    case 'sell_coins': {
+                        const hasSubmittedSellCoins = this.state.taskSubmissions && Object.values(this.state.taskSubmissions).some(s => s.taskId === 'sell_coins' && s.status !== 'rejected');
+                         if(hasSubmittedSellCoins) {
+                            taskSpecificDetailsHTML = '<p class="info-text" style="text-align:center; padding: 20px 0;">You have a pending or approved "Sell Coins" submission. Please wait for it to be processed.</p>';
+                         } else {
+                             taskSpecificDetailsHTML = `<div class="content-panel">
+                                 <div class="task-detail-card"><div class="label">Send Coins To</div><div class="value" style="font-family: monospace;">${taskData.address || 'papa.009h'}</div></div>
+                                 <div class="task-detail-card"><div class="label">Current Rate</div><div class="value">${taskData.price || 'Not set'}</div></div>
+                                 <div class="task-detail-card"><div class="label">Instructions</div><div class="value">${taskData.description || 'Send coins and submit proof.'}</div></div>
+                                 <form class="task-submission-form" data-task-id="sell_coins" data-subtask-id="main">
+                                     <p>Upload a screenshot of the transaction as proof.</p>
+                                     <div class="input-group">
+                                         <input type="file" class="task-proof-input" accept="image/*" required style="display:none;">
+                                         <label class="proof-upload-label"><i class="fas fa-cloud-upload-alt"></i><span>Click to Select Screenshot</span></label>
+                                         <img class="proof-preview" src="#" alt="Proof Preview"/>
+                                     </div>
+                                     <button type="submit" class="btn full-width" style="border-radius:14px;"><span class="btn-text">Submit Proof</span><div class="spinner-sm"></div></button>
+                                 </form>
+                             </div>`;
+                         }
+                        break;
+                    }
+                }
+
+                taskContainer.innerHTML = `
+                    <div class="page-header"><h3>${taskData.title || 'Task'}</h3></div>
+                    <div class="content-panel">
+                        ${commonInstructionHTML}
+                        <div class="task-details-container">${taskSpecificDetailsHTML}</div>
+                    </div>`;
+            },
+            
+            async uploadProof(file) {
+                const formData = new FormData();
+                formData.append('image', file);
+                try {
+                    const response = await fetch(`https://api.imgbb.com/1/upload?key=${this.config.imgbbApiKey}`, { method: 'POST', body: formData });
+                    const result = await response.json();
+                    if (result.success) { return result.data.url; } 
+                    else { throw new Error(result.error.message || 'Image upload failed'); }
+                } catch (error) {
+                    this.showToast(error.message, 'danger');
+                    return null;
+                }
             },
 
-            startWebAdTimer() {
-                this.state.isWebAdTimerRunning = true;
-                let timeLeft = this.config.WEB_AD_DURATION_SECONDS;
-                this.state.ui.webAdTimerContainer.style.display = 'block';
-                this.state.ui.webAdTimerDisplay.textContent = `${timeLeft}s`;
+            async handleTaskSubmission(taskId, subTaskId, form) {
+                const btn = form.querySelector('button[type="submit"]');
+                this.setButtonLoading(btn, true);
                 
-                if (this.state.webAdTimerInterval) clearInterval(this.state.webAdTimerInterval);
+                const taskData = this.state.tasksV2Data[taskId];
+                const subTaskData = (taskId === 'sell_coins') ? taskData : taskData.tasks[subTaskId];
+                let proofUrl = 'N/A'; // Default for no-proof tasks like Gmail
+                
+                if (taskId === 'watch_video' || taskId === 'sell_coins') {
+                    const fileInput = form.querySelector('.task-proof-input');
+                    if (!fileInput || !fileInput.files[0]) {
+                        this.showToast('Please select a screenshot to upload.', 'danger');
+                        this.setButtonLoading(btn, false);
+                        return;
+                    }
+                    proofUrl = await this.uploadProof(fileInput.files[0]);
+                    if (!proofUrl) {
+                        this.showToast('Could not upload proof. Please try again.', 'danger');
+                        this.setButtonLoading(btn, false);
+                        return;
+                    }
+                }
 
-                this.state.webAdTimerInterval = setInterval(() => {
-                    timeLeft--;
-                    this.state.ui.webAdTimerDisplay.textContent = `${timeLeft}s`;
-                    if (timeLeft <= 0) {
-                        clearInterval(this.state.webAdTimerInterval);
-                        this.finishWebAdWatching();
+                try {
+                    await this.db.ref(`task_submissions/${this.state.currentUser.uid}`).push({
+                        taskId,
+                        subTaskId,
+                        taskTitle: subTaskData.title || taskData.title,
+                        reward: subTaskData.reward || taskData.reward || 0,
+                        proofUrl,
+                        status: 'pending',
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                    });
+                    this.showToast('Task submitted for review!', 'success');
+                    this.renderTaskPage(taskId);
+
+                } catch (error) {
+                    this.showToast(`Submission failed: ${error.message}`, 'danger');
+                } finally {
+                    this.setButtonLoading(btn, false);
+                }
+            },
+            
+            handleAutomaticTask(btn) {
+                const { taskId, subtaskId, reward, link } = btn.dataset;
+                const timer = this.config.AUTOMATIC_TASK_TIMER;
+                let countdown = timer;
+                
+                if (link) { window.open(link, '_blank'); }
+
+                btn.disabled = true;
+                const originalText = btn.querySelector('.btn-text').textContent;
+                btn.querySelector('.btn-text').textContent = countdown;
+
+                const interval = setInterval(async () => {
+                    countdown--;
+                    btn.querySelector('.btn-text').textContent = countdown;
+                    if (countdown <= 0) {
+                        clearInterval(interval);
+                        try {
+                            const numericReward = parseFloat(reward);
+                            if (isNaN(numericReward) || numericReward <= 0) throw new Error("Invalid reward amount.");
+                            
+                            await this.state.userNewInterfaceRef.child('task_balance_usd').set(firebase.database.ServerValue.increment(numericReward));
+                            await this.state.userNewInterfaceRef.child(`completed_auto_tasks/${taskId}/${subtaskId}`).set(true);
+                           
+                            this.showToast(`+$${numericReward.toFixed(3)} added to your balance!`, 'success');
+                            btn.querySelector('.btn-text').textContent = 'Completed';
+
+                        } catch(error) {
+                            this.showToast(`Error: ${error.message}`, 'danger');
+                            btn.querySelector('.btn-text').textContent = originalText;
+                            btn.disabled = false;
+                        }
                     }
                 }, 1000);
             },
 
-            async finishWebAdWatching() {
-                const reward = this.config.WEB_AD_REWARD_USD;
-                try {
-                    await this.state.userNewInterfaceRef.update({
-                        balance_usd: firebase.database.ServerValue.increment(reward),
-                    });
-                    await this.logNewInterfaceTransaction('web_ad_reward', reward, {
-                        reason: 'Clicked Web Ad', status: 'approved', currency: 'USD'
-                    });
-                    this.showToast(`You earned $${reward.toFixed(3)} from the banner ad!`, 'success');
-                } catch (error) {
-                    this.showToast(`Error awarding web ad reward: ${error.message}`, 'danger');
-                } finally {
-                    this.state.ui.webAdTimerContainer.style.display = 'none';
-                    this.state.isWebAdTimerRunning = false;
-                }
-            },
-
-            renderTasks() {
-                const { allTasks, completedTasks } = this.state;
-                const { niTaskList, noTasksMsg } = this.state.ui;
-                if (!niTaskList) return;
-                niTaskList.innerHTML = '';
-                const availableTasks = Object.keys(allTasks).filter(taskId => !completedTasks[taskId] && allTasks[taskId].isActive);
-                if (availableTasks.length === 0) { noTasksMsg.style.display = 'block'; niTaskList.style.display = 'none'; return; }
-                noTasksMsg.style.display = 'none'; niTaskList.style.display = 'flex';
-                availableTasks.forEach(taskId => {
-                    const task = allTasks[taskId];
-                    const taskCard = document.createElement('div');
-                    taskCard.className = 'task-card';
-                    taskCard.innerHTML = `<div class="task-card-details"><div class="task-card-title">${task.title || 'Untitled Task'}</div><div class="task-card-reward">Reward: $${(task.reward || 0).toFixed(3)}</div></div><div class="task-card-action"><button class="btn-task" data-task-id="${taskId}">Click</button></div>`;
-                    niTaskList.appendChild(taskCard);
-                });
-            },
-
-            handleTaskComplete(taskId, btn) {
-                const task = this.state.allTasks[taskId];
-                if (!task || !task.link || !this.state.currentUser) { this.showToast('Task is no longer available.', 'danger'); return; }
-                const allTaskButtons = this.state.ui.niTaskList.querySelectorAll('.btn-task');
-                allTaskButtons.forEach(button => { button.disabled = true; if (button !== btn) button.textContent = 'Waiting...'; });
-                btn.textContent = '10s';
-                window.open(task.link, '_blank');
-                let countdown = 9;
-                const interval = setInterval(() => { btn.textContent = `${countdown}s`; countdown--; if (countdown < 0) { clearInterval(interval); btn.textContent = 'Done!'; } }, 1000);
-                setTimeout(async () => {
-                    try {
-                        const reward = parseFloat(task.reward || 0);
-                        const updates = {};
-                        updates[`/users_new_interface/${this.state.currentUser.uid}/balance_usd`] = firebase.database.ServerValue.increment(reward);
-                        updates[`/users_new_interface/${this.state.currentUser.uid}/completed_tasks/${taskId}`] = true;
-                        await this.db.ref().update(updates);
-                        await this.logNewInterfaceTransaction('task_reward', reward, { reason: `Completed Task: ${task.title}`, taskId: taskId, status: 'approved', currency: 'USD' });
-                        this.showToast(`Task complete! You earned $${reward.toFixed(3)}`, 'success');
-                    } catch (error) { this.showToast(`Error completing task: ${error.message}`, 'danger'); this.renderTasks(); }
-                }, 10000);
-            },
-
-            async handleNewInterfaceWithdrawal(e) {
+            async handleTaskWithdrawal(e) {
                 e.preventDefault();
                 const btn = e.target.querySelector('button');
-                const amount = parseFloat(document.getElementById('ni-withdraw-amount').value);
-                const network = document.getElementById('ni-withdraw-network').value;
-                const accountNumber = document.getElementById('ni-withdraw-account-number').value.trim();
-                const accountHolderName = document.getElementById('ni-withdraw-account-holder-name').value.trim();
-                if (isNaN(amount) || amount <= 0 || !network || !accountNumber || !accountHolderName || !/^\d{11}$/.test(accountNumber)) { return this.showToast('Please fill all fields with a valid 11-digit account number.', 'danger'); }
-                if (amount > (this.state.newInterfaceData.balance_usd || 0)) { return this.showToast('Insufficient USD balance.', 'danger'); }
+                const amount = parseFloat(document.getElementById('ni-task-withdraw-amount').value);
+                const network = document.getElementById('ni-task-withdraw-network').value;
+                const accountNumber = document.getElementById('ni-task-withdraw-account-number').value.trim();
+                const accountHolderName = document.getElementById('ni-task-withdraw-account-holder-name').value.trim();
+                
+                if (isNaN(amount) || amount <= 0 || !network || !accountNumber || !accountHolderName || !/^\d{11}$/.test(accountNumber)) {
+                    return this.showToast('Please fill all fields with a valid 11-digit account number.', 'danger');
+                }
+                if (amount > (this.state.newInterfaceData.task_balance_usd || 0)) {
+                    return this.showToast('Insufficient task balance.', 'danger');
+                }
                 this.setButtonLoading(btn, true);
                 try {
-                    await this.state.userNewInterfaceRef.update({ balance_usd: firebase.database.ServerValue.increment(-amount), balance_on_hold_usd: firebase.database.ServerValue.increment(amount) });
-                    await this.db.ref('new_interface_withdrawals').push({ userId: this.state.currentUser.uid, userEmail: this.state.currentUser.email, usdAmount: amount, network, accountNumber, accountHolderName, status: 'pending', timestamp: firebase.database.ServerValue.TIMESTAMP });
-                    await this.logNewInterfaceTransaction('withdrawal', amount, { network, accountNumber, status: 'pending', currency: 'USD' });
+                    await this.state.userNewInterfaceRef.update({ 
+                        task_balance_usd: firebase.database.ServerValue.increment(-amount), 
+                        task_balance_on_hold_usd: firebase.database.ServerValue.increment(amount) 
+                    });
+                    
+                    const withdrawalRequestRef = await this.db.ref('task_withdrawal_requests').push({ 
+                        userId: this.state.currentUser.uid, 
+                        userEmail: this.state.currentUser.email, 
+                        usdAmount: amount, 
+                        network, 
+                        accountNumber, 
+                        accountHolderName, 
+                        status: 'pending', 
+                        timestamp: firebase.database.ServerValue.TIMESTAMP 
+                    });
+                    
+                    const requestId = withdrawalRequestRef.key;
+                    await this.db.ref(`task_transactions/${this.state.currentUser.uid}/${requestId}`).set({
+                        type: 'withdrawal',
+                        amount: amount,
+                        details: { network, accountNumber, accountHolderName },
+                        status: 'pending',
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                    });
+
                     this.showToast(`Withdrawal request for $${amount.toFixed(3)} submitted!`, 'success');
-                    this.state.ui.niWithdrawalForm.reset();
-                    this.showNewInterfacePage('ni-withdrawal-history-page');
+                    this.state.ui.niTaskWithdrawalForm.reset();
+                    this.showNewInterfacePage('ni-task-history-page');
                 } catch (err) {
                     this.showToast(`Withdrawal failed: ${err.message}`, 'danger');
-                     await this.state.userNewInterfaceRef.update({ balance_usd: firebase.database.ServerValue.increment(amount), balance_on_hold_usd: firebase.database.ServerValue.increment(-amount) });
-                } finally { this.setButtonLoading(btn, false); }
+                     await this.state.userNewInterfaceRef.update({ 
+                         task_balance_usd: firebase.database.ServerValue.increment(amount), 
+                         task_balance_on_hold_usd: firebase.database.ServerValue.increment(-amount) 
+                    });
+                } finally {
+                    this.setButtonLoading(btn, false);
+                }
             },
 
             // --- [6] DATA LISTENERS ---
@@ -3092,31 +3203,76 @@
             },
 
             listenToNewInterfaceData() {
-                if (!this.state.currentUser || this.state.userNewInterfaceRef) return;
-                this.state.userNewInterfaceRef = this.db.ref('users_new_interface/' + this.state.currentUser.uid);
-                this.state.txNewInterfaceRef = this.db.ref('new_interface_transactions/' + this.state.currentUser.uid);
-                
+                if (!this.state.currentUser) return;
+                this.state.userNewInterfaceRef = this.db.ref(`users_new_interface/${this.state.currentUser.uid}`);
                 this.state.userNewInterfaceRef.on('value', snapshot => {
                     if (snapshot.exists()) {
                         this.state.newInterfaceData = snapshot.val();
-                        this.updateNewInterfaceUI();
                     } else {
-                        this.state.userNewInterfaceRef.set({ balance_usd: 0, balance_on_hold_usd: 0, ads_watched_today: 0, total_ad_earnings: 0, last_ad_watch_date: '' });
+                        this.state.userNewInterfaceRef.set({ task_balance_usd: 0, task_balance_on_hold_usd: 0, completed_auto_tasks: {} });
                     }
+                    this.updateNewInterfaceUI();
                 }, err => console.error("Firebase new interface data error:", err));
-
-                this.state.txNewInterfaceRef.limitToLast(100).on('value', snapshot => {
-                    const txs = snapshot.val() ? Object.values(snapshot.val()).sort((a,b) => b.timestamp - a.timestamp) : [];
-                    this.populateHistoryList({list: this.state.ui.niHistoryList, msg: this.state.ui.noNiTransactionsMsg}, txs);
+                
+                this.db.ref('tasks_v2').on('value', snapshot => { this.state.tasksV2Data = snapshot.val(); });
+                
+                this.db.ref(`task_submissions/${this.state.currentUser.uid}`).orderByChild('timestamp').on('value', snapshot => {
+                    this.state.taskSubmissions = snapshot.val();
+                    this.populateTaskAndWithdrawalHistory();
+                    this.updateNewInterfaceUI();
+                });
+                
+                this.db.ref(`task_transactions/${this.state.currentUser.uid}`).orderByChild('timestamp').on('value', snapshot => {
+                    this.state.taskWithdrawals = snapshot.val();
+                    this.populateTaskAndWithdrawalHistory();
                 });
             },
             
-            listenToTasks() {
-                if (!this.state.currentUser) return;
-                const tasksRef = this.db.ref('tasks');
-                const completedTasksRef = this.db.ref(`users_new_interface/${this.state.currentUser.uid}/completed_tasks`);
-                tasksRef.on('value', snapshot => { this.state.allTasks = snapshot.val() || {}; this.renderTasks(); });
-                completedTasksRef.on('value', snapshot => { this.state.completedTasks = snapshot.val() || {}; this.renderTasks(); });
+            populateTaskAndWithdrawalHistory() {
+                const listEl = this.state.ui.niTaskHistoryList;
+                const msgEl = this.state.ui.noTaskHistoryMsg;
+                if (!listEl) return;
+
+                const submissions = this.state.taskSubmissions ? Object.values(this.state.taskSubmissions).map(s => ({ ...s, historyType: 'submission' })) : [];
+                const withdrawals = this.state.taskWithdrawals ? Object.values(this.state.taskWithdrawals).map(w => ({ ...w, historyType: 'withdrawal' })) : [];
+
+                const combinedHistory = [...submissions, ...withdrawals].sort((a, b) => b.timestamp - a.timestamp);
+
+                listEl.innerHTML = '';
+                if (combinedHistory.length === 0) {
+                    msgEl.style.display = 'block';
+                    return;
+                }
+                msgEl.style.display = 'none';
+
+                combinedHistory.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = `task-history-item ${item.status}`;
+                    
+                    if (item.historyType === 'submission') {
+                        const iconClass = { pending: 'fa-hourglass-half', approved: 'fa-check-circle', rejected: 'fa-times-circle' }[item.status] || 'fa-question-circle';
+                        li.innerHTML = `
+                            <div class="icon"><i class="fas ${iconClass}"></i></div>
+                            <div class="details">
+                                <div class="title">${item.taskTitle || 'Task'}</div>
+                                <div class="date">${new Date(item.timestamp).toLocaleString()}</div>
+                            </div>
+                            <div class="status" style="color: var(--success-color);">+${(item.reward || 0).toFixed(3)}$</div>
+                            ${item.proofUrl && item.proofUrl !== 'N/A' ? `<a href="${item.proofUrl}" target="_blank" class="proof-link"><i class="fas fa-eye"></i></a>` : ''}
+                        `;
+                    } else { // It's a withdrawal
+                        const iconClass = { pending: 'fa-hourglass-half', approved: 'fa-check-circle', rejected: 'fa-times-circle' }[item.status] || 'fa-question-circle';
+                        li.innerHTML = `
+                            <div class="icon"><i class="fas fa-paper-plane"></i></div>
+                            <div class="details">
+                                <div class="title">Withdrawal via ${item.details.network}</div>
+                                <div class="date">${new Date(item.timestamp).toLocaleString()}</div>
+                            </div>
+                            <div class="status" style="color: var(--danger-color);">- ${(item.amount || 0).toFixed(3)}$</div>
+                        `;
+                    }
+                    listEl.appendChild(li);
+                });
             },
 
             listenToWithdrawalHistory() {
@@ -3126,11 +3282,6 @@
                 pkrRef.on('value', snapshot => {
                     const data = snapshot.val() ? Object.values(snapshot.val()).sort((a,b) => b.timestamp - a.timestamp) : [];
                     this.populateWithdrawalHistoryList(this.state.ui.withdrawalHistoryList, this.state.ui.noWithdrawalHistoryMsg, data, 'PKR');
-                });
-                const usdRef = this.db.ref('new_interface_withdrawals').orderByChild('userId').equalTo(uid);
-                usdRef.on('value', snapshot => {
-                    const data = snapshot.val() ? Object.values(snapshot.val()).sort((a,b) => b.timestamp - a.timestamp) : [];
-                    this.populateWithdrawalHistoryList(this.state.ui.niWithdrawalHistoryList, this.state.ui.noNiWithdrawalHistoryMsg, data, 'USD');
                 });
             },
 
@@ -3157,21 +3308,19 @@
                 if (this.state.userRef) this.state.userRef.off(); 
                 if (this.state.txRef) this.state.txRef.off(); 
                 if (this.state.userNewInterfaceRef) this.state.userNewInterfaceRef.off();
-                if (this.state.txNewInterfaceRef) this.state.txNewInterfaceRef.off();
-                this.db.ref('tasks').off();
-                if(this.state.userNewInterfaceRef) this.state.userNewInterfaceRef.child('completed_tasks').off();
+                this.db.ref('tasks_v2').off();
+                if (this.state.currentUser) { 
+                    this.db.ref(`task_submissions/${this.state.currentUser.uid}`).off();
+                    this.db.ref(`task_transactions/${this.state.currentUser.uid}`).off();
+                }
                 this.db.ref('withdrawal_requests').off();
-                this.db.ref('new_interface_withdrawals').off();
                 if(this.state.planProfitInterval) clearInterval(this.state.planProfitInterval); 
                 if(this.state.carouselInterval) clearInterval(this.state.carouselInterval);
-                if(this.state.adTimerInterval) clearInterval(this.state.adTimerInterval);
-                if(this.state.webAdTimerInterval) clearInterval(this.state.webAdTimerInterval);
-                if(this.state.adProgressInterval) clearInterval(this.state.adProgressInterval);
                 Object.values(this.state.nftIntervals).forEach(clearInterval); 
                 this.state.nftIntervals = {}; 
-                this.state.userRef = null; this.state.txRef = null; this.state.userNewInterfaceRef = null; this.state.txNewInterfaceRef = null;
-                if (this.state.adWindow && !this.state.adWindow.closed) this.state.adWindow.close();
-                this.state.adWindow = null;
+                this.state.userRef = null; 
+                this.state.txRef = null; 
+                this.state.userNewInterfaceRef = null;
             },
 
             // --- [7] HELPERS ---
