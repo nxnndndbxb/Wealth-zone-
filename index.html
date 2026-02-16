@@ -2751,6 +2751,18 @@
                         preview.style.display = 'block';
                     }
                 });
+
+                this.state.ui.niTaskPage.addEventListener('input', e => {
+                    if (e.target.id === 'sell-coins-amount') {
+                        const coinAmount = parseFloat(e.target.value) || 0;
+                        const conversionRate = 3 / 100000;
+                        const usdValue = coinAmount * conversionRate;
+                        const usdDisplay = document.getElementById('sell-coins-usd-equivalent');
+                        if (usdDisplay) {
+                            usdDisplay.textContent = `$${usdValue.toFixed(3)}`;
+                        }
+                    }
+                });
                 
                 this.state.ui.niTaskPage.addEventListener('submit', e => {
                     e.preventDefault();
@@ -3008,25 +3020,60 @@
                          break;
                     }
                     case 'sell_coins': {
-                        const hasSubmittedSellCoins = this.state.taskSubmissions && Object.values(this.state.taskSubmissions).some(s => s.taskId === 'sell_coins' && s.status !== 'rejected');
-                         if(hasSubmittedSellCoins) {
-                            taskSpecificDetailsHTML = '<p class="info-text" style="text-align:center; padding: 20px 0;">You have a pending or approved "Sell Coins" submission. Please wait for it to be processed.</p>';
-                         } else {
-                             taskSpecificDetailsHTML = `<div class="content-panel">
-                                 <div class="task-detail-card"><div class="label">Send Coins To</div><div class="value" style="font-family: monospace;">${taskData.address || 'papa.009h'}</div></div>
-                                 <div class="task-detail-card"><div class="label">Current Rate</div><div class="value">${taskData.price || 'Not set'}</div></div>
-                                 <div class="task-detail-card"><div class="label">Instructions</div><div class="value">${taskData.description || 'Send coins and submit proof.'}</div></div>
-                                 <form class="task-submission-form" data-task-id="sell_coins" data-subtask-id="main">
-                                     <p>Upload a screenshot of the transaction as proof.</p>
-                                     <div class="input-group">
-                                         <input type="file" class="task-proof-input" accept="image/*" required style="display:none;">
-                                         <label class="proof-upload-label"><i class="fas fa-cloud-upload-alt"></i><span>Click to Select Screenshot</span></label>
-                                         <img class="proof-preview" src="#" alt="Proof Preview"/>
-                                     </div>
-                                     <button type="submit" class="btn full-width" style="border-radius:14px;"><span class="btn-text">Submit Proof</span><div class="spinner-sm"></div></button>
-                                 </form>
-                             </div>`;
-                         }
+                        const addressToCopy = 'papa.009h';
+                        const minCoins = 1000;
+
+                        taskSpecificDetailsHTML = `
+                        <div class="content-panel">
+                            <h3>Sell Your Coins</h3>
+                            <p class="info-text" style="text-align: left; margin-bottom: 20px;">
+                                Follow the steps below to convert your coins into USD. The funds will be added to your Task Wallet after administrative review.
+                            </p>
+
+                            <div class="task-detail-card">
+                                <div class="label">Step 1: Send Coins to this Address</div>
+                                <div class="address-box" onclick="App.copyToClipboard('${addressToCopy}', this, 'Address Copied!')" style="cursor: pointer;">
+                                    <span class="address" style="font-family: 'Roboto Mono', monospace;">${addressToCopy}</span>
+                                    <button class="copy-btn"><i class="fas fa-copy"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="task-detail-card">
+                                <div class="label">Conversion Rate & Minimum</div>
+                                <div class="stats-grid" style="grid-template-columns: 1fr 1fr; gap: 10px;">
+                                    <div class="stat-card" style="padding: 15px;">
+                                        <div class="label">Rate</div>
+                                        <div class="value" style="font-size: 1.1em;">100,000 Coins = $3</div>
+                                    </div>
+                                    <div class="stat-card" style="padding: 15px;">
+                                        <div class="label">Minimum Send</div>
+                                        <div class="value" style="font-size: 1.1em;">${minCoins.toLocaleString()} Coins</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h3 style="margin-top: 30px;">Step 2: Submit Your Proof</h3>
+                            <form class="task-submission-form" id="sell-coins-form" data-task-id="sell_coins" data-subtask-id="main">
+                                <div class="input-group">
+                                    <input type="number" id="sell-coins-amount" placeholder="Amount of Coins Sent" required min="${minCoins}" step="1">
+                                    <i class="fa-solid fa-coins"></i>
+                                </div>
+
+                                <div class="task-detail-card" style="text-align:center; background: var(--surface-bg-darker);">
+                                    <div class="label">You Will Receive (USD)</div>
+                                    <div class="value reward-value" id="sell-coins-usd-equivalent" style="font-size: 2em;">$0.000</div>
+                                </div>
+
+                                <p style="margin-top: 20px;">Upload a screenshot of the transaction as proof.</p>
+                                <div class="input-group">
+                                    <input type="file" class="task-proof-input" accept="image/*" required style="display:none;">
+                                    <label class="proof-upload-label"><i class="fas fa-cloud-upload-alt"></i><span>Click to Select Screenshot</span></label>
+                                    <img class="proof-preview" src="#" alt="Proof Preview"/>
+                                </div>
+
+                                <button type="submit" class="btn full-width" style="border-radius:14px;"><span class="btn-text">Submit Proof for Review</span><div class="spinner-sm"></div></button>
+                            </form>
+                        </div>`;
                         break;
                     }
                 }
@@ -3056,12 +3103,28 @@
             async handleTaskSubmission(taskId, subTaskId, form) {
                 const btn = form.querySelector('button[type="submit"]');
                 this.setButtonLoading(btn, true);
-                
-                const taskData = this.state.tasksV2Data[taskId];
-                const subTaskData = (taskId === 'sell_coins') ? taskData : taskData.tasks[subTaskId];
-                let proofUrl = 'N/A'; // Default for no-proof tasks like Gmail
-                
-                if (taskId === 'watch_video' || taskId === 'sell_coins') {
+
+                let proofUrl = 'N/A';
+                let rewardAmount = 0;
+                let taskTitle = '';
+                let submissionDetails = {};
+
+                if (taskId === 'sell_coins') {
+                    const coinAmountInput = form.querySelector('#sell-coins-amount');
+                    const coinAmount = parseFloat(coinAmountInput.value);
+                    const minCoins = 1000;
+
+                    if (isNaN(coinAmount) || coinAmount < minCoins) {
+                        this.showToast(`Minimum amount to sell is ${minCoins} coins.`, 'danger');
+                        this.setButtonLoading(btn, false);
+                        return;
+                    }
+
+                    const conversionRate = 3 / 100000;
+                    rewardAmount = coinAmount * conversionRate;
+                    taskTitle = `Sell ${coinAmount.toLocaleString()} Coins`;
+                    submissionDetails = { coinAmount, calculatedUsd: rewardAmount };
+                    
                     const fileInput = form.querySelector('.task-proof-input');
                     if (!fileInput || !fileInput.files[0]) {
                         this.showToast('Please select a screenshot to upload.', 'danger');
@@ -3074,20 +3137,51 @@
                         this.setButtonLoading(btn, false);
                         return;
                     }
-                }
 
+                } else {
+                    const taskData = this.state.tasksV2Data[taskId];
+                    const subTaskData = taskData.tasks[subTaskId];
+                    taskTitle = subTaskData.title || taskData.title;
+                    rewardAmount = subTaskData.reward || 0;
+                    
+                    if (taskId === 'watch_video') {
+                        const fileInput = form.querySelector('.task-proof-input');
+                        if (!fileInput || !fileInput.files[0]) {
+                            this.showToast('Please select a screenshot to upload.', 'danger');
+                            this.setButtonLoading(btn, false);
+                            return;
+                        }
+                        proofUrl = await this.uploadProof(fileInput.files[0]);
+                        if (!proofUrl) {
+                            this.showToast('Could not upload proof. Please try again.', 'danger');
+                            this.setButtonLoading(btn, false);
+                            return;
+                        }
+                    }
+                }
+                
                 try {
                     await this.db.ref(`task_submissions/${this.state.currentUser.uid}`).push({
                         taskId,
                         subTaskId,
-                        taskTitle: subTaskData.title || taskData.title,
-                        reward: subTaskData.reward || taskData.reward || 0,
+                        taskTitle: taskTitle,
+                        reward: rewardAmount,
                         proofUrl,
                         status: 'pending',
-                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                        timestamp: firebase.database.ServerValue.TIMESTAMP,
+                        details: submissionDetails
                     });
                     this.showToast('Task submitted for review!', 'success');
-                    this.renderTaskPage(taskId);
+
+                    if (taskId === 'sell_coins') {
+                        form.reset();
+                        const usdDisplay = document.getElementById('sell-coins-usd-equivalent');
+                        if (usdDisplay) usdDisplay.textContent = '$0.000';
+                        const preview = form.querySelector('.proof-preview');
+                        if (preview) preview.style.display = 'none';
+                    } else {
+                        this.renderTaskPage(taskId);
+                    }
 
                 } catch (error) {
                     this.showToast(`Submission failed: ${error.message}`, 'danger');
@@ -3251,10 +3345,16 @@
                     
                     if (item.historyType === 'submission') {
                         const iconClass = { pending: 'fa-hourglass-half', approved: 'fa-check-circle', rejected: 'fa-times-circle' }[item.status] || 'fa-question-circle';
+                        
+                        let title = item.taskTitle || 'Task';
+                        if (item.taskId === 'sell_coins' && item.details && item.details.coinAmount) {
+                            title = `Sold ${item.details.coinAmount.toLocaleString()} Coins`;
+                        }
+
                         li.innerHTML = `
                             <div class="icon"><i class="fas ${iconClass}"></i></div>
                             <div class="details">
-                                <div class="title">${item.taskTitle || 'Task'}</div>
+                                <div class="title">${title}</div>
                                 <div class="date">${new Date(item.timestamp).toLocaleString()}</div>
                             </div>
                             <div class="status" style="color: var(--success-color);">+${(item.reward || 0).toFixed(3)}$</div>
