@@ -2940,7 +2940,7 @@
                     return;
                 }
                 
-                const videoUrl = taskData.videoUrl || "https://www.youtube.com/embed/dQw4w9WgXcQ"; // Default video
+                const videoUrl = taskData.videoUrl || "https://www.youtube.com/embed/dQw4w9WgXcQ"; 
 
                 const commonInstructionHTML = `
                     <div class="instruction-container">
@@ -2951,70 +2951,93 @@
                     </div>`;
                 
                 let taskSpecificDetailsHTML = '';
-                const completedAutoTasks = this.state.newInterfaceData?.completed_auto_tasks?.[taskId] || {};
+                const userSubmissions = this.state.taskSubmissions ? Object.values(this.state.taskSubmissions) : [];
 
                 switch(taskId) {
-                    case 'ads':
-                    case 'visit_site': {
+                    case 'ads': {
                         const subTasks = taskData.tasks ? Object.entries(taskData.tasks) : [];
+                        const completedAutoTasks = this.state.newInterfaceData?.completed_auto_tasks?.[taskId] || {};
                         if (subTasks.length > 0) {
                             taskSpecificDetailsHTML = subTasks.map(([key, subTask]) => {
                                 const isCompleted = completedAutoTasks[key];
-                                if (isCompleted) return ''; // If completed, don't render it.
+                                if (isCompleted) return '';
 
                                 return `
                                 <div class="task-list-item">
                                     <div class="task-info">
-                                        <div class="task-title">${taskId === 'ads' ? 'Ad' : 'Website'} #${key.slice(-2)}</div>
+                                        <div class="task-title">Ad #${key.slice(-2)}</div>
                                         <div class="task-reward">+ $${(subTask.reward || 0).toFixed(3)}</div>
                                     </div>
                                     <button class="btn task-action-btn auto-task-btn" data-task-id="${taskId}" data-subtask-id="${key}" data-reward="${subTask.reward}" data-link="${subTask.link || ''}">
-                                        <span class="btn-text">${taskId === 'ads' ? 'View Ad' : 'Visit'}</span>
+                                        <span class="btn-text">View Ad</span>
                                     </button>
                                 </div>`;
                             }).join('');
                         }
-                        if (!taskSpecificDetailsHTML || !taskSpecificDetailsHTML.trim()) {
+                        if (!taskSpecificDetailsHTML.trim()) {
                              taskSpecificDetailsHTML = '<p class="info-text" style="text-align:center; padding: 20px 0;">No new tasks available in this category right now.</p>';
                         }
                         break;
                     }
-                    case 'watch_video':
-                    case 'gmail': {
+                    case 'visit_site':
+                    case 'watch_video': {
                          const subTasks = taskData.tasks ? Object.entries(taskData.tasks) : [];
-                         const userSubmissions = this.state.taskSubmissions ? Object.values(this.state.taskSubmissions) : [];
                          if (subTasks.length > 0) {
                              taskSpecificDetailsHTML = subTasks.map(([key, subTask]) => {
                                  const hasSubmitted = userSubmissions.some(s => s.subTaskId === key);
-                                 if (hasSubmitted) return ''; // Don't show already submitted tasks
-                                 let details = '';
-                                 if (taskId === 'gmail') {
-                                     details = `
-                                     <div class="task-detail-card"><div class="label">Username</div><div class="value">${subTask.username || ''}</div></div>
-                                     <div class="task-detail-card"><div class="label">Gmail Address</div><div class="value">${subTask.email || ''}</div></div>
-                                     <div class="task-detail-card"><div class="label">Password</div><div class="value">${subTask.password || ''}</div></div>`;
-                                 } else {
-                                     details = `<div class="task-detail-card"><div class="label">Video Link</div><div class="value"><a href="${subTask.link || '#'}" target="_blank" rel="noopener noreferrer">Watch on YouTube</a></div></div>`;
-                                 }
+                                 if (hasSubmitted) return ''; 
 
                                  return `<div class="content-panel" style="margin-bottom:20px;">
                                      <h3>${subTask.title || `Task #${key.slice(-2)}`}</h3>
-                                     ${details}
-                                     <div class="task-detail-card"><div class="label">Reward</div><div class="value reward-value">$${(subTask.reward || 0).toFixed(3)}</div></div>
+                                     <div class="task-detail-card">
+                                        <div class="label">Link</div>
+                                        <div class="value"><a href="${subTask.link || '#'}" target="_blank" rel="noopener noreferrer">${taskId === 'visit_site' ? 'Visit Website' : 'Watch on YouTube'}</a></div>
+                                     </div>
+                                      <div class="task-detail-card">
+                                        <div class="label">Requirements</div>
+                                        <div class="value">${subTask.description || 'No specific requirements provided.'}</div>
+                                     </div>
+                                     <div class="task-detail-card">
+                                        <div class="label">Reward</div>
+                                        <div class="value reward-value">$${(subTask.reward || 0).toFixed(3)}</div>
+                                     </div>
                                      <form class="task-submission-form" data-task-id="${taskId}" data-subtask-id="${key}">
-                                         ${taskId === 'watch_video' ? `
                                          <p>Upload a screenshot as proof of completion.</p>
                                          <div class="input-group">
                                              <input type="file" class="task-proof-input" accept="image/*" required style="display:none;">
                                              <label class="proof-upload-label"><i class="fas fa-cloud-upload-alt"></i><span>Click to Select Screenshot</span></label>
                                              <img class="proof-preview" src="#" alt="Proof Preview"/>
-                                         </div>` : ''}
+                                         </div>
                                          <button type="submit" class="btn full-width" style="border-radius:14px;"><span class="btn-text">Submit Task</span><div class="spinner-sm"></div></button>
                                      </form>
                                  </div>`;
                              }).join('');
                          }
-                         if (!taskSpecificDetailsHTML || !taskSpecificDetailsHTML.trim()) {
+                         if (!taskSpecificDetailsHTML.trim()) {
+                             taskSpecificDetailsHTML = '<p class="info-text" style="text-align:center; padding: 20px 0;">No new tasks available in this category right now.</p>';
+                         }
+                         break;
+                    }
+                    case 'gmail': {
+                         const subTasks = taskData.tasks ? Object.entries(taskData.tasks) : [];
+                         if (subTasks.length > 0) {
+                             taskSpecificDetailsHTML = subTasks.map(([key, subTask]) => {
+                                 const hasSubmitted = userSubmissions.some(s => s.subTaskId === key);
+                                 if (hasSubmitted) return ''; 
+
+                                 return `<div class="content-panel" style="margin-bottom:20px;">
+                                     <h3>${subTask.title || `Task #${key.slice(-2)}`}</h3>
+                                     <div class="task-detail-card"><div class="label">Username</div><div class="value">${subTask.username || ''}</div></div>
+                                     <div class="task-detail-card"><div class="label">Gmail Address</div><div class="value">${subTask.email || ''}</div></div>
+                                     <div class="task-detail-card"><div class="label">Password</div><div class="value">${subTask.password || ''}</div></div>
+                                     <div class="task-detail-card"><div class="label">Reward</div><div class="value reward-value">$${(subTask.reward || 0).toFixed(3)}</div></div>
+                                     <form class="task-submission-form" data-task-id="${taskId}" data-subtask-id="${key}">
+                                         <button type="submit" class="btn full-width" style="border-radius:14px;"><span class="btn-text">Submit Task</span><div class="spinner-sm"></div></button>
+                                     </form>
+                                 </div>`;
+                             }).join('');
+                         }
+                         if (!taskSpecificDetailsHTML.trim()) {
                              taskSpecificDetailsHTML = '<p class="info-text" style="text-align:center; padding: 20px 0;">No new tasks available in this category right now.</p>';
                          }
                          break;
@@ -3029,7 +3052,6 @@
                             <p class="info-text" style="text-align: left; margin-bottom: 20px;">
                                 Follow the steps below to convert your coins into USD. The funds will be added to your Task Wallet after administrative review.
                             </p>
-
                             <div class="task-detail-card">
                                 <div class="label">Step 1: Send Coins to this Address</div>
                                 <div class="address-box" onclick="App.copyToClipboard('${addressToCopy}', this, 'Address Copied!')" style="cursor: pointer;">
@@ -3037,40 +3059,28 @@
                                     <button class="copy-btn"><i class="fas fa-copy"></i></button>
                                 </div>
                             </div>
-
                             <div class="task-detail-card">
                                 <div class="label">Conversion Rate & Minimum</div>
                                 <div class="stats-grid" style="grid-template-columns: 1fr 1fr; gap: 10px;">
-                                    <div class="stat-card" style="padding: 15px;">
-                                        <div class="label">Rate</div>
-                                        <div class="value" style="font-size: 1.1em;">100,000 Coins = $3</div>
-                                    </div>
-                                    <div class="stat-card" style="padding: 15px;">
-                                        <div class="label">Minimum Send</div>
-                                        <div class="value" style="font-size: 1.1em;">${minCoins.toLocaleString()} Coins</div>
-                                    </div>
+                                    <div class="stat-card" style="padding: 15px;"><div class="label">Rate</div><div class="value" style="font-size: 1.1em;">100,000 Coins = $3</div></div>
+                                    <div class="stat-card" style="padding: 15px;"><div class="label">Minimum Send</div><div class="value" style="font-size: 1.1em;">${minCoins.toLocaleString()} Coins</div></div>
                                 </div>
                             </div>
-
                             <h3 style="margin-top: 30px;">Step 2: Submit Your Proof</h3>
                             <form class="task-submission-form" id="sell-coins-form" data-task-id="sell_coins" data-subtask-id="main">
                                 <div class="input-group">
-                                    <input type="number" id="sell-coins-amount" placeholder="Amount of Coins Sent" required min="${minCoins}" step="1">
-                                    <i class="fa-solid fa-coins"></i>
+                                    <input type="number" id="sell-coins-amount" placeholder="Amount of Coins Sent" required min="${minCoins}" step="1"><i class="fa-solid fa-coins"></i>
                                 </div>
-
                                 <div class="task-detail-card" style="text-align:center; background: var(--surface-bg-darker);">
                                     <div class="label">You Will Receive (USD)</div>
                                     <div class="value reward-value" id="sell-coins-usd-equivalent" style="font-size: 2em;">$0.000</div>
                                 </div>
-
                                 <p style="margin-top: 20px;">Upload a screenshot of the transaction as proof.</p>
                                 <div class="input-group">
                                     <input type="file" class="task-proof-input" accept="image/*" required style="display:none;">
                                     <label class="proof-upload-label"><i class="fas fa-cloud-upload-alt"></i><span>Click to Select Screenshot</span></label>
                                     <img class="proof-preview" src="#" alt="Proof Preview"/>
                                 </div>
-
                                 <button type="submit" class="btn full-width" style="border-radius:14px;"><span class="btn-text">Submit Proof for Review</span><div class="spinner-sm"></div></button>
                             </form>
                         </div>`;
@@ -3109,80 +3119,36 @@
                 let taskTitle = '';
                 let submissionDetails = {};
 
+                const fileInput = form.querySelector('.task-proof-input');
+
                 if (taskId === 'sell_coins') {
                     const coinAmountInput = form.querySelector('#sell-coins-amount');
                     const coinAmount = parseFloat(coinAmountInput.value);
                     const minCoins = 1000;
-
-                    if (isNaN(coinAmount) || coinAmount < minCoins) {
-                        this.showToast(`Minimum amount to sell is ${minCoins} coins.`, 'danger');
-                        this.setButtonLoading(btn, false);
-                        return;
-                    }
-
+                    if (isNaN(coinAmount) || coinAmount < minCoins) { this.showToast(`Minimum amount to sell is ${minCoins} coins.`, 'danger'); this.setButtonLoading(btn, false); return; }
                     const conversionRate = 3 / 100000;
                     rewardAmount = coinAmount * conversionRate;
                     taskTitle = `Sell ${coinAmount.toLocaleString()} Coins`;
                     submissionDetails = { coinAmount, calculatedUsd: rewardAmount };
-                    
-                    const fileInput = form.querySelector('.task-proof-input');
-                    if (!fileInput || !fileInput.files[0]) {
-                        this.showToast('Please select a screenshot to upload.', 'danger');
-                        this.setButtonLoading(btn, false);
-                        return;
-                    }
-                    proofUrl = await this.uploadProof(fileInput.files[0]);
-                    if (!proofUrl) {
-                        this.showToast('Could not upload proof. Please try again.', 'danger');
-                        this.setButtonLoading(btn, false);
-                        return;
-                    }
-
                 } else {
                     const taskData = this.state.tasksV2Data[taskId];
                     const subTaskData = taskData.tasks[subTaskId];
                     taskTitle = subTaskData.title || taskData.title;
                     rewardAmount = subTaskData.reward || 0;
-                    
-                    if (taskId === 'watch_video') {
-                        const fileInput = form.querySelector('.task-proof-input');
-                        if (!fileInput || !fileInput.files[0]) {
-                            this.showToast('Please select a screenshot to upload.', 'danger');
-                            this.setButtonLoading(btn, false);
-                            return;
-                        }
-                        proofUrl = await this.uploadProof(fileInput.files[0]);
-                        if (!proofUrl) {
-                            this.showToast('Could not upload proof. Please try again.', 'danger');
-                            this.setButtonLoading(btn, false);
-                            return;
-                        }
-                    }
+                }
+
+                if (fileInput) {
+                    if (!fileInput.files[0]) { this.showToast('Please select a screenshot to upload.', 'danger'); this.setButtonLoading(btn, false); return; }
+                    proofUrl = await this.uploadProof(fileInput.files[0]);
+                    if (!proofUrl) { this.showToast('Could not upload proof. Please try again.', 'danger'); this.setButtonLoading(btn, false); return; }
                 }
                 
                 try {
                     await this.db.ref(`task_submissions/${this.state.currentUser.uid}`).push({
-                        taskId,
-                        subTaskId,
-                        taskTitle: taskTitle,
-                        reward: rewardAmount,
-                        proofUrl,
-                        status: 'pending',
-                        timestamp: firebase.database.ServerValue.TIMESTAMP,
-                        details: submissionDetails
+                        taskId, subTaskId, taskTitle, reward: rewardAmount, proofUrl, status: 'pending', timestamp: firebase.database.ServerValue.TIMESTAMP, details: submissionDetails
                     });
                     this.showToast('Task submitted for review!', 'success');
-
-                    if (taskId === 'sell_coins') {
-                        form.reset();
-                        const usdDisplay = document.getElementById('sell-coins-usd-equivalent');
-                        if (usdDisplay) usdDisplay.textContent = '$0.000';
-                        const preview = form.querySelector('.proof-preview');
-                        if (preview) preview.style.display = 'none';
-                    } else {
-                        this.renderTaskPage(taskId);
-                    }
-
+                    this.renderTaskPage(taskId); 
                 } catch (error) {
                     this.showToast(`Submission failed: ${error.message}`, 'danger');
                 } finally {
