@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1473,6 +1472,26 @@
             border-radius: 5px;
             transition: width 0.5s ease;
         }
+        
+        /* --- NEW: Ramadan Splash Screen --- */
+        #ramadan-splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('https://iili.io/q32fOmv.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: 9998;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            pointer-events: none;
+        }
+        #ramadan-splash-screen.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
     </style>
 </head>
 <body class="landing-visible">
@@ -2234,6 +2253,9 @@
     <!-- ############# NEW INTERFACE CONTAINER END ############ -->
     <!-- ###################################################### -->
 
+    <!-- Ramadan Splash Screen -->
+    <div id="ramadan-splash-screen" style="display: none;"></div>
+    <audio id="ramadan-audio" src="https://www.islamcan.com/audio/naats/misc/Ramadan%20Mubarak.mp3" preload="auto"></audio>
 
     <!-- Modals -->
     <div id="forgot-password-modal" class="modal-overlay">
@@ -2523,6 +2545,10 @@
                     niTaskWithdrawalForm: document.getElementById('ni-task-withdrawal-form'),
                     niTaskHistoryList: document.getElementById('ni-task-history-list'),
                     noTaskHistoryMsg: document.getElementById('no-task-history-msg'),
+                    
+                    // Ramadan Splash Screen Elements
+                    ramadanSplashScreen: document.getElementById('ramadan-splash-screen'),
+                    ramadanAudio: document.getElementById('ramadan-audio'),
                 };
             },
             
@@ -2707,7 +2733,7 @@
                 this.state.ui.myNftsList.addEventListener('click', e => { const btn = e.target.closest('.btn-claim-nft'); if (btn) this.handleClaimNftProfit(btn.dataset.nftKey, btn); });
             
                 // New Interface Listeners
-                this.state.ui.switchInterfaceBtn.addEventListener('click', () => this.toggleInterface(true));
+                this.state.ui.switchInterfaceBtn.addEventListener('click', () => this.showRamadanSplash());
                 this.state.ui.niMenuBtn.addEventListener('click', () => this.openNiSidebar());
                 this.state.ui.niSidebarOverlay.addEventListener('click', () => this.closeNiSidebar());
                 this.state.ui.niExitBtn.addEventListener('click', () => this.toggleInterface(false));
@@ -2916,7 +2942,35 @@
             updateSingleNftCard(key) { const nft = this.state.userData?.nfts?.[key]; if (!nft) { clearInterval(this.state.nftIntervals[key]); return; } const claimableEl = document.getElementById(`claimable-${key}`), timerEl = document.getElementById(`timer-${key}`), progressEl = document.getElementById(`progress-${key}`), claimBtn = document.querySelector(`.btn-claim-nft[data-nft-key="${key}"]`); if (!claimableEl) { clearInterval(this.state.nftIntervals[key]); return; } const dailyProfit = nft.investment * this.config.NFT_DAILY_RATE_PERCENT, cap = nft.investment * this.config.NFT_TOTAL_RETURN_PERCENT; if (nft.totalProfitClaimed >= cap) { claimableEl.textContent = 'PKR 0'; timerEl.textContent = 'Completed (300% Return)'; claimBtn.disabled = true; claimBtn.querySelector('.btn-text').textContent = 'Completed'; progressEl.style.width = '100%'; clearInterval(this.state.nftIntervals[key]); return; } const elapsed = Date.now() - nft.lastClaimTimestamp, fullDay = 24 * 60 * 60 * 1000; let claimable = Math.min((elapsed / fullDay) * dailyProfit, dailyProfit, cap - nft.totalProfitClaimed); claimableEl.textContent = `PKR ${claimable.toLocaleString()}`; progressEl.style.width = `${(nft.totalProfitClaimed / cap) * 100}%`; if (elapsed >= fullDay) { timerEl.textContent = 'Ready to Claim!'; timerEl.style.color = 'var(--success-color)'; claimBtn.disabled = false; } else { const rem = fullDay - elapsed, h = Math.floor((rem/(1000*60*60))%24).toString().padStart(2,'0'), m = Math.floor((rem/(1000*60))%60).toString().padStart(2,'0'), s = Math.floor((rem/1000)%60).toString().padStart(2,'0'); timerEl.textContent = `Next claim in: ${h}:${m}:${s}`; timerEl.style.color = 'var(--warning-color)'; claimBtn.disabled = true; } },
             async handleClaimNftProfit(nftKey, btn) { const nft = this.state.userData?.nfts?.[nftKey]; if (!nft || (Date.now() - nft.lastClaimTimestamp) < 24*60*60*1000) return this.showToast('Not yet time to claim.', 'info'); this.setButtonLoading(btn, true); try { const profit = Math.min(nft.investment * this.config.NFT_DAILY_RATE_PERCENT, (nft.investment * this.config.NFT_TOTAL_RETURN_PERCENT) - nft.totalProfitClaimed); if (profit <= 0) { this.showToast('No profit to claim.', 'info'); this.setButtonLoading(btn, false); return; } const updates = {}; updates[`/users/${this.state.currentUser.uid}/pkr_balance`] = firebase.database.ServerValue.increment(profit); updates[`/users/${this.state.currentUser.uid}/nfts/${nftKey}/totalProfitClaimed`] = firebase.database.ServerValue.increment(profit); updates[`/users/${this.state.currentUser.uid}/nfts/${nftKey}/lastClaimTimestamp`] = firebase.database.ServerValue.TIMESTAMP; await this.db.ref().update(updates); await this.logTransaction('nft_profit', profit, { reason: `${nft.nftId} NFT Earning`, status: 'approved', currency: 'PKR' }); this.showToast(`Claimed PKR ${profit.toLocaleString()}!`, 'success'); } catch (error) { this.showToast(`Claim failed: ${error.message}`, 'danger'); } finally { this.setButtonLoading(btn, false); } },
 
-            // --- [5.4] NEW TASK SYSTEM V2 ---
+            // --- [5.4] NEW TASK SYSTEM V2 & INTERFACE SWITCH ---
+            showRamadanSplash() {
+                const splash = this.state.ui.ramadanSplashScreen;
+                const audio = this.state.ui.ramadanAudio;
+                const appContainer = this.state.ui.appContainer;
+                
+                appContainer.style.display = 'none';
+                
+                splash.style.display = 'block';
+                setTimeout(() => {
+                    splash.classList.add('visible');
+                }, 50);
+                
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.play().catch(error => console.log("Audio autoplay was blocked by the browser."));
+                }
+                
+                setTimeout(() => {
+                    splash.classList.remove('visible');
+                    if (audio) { audio.pause(); }
+                    
+                    setTimeout(() => {
+                        splash.style.display = 'none';
+                        this.toggleInterface(true);
+                    }, 500);
+                }, 5000);
+            },
+            
             toggleInterface(showNew) {
                 if (showNew) {
                     this.state.ui.appContainer.style.display = 'none';
@@ -2942,9 +2996,17 @@
                 
                 const videoUrl = taskData.videoUrl || "https://www.youtube.com/embed/dQw4w9WgXcQ"; 
 
+                let preVideoContent = '';
+                if (taskId === 'sell_coins') {
+                    preVideoContent = `<h4 style="text-align: center; margin-bottom: 20px; color: var(--tertiary-accent);">
+                        Complete This Task On: <a href="https://rivafollower.com/" target="_blank" rel="noopener noreferrer" style="color: var(--primary-accent); text-decoration: underline;">rivafollower.com</a>
+                    </h4>`;
+                }
+
                 const commonInstructionHTML = `
                     <div class="instruction-container">
                         <h3>How to Complete This Task</h3>
+                        ${preVideoContent}
                         <p>Watch this short video to understand the steps required to complete the task and submit your proof correctly.</p>
                         <iframe class="instruction-video" src="${videoUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         <button class="btn task-understand-btn" style="border-radius:14px;"><i class="fas fa-check-circle"></i> I Understand, Show Task</button>
