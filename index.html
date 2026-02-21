@@ -2179,8 +2179,8 @@
             </div>
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="label">Task Earnings (PKR)</div>
-                    <div class="value" id="ni-home-task-balance">PKR 0</div>
+                    <div class="label">Task Earnings</div>
+                    <div class="value" id="ni-home-task-balance">0.00Rs</div>
                 </div>
                 <div class="stat-card">
                     <div class="label">Pending Tasks</div>
@@ -2238,10 +2238,10 @@
             </div>
             <div class="content-panel">
                 <div class="balance-display">
-                    <span class="amount" id="ni-task-balance">PKR 0</span>
+                    <span class="amount" id="ni-task-balance" style="font-size: 3.5em;">0.00Rs</span>
                     <span class="currency">Available Task Earnings</span>
                 </div>
-                 <div class="balance-on-hold" id="ni-task-on-hold-balance">On Hold: PKR 0</div>
+                 <div class="balance-on-hold" id="ni-task-on-hold-balance">On Hold: 0.00Rs</div>
                 <div class="wallet-actions">
                     <button class="btn btn-sell" id="ni-task-withdraw-btn" style="border-radius: 14px;">
                         <i class="fas fa-paper-plane"></i>&nbsp; Withdraw Funds
@@ -2257,7 +2257,7 @@
                 <h3>Withdraw Task Earnings</h3>
             </div>
             <div class="content-panel">
-                <p class="info-text" style="text-align:center; margin-bottom: 25px;">Available for Withdrawal: <b id="ni-task-withdrawal-page-balance" style="color: var(--primary-accent);">PKR 0</b></p>
+                <p class="info-text" style="text-align:center; margin-bottom: 25px;">Available for Withdrawal: <b id="ni-task-withdrawal-page-balance" style="color: var(--primary-accent);">0.00Rs</b></p>
                 <form id="ni-task-withdrawal-form">
                     <div class="input-group">
                         <input type="number" id="ni-task-withdraw-amount" placeholder="Amount (PKR)" required min="100" step="1">
@@ -2676,15 +2676,14 @@
             updateNewInterfaceUI() {
                 if (!this.state.newInterfaceData) return;
                 const { task_balance_pkr = 0, task_balance_on_hold_pkr = 0 } = this.state.newInterfaceData;
-                const formatCurrencyPKR = (num) => `PKR ${Math.round(Number(num || 0)).toLocaleString()}`;
                 
                 const pendingTasks = this.state.taskSubmissions ? Object.values(this.state.taskSubmissions).filter(s => s.status === 'pending').length : 0;
 
-                this.state.ui.niHomeTaskBalance.textContent = formatCurrencyPKR(task_balance_pkr);
+                this.state.ui.niHomeTaskBalance.textContent = this.formatSwitchCurrency(task_balance_pkr);
                 this.state.ui.niHomePendingTasks.textContent = pendingTasks;
-                this.state.ui.niTaskBalance.textContent = formatCurrencyPKR(task_balance_pkr);
-                this.state.ui.niTaskOnHoldBalance.textContent = `On Hold: ${formatCurrencyPKR(task_balance_on_hold_pkr)}`;
-                this.state.ui.niTaskWithdrawalPageBalance.textContent = formatCurrencyPKR(task_balance_pkr);
+                this.state.ui.niTaskBalance.textContent = this.formatSwitchCurrency(task_balance_pkr);
+                this.state.ui.niTaskOnHoldBalance.textContent = `On Hold: ${this.formatSwitchCurrency(task_balance_on_hold_pkr)}`;
+                this.state.ui.niTaskWithdrawalPageBalance.textContent = this.formatSwitchCurrency(task_balance_pkr);
             },
 
             updateAllHistories(transactions) {
@@ -2846,7 +2845,7 @@
                         const pkrValue = coinAmount * conversionRate;
                         const pkrDisplay = document.getElementById('sell-coins-pkr-equivalent');
                         if (pkrDisplay) {
-                            pkrDisplay.textContent = `PKR ${pkrValue.toLocaleString()}`;
+                            pkrDisplay.textContent = this.formatSwitchCurrency(pkrValue);
                         }
                     }
                 });
@@ -3087,7 +3086,7 @@
                                 <div class="task-list-item">
                                     <div class="task-info">
                                         <div class="task-title">Ad #${key.slice(-2)}</div>
-                                        <div class="task-reward">+ PKR ${(subTask.reward || 0).toLocaleString()}</div>
+                                        <div class="task-reward">+ ${this.formatSwitchCurrency(subTask.reward)}</div>
                                     </div>
                                     <button class="btn task-action-btn auto-task-btn" data-task-id="${taskId}" data-subtask-id="${key}" data-reward="${subTask.reward}" data-link="${subTask.link || ''}">
                                         <span class="btn-text">View Ad</span>
@@ -3120,7 +3119,7 @@
                                      </div>
                                      <div class="task-detail-card">
                                         <div class="label">Reward</div>
-                                        <div class="value reward-value">PKR ${(subTask.reward || 0).toLocaleString()}</div>
+                                        <div class="value reward-value">${this.formatSwitchCurrency(subTask.reward)}</div>
                                      </div>
                                      <form class="task-submission-form" data-task-id="${taskId}" data-subtask-id="${key}">
                                          <p>Upload a screenshot as proof of completion.</p>
@@ -3151,7 +3150,7 @@
                                      <div class="task-detail-card"><div class="label">Username</div><div class="value">${subTask.username || ''}</div></div>
                                      <div class="task-detail-card"><div class="label">Gmail Address</div><div class="value">${subTask.email || ''}</div></div>
                                      <div class="task-detail-card"><div class="label">Password</div><div class="value">${subTask.password || ''}</div></div>
-                                     <div class="task-detail-card"><div class="label">Reward</div><div class="value reward-value">PKR ${(subTask.reward || 0).toLocaleString()}</div></div>
+                                     <div class="task-detail-card"><div class="label">Reward</div><div class="value reward-value">${this.formatSwitchCurrency(subTask.reward)}</div></div>
                                      <form class="task-submission-form" data-task-id="${taskId}" data-subtask-id="${key}">
                                          <button type="submit" class="btn full-width" style="border-radius:14px;"><span class="btn-text">Submit Task</span><div class="spinner-sm"></div></button>
                                      </form>
@@ -3183,7 +3182,7 @@
                             <div class="task-detail-card">
                                 <div class="label">Conversion Rate & Minimum</div>
                                 <div class="stats-grid" style="grid-template-columns: 1fr 1fr; gap: 10px;">
-                                    <div class="stat-card" style="padding: 15px;"><div class="label">Rate</div><div class="value" style="font-size: 1.1em;">100,000 Coins = PKR 840</div></div>
+                                    <div class="stat-card" style="padding: 15px;"><div class="label">Rate</div><div class="value" style="font-size: 1.1em;">100,000 Coins = 840Rs</div></div>
                                     <div class="stat-card" style="padding: 15px;"><div class="label">Minimum Send</div><div class="value" style="font-size: 1.1em;">${minCoins.toLocaleString()} Coins</div></div>
                                 </div>
                             </div>
@@ -3193,8 +3192,8 @@
                                     <input type="number" id="sell-coins-amount" placeholder="Amount of Coins Sent" required min="${minCoins}" step="1"><i class="fa-solid fa-coins"></i>
                                 </div>
                                 <div class="task-detail-card" style="text-align:center; background: var(--surface-bg-darker);">
-                                    <div class="label">You Will Receive (PKR)</div>
-                                    <div class="value reward-value" id="sell-coins-pkr-equivalent" style="font-size: 2em;">PKR 0</div>
+                                    <div class="label">You Will Receive</div>
+                                    <div class="value reward-value" id="sell-coins-pkr-equivalent" style="font-size: 2em;">0.00Rs</div>
                                 </div>
                                 <p style="margin-top: 20px;">Upload a screenshot of the transaction as proof.</p>
                                 <div class="input-group">
@@ -3334,7 +3333,7 @@
                             // Process referral bonus
                             await this.processTaskReferralBonus(this.state.currentUser.uid, numericReward);
 
-                            this.showToast(`+PKR ${numericReward.toLocaleString()} added to your balance!`, 'success');
+                            this.showToast(`+${this.formatSwitchCurrency(numericReward)} added to your balance!`, 'success');
                             btn.querySelector('.btn-text').textContent = 'Completed';
 
                         } catch(error) {
@@ -3387,7 +3386,7 @@
                         timestamp: firebase.database.ServerValue.TIMESTAMP
                     });
 
-                    this.showToast(`Withdrawal request for PKR ${amount.toLocaleString()} submitted!`, 'success');
+                    this.showToast(`Withdrawal request for ${this.formatSwitchCurrency(amount)} submitted!`, 'success');
                     this.state.ui.niTaskWithdrawalForm.reset();
                     this.showNewInterfacePage('ni-task-history-page');
                 } catch (err) {
@@ -3479,7 +3478,7 @@
                                 <div class="title">${title}</div>
                                 <div class="date">${new Date(item.timestamp).toLocaleString()}</div>
                             </div>
-                            <div class="status" style="color: var(--success-color);">+PKR ${(item.reward || 0).toLocaleString()}</div>
+                            <div class="status" style="color: var(--success-color);">+${this.formatSwitchCurrency(item.reward)}</div>
                             ${item.proofUrl && item.proofUrl !== 'N/A' ? `<a href="${item.proofUrl}" target="_blank" class="proof-link"><i class="fas fa-eye"></i></a>` : ''}
                         `;
                     } else if (item.historyType === 'withdrawal') { 
@@ -3490,7 +3489,7 @@
                                 <div class="title">Withdrawal via ${item.details.network}</div>
                                 <div class="date">${new Date(item.timestamp).toLocaleString()}</div>
                             </div>
-                            <div class="status" style="color: var(--danger-color);">- PKR ${(item.amount || 0).toLocaleString()}</div>
+                            <div class="status" style="color: var(--danger-color);">- ${this.formatSwitchCurrency(item.amount)}</div>
                         `;
                     } else { // It's a bonus
                          li.className = `task-history-item approved`;
@@ -3500,7 +3499,7 @@
                                 <div class="title">${item.details.reason}</div>
                                 <div class="date">${new Date(item.timestamp).toLocaleString()}</div>
                             </div>
-                            <div class="status" style="color: var(--success-color);">+ PKR ${(item.amount || 0).toLocaleString()}</div>
+                            <div class="status" style="color: var(--success-color);">+ ${this.formatSwitchCurrency(item.amount)}</div>
                         `;
                     }
                     listEl.appendChild(li);
@@ -3556,6 +3555,9 @@
             },
 
             // --- [7] HELPERS ---
+            formatSwitchCurrency(num) {
+                return `${Number(num || 0).toFixed(2)}Rs`;
+            },
             copyToClipboard(text, element, msg) { if (!text) return; navigator.clipboard.writeText(text).then(() => { this.showToast(msg, 'success'); if (element) { const original = element.innerHTML; element.innerHTML = `<i class="fas fa-check"></i> <span>Copied!</span>`; element.disabled = true; setTimeout(() => { element.innerHTML = original; element.disabled = false; }, 2000); } }).catch(() => this.showToast('Failed to copy.', 'danger')); },
             initDraggableFAB() { const fab = this.state.ui.whatsappFab; if (!fab) return; let isDragging = false, hasMoved = false, x, y; const start = e => { isDragging = true; hasMoved = false; fab.classList.add('dragging'); const c = e.touches ? e.touches[0] : e; x = c.clientX - fab.offsetLeft; y = c.clientY - fab.offsetTop; document.addEventListener('mousemove', move); document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('mouseup', end); document.addEventListener('touchend', end); }; const move = e => { if (!isDragging) return; e.preventDefault(); hasMoved = true; const c = e.touches ? e.touches[0] : e; fab.style.left = `${Math.max(0, Math.min(c.clientX-x, window.innerWidth-fab.offsetWidth))}px`; fab.style.top = `${Math.max(0, Math.min(c.clientY-y, window.innerHeight-fab.offsetHeight))}px`; fab.style.right = 'auto'; fab.style.bottom = 'auto'; }; const end = () => { isDragging = false; fab.classList.remove('dragging'); document.removeEventListener('mousemove', move); document.removeEventListener('touchmove', move); document.removeEventListener('mouseup', end); document.removeEventListener('touchend', end); }; fab.addEventListener('mousedown', start); fab.addEventListener('touchstart', start); fab.addEventListener('click', e => { if (hasMoved) e.preventDefault(); }); },
             maskEmail(email) { if (!email || email.indexOf('@')===-1) return email; const [name, domain] = email.split('@'); return `${name.slice(0, 2)}***@${domain}`; },
