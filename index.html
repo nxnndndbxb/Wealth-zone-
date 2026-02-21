@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wealth Zone | Digital Wealth Platform</title>
+    <!-- 
+        SECURITY NOTICE:
+        A secure web application requires robust server-side validation, database protection,
+        and authentication logic. This HTML file only defines the user interface (front-end).
+        Ensure your backend implements defenses against SQL injection, Cross-Site Scripting (XSS),
+        Cross-Site Request Forgery (CSRF), and brute-force attacks.
+        Always hash and salt user passwords securely on the server.
+    -->
     <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -206,7 +214,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            display: none;
+            display: none; /* Initially hidden */
             justify-content: space-between;
             align-items: center;
             padding: 15px 20px;
@@ -216,6 +224,10 @@
             -webkit-backdrop-filter: blur(12px);
             box-shadow: 0 3px 15px rgba(0,0,0,0.6);
             height: 70px;
+        }
+        
+        #app-container.active .app-header {
+             display: flex; /* Show only when app is active */
         }
         
         .menu-btn {
@@ -501,11 +513,15 @@
             background: var(--surface-bg); 
             border: 1px solid var(--surface-border); 
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
-            display: flex; justify-content: space-around; align-items: center; 
+            display: none; /* Hidden by default */
+            justify-content: space-around; align-items: center; 
             border-radius: calc(var(--border-radius) + 10px); 
             box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), var(--shadow-glow); 
             z-index: 1000; 
             padding: 0 10px;
+        }
+        #app-container.active .bottom-nav {
+            display: flex; /* Show only when app is active */
         }
         .nav-btn { 
             background: none; border: none; color: var(--text-secondary); 
@@ -541,14 +557,18 @@
             width: 65px; height: 65px; 
             background: linear-gradient(45deg, #25D366, #128C7E);
             color: #ffffff; border-radius: 50%; 
-            display: flex; justify-content: center; align-items: center; 
+            display: none; /* Hidden by default */
+            justify-content: center; align-items: center; 
             font-size: 2.2em; text-decoration: none; 
             box-shadow: 0 8px 30px rgba(37, 211, 102, 0.4), 0 0 15px rgba(18, 140, 126, 0.6); 
             z-index: 1001; 
             transition: transform 0.3s ease, box-shadow 0.3s ease; 
             user-select: none; -webkit-user-select: none; cursor: grab; 
-            transform: scale(0); 
-            animation: fab-pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.5s forwards; 
+        }
+        #app-container.active .whatsapp-fab {
+            display: flex; /* Show only when app is active */
+            transform: scale(0);
+            animation: fab-pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1s forwards;
         }
         .whatsapp-fab.dragging { cursor: grabbing; transition: none; box-shadow: 0 12px 35px rgba(37, 211, 102, 0.6); }
         .whatsapp-fab:hover:not(.dragging) { transform: scale(1.1); box-shadow: 0 15px 40px rgba(37, 211, 102, 0.8); }
@@ -1577,32 +1597,12 @@
 
     <!-- Authentication Container -->
     <div id="auth-container">
-        <div id="login-page-container" class="auth-form">
-            <div class="auth-icon"><i class="fas fa-gem"></i></div>
-            <div class="content-panel">
-                <h2>Access Login</h2>
-                <form id="login-form">
-                    <div class="input-group">
-                        <input type="email" id="login-email" required placeholder="Email Address" autocomplete="email">
-                        <i class="fa-solid fa-envelope"></i>
-                    </div>
-                    <div class="input-group">
-                        <input type="password" id="login-password" required placeholder="Security Key" autocomplete="current-password">
-                        <i class="fa-solid fa-eye toggle-password"></i>
-                        <i class="fa-solid fa-lock"></i>
-                    </div>
-                    <button type="submit" class="btn full-width"><span class="btn-text">Login Securely</span><div class="spinner-sm"></div></button>
-                </form>
-                <p class="auth-switch" style="margin-top: 15px; text-align: right; margin-bottom: 0;">
-                    <a href="#" id="show-forgot-password-link">Forgot Password?</a>
-                </p>
-                <p class="auth-switch">No security profile? <a href="#" id="show-register-link">Create Account</a></p>
-            </div>
-        </div>
-        <div id="register-page-container" class="auth-form" style="display: none;">
+        <!-- REGISTRATION PAGE (DEFAULT) -->
+        <div id="register-page-container" class="auth-form">
             <div class="auth-icon"><i class="fas fa-user-astronaut"></i></div>
             <div class="content-panel">
                 <h2>Profile Registration</h2>
+                 <!-- SECURITY COMMENT: All form data must be sanitized and validated on the server. -->
                 <form id="register-form">
                     <div class="input-group">
                         <input type="text" id="register-username" required placeholder="Username" autocomplete="username">
@@ -1613,6 +1613,7 @@
                         <i class="fa-solid fa-envelope"></i>
                     </div>
                     <div class="input-group">
+                        <!-- SECURITY COMMENT: Implement server-side password strength requirements. -->
                         <input type="password" id="register-password" required placeholder="New Security Key" autocomplete="new-password">
                         <i class="fa-solid fa-eye toggle-password"></i>
                         <i class="fa-solid fa-lock"></i>
@@ -1629,6 +1630,31 @@
                     <button type="submit" class="btn full-width"><span class="btn-text">Create My Account</span><div class="spinner-sm"></div></button>
                 </form>
                 <p class="auth-switch">Already established profile? <a href="#" id="show-login-link">Login</a></p>
+            </div>
+        </div>
+        
+        <!-- LOGIN PAGE (HIDDEN BY DEFAULT) -->
+        <div id="login-page-container" class="auth-form" style="display: none;">
+            <div class="auth-icon"><i class="fas fa-gem"></i></div>
+            <div class="content-panel">
+                <h2>Access Login</h2>
+                 <!-- SECURITY COMMENT: Implement rate limiting and account lockout policies on the server to prevent brute-force attacks. -->
+                <form id="login-form">
+                    <div class="input-group">
+                        <input type="email" id="login-email" required placeholder="Email Address" autocomplete="email">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="login-password" required placeholder="Security Key" autocomplete="current-password">
+                        <i class="fa-solid fa-eye toggle-password"></i>
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <button type="submit" class="btn full-width"><span class="btn-text">Login Securely</span><div class="spinner-sm"></div></button>
+                </form>
+                <p class="auth-switch" style="margin-top: 15px; text-align: right; margin-bottom: 0;">
+                    <a href="#" id="show-forgot-password-link">Forgot Password?</a>
+                </p>
+                <p class="auth-switch">No security profile? <a href="#" id="show-register-link">Create Account</a></p>
             </div>
         </div>
     </div>
@@ -2717,7 +2743,13 @@
             // --- [4] EVENT LISTENERS & HANDLERS ---
             bindEventListeners() {
                 // Landing & Auth
-                document.querySelectorAll('.enter-app-btn').forEach(btn => btn.addEventListener('click', () => { this.state.ui.landingPageContainer.style.display = 'none'; this.state.ui.body.classList.remove('landing-visible'); this.state.ui.authContainer.classList.add('active'); }));
+                document.querySelectorAll('.enter-app-btn').forEach(btn => btn.addEventListener('click', () => { 
+                    this.state.ui.landingPageContainer.style.display = 'none'; 
+                    this.state.ui.body.classList.remove('landing-visible'); 
+                    this.state.ui.authContainer.classList.add('active'); 
+                    this.state.ui.loginPage.style.display = 'none'; 
+                    this.state.ui.registerPage.style.display = 'block'; 
+                }));
                 window.addEventListener('scroll', () => { document.getElementById('landing-header')?.classList.toggle('scrolled', window.scrollY > 50); });
                 document.getElementById('show-register-link').addEventListener('click', (e) => { e.preventDefault(); this.state.ui.loginPage.style.display = 'none'; this.state.ui.registerPage.style.display = 'block'; });
                 document.getElementById('show-login-link').addEventListener('click', (e) => { e.preventDefault(); this.state.ui.registerPage.style.display = 'none'; this.state.ui.loginPage.style.display = 'block'; });
@@ -2848,7 +2880,6 @@
                             this.state.ui.body.classList.remove('landing-visible');
                             this.state.ui.authContainer.classList.remove('active'); 
                             this.state.ui.appContainer.classList.add('active'); 
-                            this.state.ui.appHeader.style.display = 'flex'; 
                             this.showPage('email-verification-page');
                             this.state.ui.verificationEmailDisplay.textContent = user.email;
                             return;
@@ -2861,19 +2892,17 @@
                         this.state.ui.body.classList.remove('landing-visible');
                         this.state.ui.authContainer.classList.remove('active'); 
                         this.state.ui.appContainer.classList.add('active'); 
-                        this.state.ui.appHeader.style.display = 'flex'; 
                         this.showPage('home-page'); 
                     } else { 
                         this.state.currentUser = null; 
                         this.state.userData = null;
                         this.state.newInterfaceData = null;
                         this.stopAllListeners(); 
-                        this.state.ui.appHeader.style.display = 'none'; 
                         this.state.ui.landingPageContainer.style.display = 'block';
                         this.state.ui.body.classList.add('landing-visible');
-                        this.state.ui.authContainer.classList.add('active'); 
+                        this.state.ui.authContainer.classList.remove('active'); 
                         this.state.ui.appContainer.classList.remove('active'); 
-                        this.state.ui.loginPage.style.display = 'block';
+                        this.state.ui.loginPage.style.display = 'none';
                         this.state.ui.registerPage.style.display = 'none';
                     } 
                 }); 
