@@ -535,23 +535,23 @@
         }
         .nav-btn.active::before { transform: scaleX(1); }
 
-        /* --- Telegram Button --- */
-        .telegram-fab { 
+        /* --- WhatsApp Button --- */
+        .whatsapp-fab { 
             position: fixed; bottom: 120px; right: 25px; 
             width: 65px; height: 65px; 
-            background: linear-gradient(45deg, #FFC300, #B8860B);
-            color: var(--background-primary); border-radius: 50%; 
+            background: linear-gradient(45deg, #25D366, #128C7E);
+            color: #ffffff; border-radius: 50%; 
             display: flex; justify-content: center; align-items: center; 
-            font-size: 2em; text-decoration: none; 
-            box-shadow: 0 8px 30px rgba(255, 195, 0, 0.4), 0 0 15px rgba(255, 195, 0, 0.6); 
+            font-size: 2.2em; text-decoration: none; 
+            box-shadow: 0 8px 30px rgba(37, 211, 102, 0.4), 0 0 15px rgba(18, 140, 126, 0.6); 
             z-index: 1001; 
             transition: transform 0.3s ease, box-shadow 0.3s ease; 
             user-select: none; -webkit-user-select: none; cursor: grab; 
             transform: scale(0); 
             animation: fab-pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.5s forwards; 
         }
-        .telegram-fab.dragging { cursor: grabbing; transition: none; box-shadow: 0 12px 35px rgba(255, 195, 0, 0.6); }
-        .telegram-fab:hover:not(.dragging) { transform: scale(1.1); box-shadow: 0 15px 40px rgba(255, 195, 0, 0.8); }
+        .whatsapp-fab.dragging { cursor: grabbing; transition: none; box-shadow: 0 12px 35px rgba(37, 211, 102, 0.6); }
+        .whatsapp-fab:hover:not(.dragging) { transform: scale(1.1); box-shadow: 0 15px 40px rgba(37, 211, 102, 0.8); }
         @keyframes fab-pop-in { from { transform: scale(0); } to { transform: scale(1); } }
 
         /* --- Home Page --- */
@@ -629,14 +629,14 @@
         .history-list { list-style-type: none; max-height: 400px; overflow-y: auto; padding-right: 10px; }
         .transaction-item { display: flex; align-items: center; padding: 18px; margin-bottom: 12px; background-color: var(--background-secondary); border-radius: 16px; border-left: 5px solid var(--text-secondary); transition: background-color 0.3s ease, transform 0.3s ease; }
         .transaction-item:hover { background-color: var(--surface-bg-darker); transform: translateX(3px); }
-        .transaction-item.buy, .transaction-item.deposit, .transaction-item.plan_profit, .transaction-item.invite_bonus, .transaction-item.nft_profit, .transaction-item.ad_reward, .transaction-item.task_reward { border-left-color: var(--success-color); }
+        .transaction-item.buy, .transaction-item.deposit, .transaction-item.plan_profit, .transaction-item.invite_bonus, .transaction-item.nft_profit, .transaction-item.ad_reward, .transaction-item.task_reward, .transaction-item.task_referral_bonus { border-left-color: var(--success-color); }
         .transaction-item.sell, .transaction-item.withdrawal, .transaction-item.nft_purchase, .transaction-item.plan_invest { border-left-color: var(--danger-color); }
         .transaction-item.pending { border-left-color: var(--warning-color); opacity: 0.9; }
         .transaction-item.rejected { border-left-color: var(--danger-color); opacity: 0.7; }
         .transaction-item.approved { border-left-color: var(--success-color); opacity: 1.0; }
         .transaction-item.bonus { border-left-color: var(--primary-accent); }
         .transaction-item .icon { font-size: 1.8em; width: 40px; text-align: center; margin-right: 15px; }
-        .transaction-item.buy .icon, .transaction-item.deposit .icon, .transaction-item.plan_profit .icon, .transaction-item.invite_bonus .icon, .transaction-item.nft_profit .icon, .transaction-item.ad_reward .icon, .transaction-item.task_reward .icon { color: var(--success-color); }
+        .transaction-item.buy .icon, .transaction-item.deposit .icon, .transaction-item.plan_profit .icon, .transaction-item.invite_bonus .icon, .transaction-item.nft_profit .icon, .transaction-item.ad_reward .icon, .transaction-item.task_reward .icon, .transaction-item.task_referral_bonus .icon { color: var(--success-color); }
         .transaction-item.sell .icon, .transaction-item.withdrawal .icon, .transaction-item.nft_purchase .icon, .transaction-item.plan_invest .icon { color: var(--danger-color); }
         .transaction-item.bonus .icon { color: var(--primary-accent); }
         .transaction-item.pending .icon { color: var(--warning-color); }
@@ -1310,7 +1310,7 @@
             .auth-icon { font-size: 5em; margin-bottom: 20px; }
             .input-group input, .input-group select { padding: 18px 55px 18px 20px; }
             .balance-display .amount { font-size: 3.5em; }
-            .telegram-fab { width: 55px; height: 55px; right: 20px; bottom: 105px; font-size: 1.6em;}
+            .whatsapp-fab { width: 55px; height: 55px; right: 20px; bottom: 105px; font-size: 1.8em;}
             .bottom-nav { width: calc(100% - 30px); height: 75px; border-radius: 20px; bottom: 15px; }
             .nav-btn { width: 60px; font-size: 0.7em; }
             .nav-btn i { font-size: 1.6em; }
@@ -1671,8 +1671,8 @@
             </ul>
         </aside>
 
-        <a href="https://t.me/automining009" target="_blank" class="telegram-fab" id="telegram-fab" title="Contact Support on Telegram">
-            <i class="fab fa-telegram"></i>
+        <a href="https://whatsapp.com/channel/0029Vb7B6chCHDysWYDMuD3C" target="_blank" class="whatsapp-fab" id="whatsapp-fab" title="Join our WhatsApp Channel">
+            <i class="fab fa-whatsapp"></i>
         </a>
         
         <!-- Email Verification Page -->
@@ -1982,7 +1982,7 @@
                     <div class="value" id="free-mining-progress">0 / 2</div>
                     <p class="info-text" style="margin-top: 10px;">Active Referrals</p>
                 </div>
-                <p>Once your progress bar shows <b>2 / 2</b>, please contact our customer service via the Telegram button to claim your reward. Our team will verify your referrals and activate your free plan.</p>
+                <p>Once your progress bar shows <b>2 / 2</b>, please contact our customer service via the WhatsApp button to claim your reward. Our team will verify your referrals and activate your free plan.</p>
             </div>
         </section>
         
@@ -2134,7 +2134,9 @@
                 <li><button class="ni-sidebar-action" data-task-id="watch_video"><i class="fas fa-video"></i> Watch Video</button></li>
                 <li><button class="ni-sidebar-action" data-task-id="sell_coins"><i class="fas fa-coins"></i> Sell Coins</button></li>
                 <li><button class="ni-sidebar-action" data-ni-page="ni-sell-cards-page"><i class="fas fa-credit-card"></i> Sell Cards</button></li>
+                <li><button class="ni-sidebar-action" data-ni-page="ni-sell-channel-page"><i class="fab fa-youtube"></i> Sell Channel</button></li>
                 <li><button class="ni-sidebar-action" data-task-id="gmail"><i class="fas fa-envelope"></i> Gmail</button></li>
+                <li><button class="ni-sidebar-action" data-ni-page="ni-crypto-wallet-page"><i class="fab fa-bitcoin"></i> Crypto Wallet</button></li>
                 <li><button class="ni-sidebar-action" data-ni-page="ni-task-wallet-page"><i class="fas fa-wallet"></i> Wallet</button></li>
                 <li><button class="ni-sidebar-action" data-ni-page="ni-task-history-page"><i class="fas fa-history"></i> History</button></li>
                 <li><button id="ni-exit-btn"><i class="fas fa-sign-out-alt"></i> Exit Page</button></li>
@@ -2151,8 +2153,8 @@
             </div>
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="label">Task Earnings (USD)</div>
-                    <div class="value" id="ni-home-task-balance">$0.000</div>
+                    <div class="label">Task Earnings (PKR)</div>
+                    <div class="value" id="ni-home-task-balance">PKR 0</div>
                 </div>
                 <div class="stat-card">
                     <div class="label">Pending Tasks</div>
@@ -2177,6 +2179,31 @@
                 <p>An exciting new feature is under development. Soon, you'll be able to sell gift cards and other digital assets. Stay tuned for updates!</p>
             </div>
         </section>
+        
+        <!-- NEW: Sell Channel Page -->
+        <section id="ni-sell-channel-page" class="ni-page">
+            <div class="page-header">
+                <h3>Sell Channel</h3>
+            </div>
+            <div class="content-panel invite-box">
+                 <div class="icon" style="color: var(--primary-accent);"><i class="fas fa-tools"></i></div>
+                <h2>Coming Soon!</h2>
+                <p>An exciting new feature is under development where you can sell channels. Stay tuned for updates!</p>
+            </div>
+        </section>
+        
+        <!-- NEW: Crypto Wallet Page -->
+        <section id="ni-crypto-wallet-page" class="ni-page">
+            <div class="page-header">
+                <h3>Crypto Wallet</h3>
+            </div>
+            <div class="content-panel invite-box">
+                 <div class="icon" style="color: var(--primary-accent);"><i class="fas fa-tools"></i></div>
+                <h2>Coming Soon!</h2>
+                <p>Your integrated crypto wallet is under development. Manage your digital currencies right here. Stay tuned for updates!</p>
+            </div>
+        </section>
+
 
         <!-- New Interface Task Wallet Page -->
         <main id="ni-task-wallet-page" class="ni-page">
@@ -2185,10 +2212,10 @@
             </div>
             <div class="content-panel">
                 <div class="balance-display">
-                    <span class="amount" id="ni-task-balance">$0.000</span>
+                    <span class="amount" id="ni-task-balance">PKR 0</span>
                     <span class="currency">Available Task Earnings</span>
                 </div>
-                 <div class="balance-on-hold" id="ni-task-on-hold-balance">On Hold: $0.000</div>
+                 <div class="balance-on-hold" id="ni-task-on-hold-balance">On Hold: PKR 0</div>
                 <div class="wallet-actions">
                     <button class="btn btn-sell" id="ni-task-withdraw-btn" style="border-radius: 14px;">
                         <i class="fas fa-paper-plane"></i>&nbsp; Withdraw Funds
@@ -2204,11 +2231,11 @@
                 <h3>Withdraw Task Earnings</h3>
             </div>
             <div class="content-panel">
-                <p class="info-text" style="text-align:center; margin-bottom: 25px;">Available for Withdrawal: <b id="ni-task-withdrawal-page-balance" style="color: var(--primary-accent);">$0.000</b></p>
+                <p class="info-text" style="text-align:center; margin-bottom: 25px;">Available for Withdrawal: <b id="ni-task-withdrawal-page-balance" style="color: var(--primary-accent);">PKR 0</b></p>
                 <form id="ni-task-withdrawal-form">
                     <div class="input-group">
-                        <input type="number" id="ni-task-withdraw-amount" placeholder="Amount (USD)" required min="1" step="0.01">
-                        <i class="fa-solid fa-dollar-sign"></i>
+                        <input type="number" id="ni-task-withdraw-amount" placeholder="Amount (PKR)" required min="100" step="1">
+                        <i class="fa-solid fa-rupiah-sign"></i>
                     </div>
                     <div class="input-group">
                         <select id="ni-task-withdraw-network" required>
@@ -2394,6 +2421,8 @@
                 REFERRAL_DIRECT_BONUS_PERCENT: 0.30,
                 REFERRAL_INDIRECT_BONUS_PERCENT: 0.03,
                 
+                TASK_REFERRAL_BONUS_PERCENT: 0.03, // 3% commission for task earnings
+                
                 FREE_PLAN_REQUIRED_REFERRALS: 2, 
                 RANKING_LIMIT: 50,
                 
@@ -2498,7 +2527,7 @@
                 this.state.ui = {
                     body: document.body,
                     landingPageContainer: document.getElementById('landing-page-container'),
-                    preloader: document.getElementById('preloader'), authContainer: document.getElementById('auth-container'), appContainer: document.getElementById('app-container'), toastContainer: document.getElementById('toast-container'), telegramFab: document.getElementById('telegram-fab'),
+                    preloader: document.getElementById('preloader'), authContainer: document.getElementById('auth-container'), appContainer: document.getElementById('app-container'), toastContainer: document.getElementById('toast-container'), whatsappFab: document.getElementById('whatsapp-fab'),
                     loginPage: document.getElementById('login-page-container'), registerPage: document.getElementById('register-page-container'), loginForm: document.getElementById('login-form'), registerForm: document.getElementById('register-form'), registerRefCodeInput: document.getElementById('register-ref-code'),
                     appHeader: document.getElementById('app-header'), menuToggleBtn: document.getElementById('menu-toggle-btn'), appSidebar: document.getElementById('app-sidebar'), sidebarOverlay: document.getElementById('sidebar-overlay'), sidebarUsernameDisplay: document.getElementById('sidebar-username-display'), sidebarEmailDisplay: document.getElementById('sidebar-email-display'), sidebarUidDisplay: document.getElementById('sidebar-uid-display'), sidebarLogoutBtn: document.getElementById('sidebar-logout-btn'),
                     emailVerificationPage: document.getElementById('email-verification-page'), verificationStatus: document.getElementById('verification-status'), verificationEmailDisplay: document.getElementById('verification-email-display'), resendVerificationBtn: document.getElementById('resend-verification-btn'), checkVerificationBtn: document.getElementById('check-verification-btn'),
@@ -2620,16 +2649,16 @@
 
             updateNewInterfaceUI() {
                 if (!this.state.newInterfaceData) return;
-                const { task_balance_usd = 0, task_balance_on_hold_usd = 0 } = this.state.newInterfaceData;
-                const formatCurrencyUSD = (num) => `$${Number(num || 0).toFixed(3)}`;
+                const { task_balance_pkr = 0, task_balance_on_hold_pkr = 0 } = this.state.newInterfaceData;
+                const formatCurrencyPKR = (num) => `PKR ${Math.round(Number(num || 0)).toLocaleString()}`;
                 
                 const pendingTasks = this.state.taskSubmissions ? Object.values(this.state.taskSubmissions).filter(s => s.status === 'pending').length : 0;
 
-                this.state.ui.niHomeTaskBalance.textContent = formatCurrencyUSD(task_balance_usd);
+                this.state.ui.niHomeTaskBalance.textContent = formatCurrencyPKR(task_balance_pkr);
                 this.state.ui.niHomePendingTasks.textContent = pendingTasks;
-                this.state.ui.niTaskBalance.textContent = formatCurrencyUSD(task_balance_usd);
-                this.state.ui.niTaskOnHoldBalance.textContent = `On Hold: ${formatCurrencyUSD(task_balance_on_hold_usd)}`;
-                this.state.ui.niTaskWithdrawalPageBalance.textContent = formatCurrencyUSD(task_balance_usd);
+                this.state.ui.niTaskBalance.textContent = formatCurrencyPKR(task_balance_pkr);
+                this.state.ui.niTaskOnHoldBalance.textContent = `On Hold: ${formatCurrencyPKR(task_balance_on_hold_pkr)}`;
+                this.state.ui.niTaskWithdrawalPageBalance.textContent = formatCurrencyPKR(task_balance_pkr);
             },
 
             updateAllHistories(transactions) {
@@ -2666,11 +2695,11 @@
                     else if (status === 'rejected') statusClass = 'rejected';
                     
                     item.className = `transaction-item ${tx.type.toLowerCase().replace('mining', 'plan')} ${statusClass}`;
-                    const icons = { deposit: 'fa-arrow-down', withdrawal: 'fa-paper-plane', bonus: 'fa-gift', plan_profit: 'fa-arrow-up-right-dots', plan_invest: 'fa-sack-dollar', invite_bonus: 'fa-users', nft_purchase: 'fa-gem', nft_profit: 'fa-hand-holding-usd', ad_reward: 'fa-video', task_reward: 'fa-tasks', web_ad_reward: 'fa-ad' };
+                    const icons = { deposit: 'fa-arrow-down', withdrawal: 'fa-paper-plane', bonus: 'fa-gift', plan_profit: 'fa-arrow-up-right-dots', plan_invest: 'fa-sack-dollar', invite_bonus: 'fa-users', nft_purchase: 'fa-gem', nft_profit: 'fa-hand-holding-usd', ad_reward: 'fa-video', task_reward: 'fa-tasks', web_ad_reward: 'fa-ad', task_referral_bonus: 'fa-user-plus' };
                     let amountDisplay;
                     let typeText = tx.type.replace(/_/g, ' ');
                     
-                    const isPKR = tx.details?.currency === 'PKR' || !tx.details?.currency;
+                    const isPKR = tx.details?.currency !== 'USD';
                     const sign = ['withdrawal', 'nft_purchase', 'plan_invest'].includes(tx.type) ? '-' : '+';
                     amountDisplay = `${sign}${isPKR ? 'PKR' : '$'} ${isPKR ? Math.round(tx.amount).toLocaleString() : tx.amount.toFixed(3)}`;
 
@@ -2781,11 +2810,11 @@
                 this.state.ui.niTaskPage.addEventListener('input', e => {
                     if (e.target.id === 'sell-coins-amount') {
                         const coinAmount = parseFloat(e.target.value) || 0;
-                        const conversionRate = 3 / 100000;
-                        const usdValue = coinAmount * conversionRate;
-                        const usdDisplay = document.getElementById('sell-coins-usd-equivalent');
-                        if (usdDisplay) {
-                            usdDisplay.textContent = `$${usdValue.toFixed(3)}`;
+                        const conversionRate = 840 / 100000; // 100k coins = 840 PKR
+                        const pkrValue = coinAmount * conversionRate;
+                        const pkrDisplay = document.getElementById('sell-coins-pkr-equivalent');
+                        if (pkrDisplay) {
+                            pkrDisplay.textContent = `PKR ${pkrValue.toLocaleString()}`;
                         }
                     }
                 });
@@ -2863,12 +2892,13 @@
                 if (password.length < 6) { this.showToast('Password should be at least 6 characters.', 'danger'); this.setButtonLoading(btn, false); return; }
 
                 try {
-                    let referrerData = null, ancestry = {};
+                    let referrerUid = null, ancestry = {};
                     if(refCode) {
                         const snap = await this.db.ref('users').orderByChild('referralCode').equalTo(refCode).once('value');
                         if (snap.exists()) {
                             const refUid = Object.keys(snap.val())[0];
-                            referrerData = snap.val()[refUid];
+                            const referrerData = snap.val()[refUid];
+                            referrerUid = refUid; 
                             ancestry['level_1'] = refUid;
                             if(referrerData.ancestry) for(let i=1; i<this.config.REFERRAL_LEVELS+1; i++) if(referrerData.ancestry[`level_${i}`]) ancestry[`level_${i+1}`] = referrerData.ancestry[`level_${i}`]; else break;
                         } else this.showToast('Invalid invitation code.', 'warning');
@@ -2879,8 +2909,8 @@
                     await user.sendEmailVerification();
                     const referralCode = 'CDNC' + Math.random().toString(36).substring(2, 8).toUpperCase();
                     
-                    await this.db.ref('users/' + user.uid).set({ username, email, uid: user.uid, referralCode, referredBy: refCode || null, pkr_balance: 0, balance_on_hold: 0, unclaimed_invite_bonus: 0, active_referrals_count: 0, kyc_status: 'none', plans: { totalInvestmentPKR: 0, lastProfitClaimTimestamp: 0, firstInvestmentProcessed: false, totalProfitGeneratedPKR: 0, active_plan: null }, nfts: {}, ancestry, referrals_by_level: {}, referrals_data: {}, miningGateActive: false, miningGateProgress: { activatedReferralsCount: 0, activatedReferralUIDs: {} } });
-                    await this.db.ref('users_new_interface/' + user.uid).set({ task_balance_usd: 0, task_balance_on_hold_usd: 0, completed_auto_tasks: {} });
+                    await this.db.ref('users/' + user.uid).set({ username, email, uid: user.uid, referralCode, referredBy: refCode || null, referrerUid: referrerUid, pkr_balance: 0, balance_on_hold: 0, unclaimed_invite_bonus: 0, active_referrals_count: 0, kyc_status: 'none', plans: { totalInvestmentPKR: 0, lastProfitClaimTimestamp: 0, firstInvestmentProcessed: false, totalProfitGeneratedPKR: 0, active_plan: null }, nfts: {}, ancestry, referrals_by_level: {}, referrals_data: {}, miningGateActive: false, miningGateProgress: { activatedReferralsCount: 0, activatedReferralUIDs: {} } });
+                    await this.db.ref('users_new_interface/' + user.uid).set({ task_balance_pkr: 0, task_balance_on_hold_pkr: 0, completed_auto_tasks: {} });
                     
                     if(Object.keys(ancestry).length > 0){
                         const updates = {};
@@ -3028,7 +3058,7 @@
                                 <div class="task-list-item">
                                     <div class="task-info">
                                         <div class="task-title">Ad #${key.slice(-2)}</div>
-                                        <div class="task-reward">+ $${(subTask.reward || 0).toFixed(3)}</div>
+                                        <div class="task-reward">+ PKR ${(subTask.reward || 0).toLocaleString()}</div>
                                     </div>
                                     <button class="btn task-action-btn auto-task-btn" data-task-id="${taskId}" data-subtask-id="${key}" data-reward="${subTask.reward}" data-link="${subTask.link || ''}">
                                         <span class="btn-text">View Ad</span>
@@ -3061,7 +3091,7 @@
                                      </div>
                                      <div class="task-detail-card">
                                         <div class="label">Reward</div>
-                                        <div class="value reward-value">$${(subTask.reward || 0).toFixed(3)}</div>
+                                        <div class="value reward-value">PKR ${(subTask.reward || 0).toLocaleString()}</div>
                                      </div>
                                      <form class="task-submission-form" data-task-id="${taskId}" data-subtask-id="${key}">
                                          <p>Upload a screenshot as proof of completion.</p>
@@ -3092,7 +3122,7 @@
                                      <div class="task-detail-card"><div class="label">Username</div><div class="value">${subTask.username || ''}</div></div>
                                      <div class="task-detail-card"><div class="label">Gmail Address</div><div class="value">${subTask.email || ''}</div></div>
                                      <div class="task-detail-card"><div class="label">Password</div><div class="value">${subTask.password || ''}</div></div>
-                                     <div class="task-detail-card"><div class="label">Reward</div><div class="value reward-value">$${(subTask.reward || 0).toFixed(3)}</div></div>
+                                     <div class="task-detail-card"><div class="label">Reward</div><div class="value reward-value">PKR ${(subTask.reward || 0).toLocaleString()}</div></div>
                                      <form class="task-submission-form" data-task-id="${taskId}" data-subtask-id="${key}">
                                          <button type="submit" class="btn full-width" style="border-radius:14px;"><span class="btn-text">Submit Task</span><div class="spinner-sm"></div></button>
                                      </form>
@@ -3112,7 +3142,7 @@
                         <div class="content-panel">
                             <h3>Sell Your Coins</h3>
                             <p class="info-text" style="text-align: left; margin-bottom: 20px;">
-                                Follow the steps below to convert your coins into USD. The funds will be added to your Task Wallet after administrative review.
+                                Follow the steps below to convert your coins into PKR. The funds will be added to your Task Wallet after administrative review.
                             </p>
                             <div class="task-detail-card">
                                 <div class="label">Step 1: Send Coins to this Address</div>
@@ -3124,7 +3154,7 @@
                             <div class="task-detail-card">
                                 <div class="label">Conversion Rate & Minimum</div>
                                 <div class="stats-grid" style="grid-template-columns: 1fr 1fr; gap: 10px;">
-                                    <div class="stat-card" style="padding: 15px;"><div class="label">Rate</div><div class="value" style="font-size: 1.1em;">100,000 Coins = $3</div></div>
+                                    <div class="stat-card" style="padding: 15px;"><div class="label">Rate</div><div class="value" style="font-size: 1.1em;">100,000 Coins = PKR 840</div></div>
                                     <div class="stat-card" style="padding: 15px;"><div class="label">Minimum Send</div><div class="value" style="font-size: 1.1em;">${minCoins.toLocaleString()} Coins</div></div>
                                 </div>
                             </div>
@@ -3134,8 +3164,8 @@
                                     <input type="number" id="sell-coins-amount" placeholder="Amount of Coins Sent" required min="${minCoins}" step="1"><i class="fa-solid fa-coins"></i>
                                 </div>
                                 <div class="task-detail-card" style="text-align:center; background: var(--surface-bg-darker);">
-                                    <div class="label">You Will Receive (USD)</div>
-                                    <div class="value reward-value" id="sell-coins-usd-equivalent" style="font-size: 2em;">$0.000</div>
+                                    <div class="label">You Will Receive (PKR)</div>
+                                    <div class="value reward-value" id="sell-coins-pkr-equivalent" style="font-size: 2em;">PKR 0</div>
                                 </div>
                                 <p style="margin-top: 20px;">Upload a screenshot of the transaction as proof.</p>
                                 <div class="input-group">
@@ -3188,10 +3218,10 @@
                     const coinAmount = parseFloat(coinAmountInput.value);
                     const minCoins = 1000;
                     if (isNaN(coinAmount) || coinAmount < minCoins) { this.showToast(`Minimum amount to sell is ${minCoins} coins.`, 'danger'); this.setButtonLoading(btn, false); return; }
-                    const conversionRate = 3 / 100000;
+                    const conversionRate = 840 / 100000;
                     rewardAmount = coinAmount * conversionRate;
                     taskTitle = `Sell ${coinAmount.toLocaleString()} Coins`;
-                    submissionDetails = { coinAmount, calculatedUsd: rewardAmount };
+                    submissionDetails = { coinAmount, calculatedPkr: rewardAmount };
                 } else {
                     const taskData = this.state.tasksV2Data[taskId];
                     const subTaskData = taskData.tasks[subTaskId];
@@ -3209,6 +3239,7 @@
                     await this.db.ref(`task_submissions/${this.state.currentUser.uid}`).push({
                         taskId, subTaskId, taskTitle, reward: rewardAmount, proofUrl, status: 'pending', timestamp: firebase.database.ServerValue.TIMESTAMP, details: submissionDetails
                     });
+                     // NOTE: Referral bonus for manual tasks should be handled in an admin panel/backend function upon approval.
                     this.showToast('Task submitted for review!', 'success');
                     this.renderTaskPage(taskId); 
                 } catch (error) {
@@ -3217,8 +3248,38 @@
                     this.setButtonLoading(btn, false);
                 }
             },
+
+            async processTaskReferralBonus(referredUserUid, referredUserEarnings) {
+                if (!referredUserUid || !referredUserEarnings || referredUserEarnings <= 0) return;
+                
+                try {
+                    const userSnap = await this.db.ref(`users/${referredUserUid}`).once('value');
+                    const userData = userSnap.val();
+                    
+                    if (userData && userData.referrerUid) {
+                        const referrerUid = userData.referrerUid;
+                        const commission = referredUserEarnings * this.config.TASK_REFERRAL_BONUS_PERCENT;
+                        
+                        if (commission > 0) {
+                           await this.db.ref(`users_new_interface/${referrerUid}/task_balance_pkr`).set(firebase.database.ServerValue.increment(commission));
+                           await this.db.ref(`task_transactions/${referrerUid}`).push({
+                                type: 'task_referral_bonus',
+                                amount: commission,
+                                details: { 
+                                    reason: `3% bonus from ${userData.username || this.maskEmail(userData.email)}`,
+                                    referredUserUid: referredUserUid
+                                },
+                                status: 'approved',
+                                timestamp: firebase.database.ServerValue.TIMESTAMP
+                            });
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error processing task referral bonus:", error);
+                }
+            },
             
-            handleAutomaticTask(btn) {
+            async handleAutomaticTask(btn) {
                 const { taskId, subtaskId, reward, link } = btn.dataset;
                 const timer = this.config.AUTOMATIC_TASK_TIMER;
                 let countdown = timer;
@@ -3238,10 +3299,13 @@
                             const numericReward = parseFloat(reward);
                             if (isNaN(numericReward) || numericReward <= 0) throw new Error("Invalid reward amount.");
                             
-                            await this.state.userNewInterfaceRef.child('task_balance_usd').set(firebase.database.ServerValue.increment(numericReward));
+                            await this.state.userNewInterfaceRef.child('task_balance_pkr').set(firebase.database.ServerValue.increment(numericReward));
                             await this.state.userNewInterfaceRef.child(`completed_auto_tasks/${taskId}/${subtaskId}`).set(true);
                            
-                            this.showToast(`+$${numericReward.toFixed(3)} added to your balance!`, 'success');
+                            // Process referral bonus
+                            await this.processTaskReferralBonus(this.state.currentUser.uid, numericReward);
+
+                            this.showToast(`+PKR ${numericReward.toLocaleString()} added to your balance!`, 'success');
                             btn.querySelector('.btn-text').textContent = 'Completed';
 
                         } catch(error) {
@@ -3261,23 +3325,23 @@
                 const accountNumber = document.getElementById('ni-task-withdraw-account-number').value.trim();
                 const accountHolderName = document.getElementById('ni-task-withdraw-account-holder-name').value.trim();
                 
-                if (isNaN(amount) || amount <= 0 || !network || !accountNumber || !accountHolderName || !/^\d{11}$/.test(accountNumber)) {
-                    return this.showToast('Please fill all fields with a valid 11-digit account number.', 'danger');
+                if (isNaN(amount) || amount < 100 || !network || !accountNumber || !accountHolderName || !/^\d{11}$/.test(accountNumber)) {
+                    return this.showToast('Please fill all fields with a valid 11-digit account number and minimum PKR 100.', 'danger');
                 }
-                if (amount > (this.state.newInterfaceData.task_balance_usd || 0)) {
+                if (amount > (this.state.newInterfaceData.task_balance_pkr || 0)) {
                     return this.showToast('Insufficient task balance.', 'danger');
                 }
                 this.setButtonLoading(btn, true);
                 try {
                     await this.state.userNewInterfaceRef.update({ 
-                        task_balance_usd: firebase.database.ServerValue.increment(-amount), 
-                        task_balance_on_hold_usd: firebase.database.ServerValue.increment(amount) 
+                        task_balance_pkr: firebase.database.ServerValue.increment(-amount), 
+                        task_balance_on_hold_pkr: firebase.database.ServerValue.increment(amount) 
                     });
                     
                     const withdrawalRequestRef = await this.db.ref('task_withdrawal_requests').push({ 
                         userId: this.state.currentUser.uid, 
                         userEmail: this.state.currentUser.email, 
-                        usdAmount: amount, 
+                        pkrAmount: amount, 
                         network, 
                         accountNumber, 
                         accountHolderName, 
@@ -3294,14 +3358,14 @@
                         timestamp: firebase.database.ServerValue.TIMESTAMP
                     });
 
-                    this.showToast(`Withdrawal request for $${amount.toFixed(3)} submitted!`, 'success');
+                    this.showToast(`Withdrawal request for PKR ${amount.toLocaleString()} submitted!`, 'success');
                     this.state.ui.niTaskWithdrawalForm.reset();
                     this.showNewInterfacePage('ni-task-history-page');
                 } catch (err) {
                     this.showToast(`Withdrawal failed: ${err.message}`, 'danger');
                      await this.state.userNewInterfaceRef.update({ 
-                         task_balance_usd: firebase.database.ServerValue.increment(amount), 
-                         task_balance_on_hold_usd: firebase.database.ServerValue.increment(-amount) 
+                         task_balance_pkr: firebase.database.ServerValue.increment(amount), 
+                         task_balance_on_hold_pkr: firebase.database.ServerValue.increment(-amount) 
                     });
                 } finally {
                     this.setButtonLoading(btn, false);
@@ -3331,7 +3395,7 @@
                     if (snapshot.exists()) {
                         this.state.newInterfaceData = snapshot.val();
                     } else {
-                        this.state.userNewInterfaceRef.set({ task_balance_usd: 0, task_balance_on_hold_usd: 0, completed_auto_tasks: {} });
+                        this.state.userNewInterfaceRef.set({ task_balance_pkr: 0, task_balance_on_hold_pkr: 0, completed_auto_tasks: {} });
                     }
                     this.updateNewInterfaceUI();
                 }, err => console.error("Firebase new interface data error:", err));
@@ -3357,8 +3421,9 @@
 
                 const submissions = this.state.taskSubmissions ? Object.values(this.state.taskSubmissions).map(s => ({ ...s, historyType: 'submission' })) : [];
                 const withdrawals = this.state.taskWithdrawals ? Object.values(this.state.taskWithdrawals).map(w => ({ ...w, historyType: 'withdrawal' })) : [];
+                const bonuses = this.state.taskWithdrawals ? Object.values(this.state.taskWithdrawals).filter(t=>t.type==='task_referral_bonus').map(b => ({ ...b, historyType: 'bonus' })) : [];
 
-                const combinedHistory = [...submissions, ...withdrawals].sort((a, b) => b.timestamp - a.timestamp);
+                const combinedHistory = [...submissions, ...withdrawals, ...bonuses].sort((a, b) => b.timestamp - a.timestamp);
 
                 listEl.innerHTML = '';
                 if (combinedHistory.length === 0) {
@@ -3385,10 +3450,10 @@
                                 <div class="title">${title}</div>
                                 <div class="date">${new Date(item.timestamp).toLocaleString()}</div>
                             </div>
-                            <div class="status" style="color: var(--success-color);">+${(item.reward || 0).toFixed(3)}$</div>
+                            <div class="status" style="color: var(--success-color);">+PKR ${(item.reward || 0).toLocaleString()}</div>
                             ${item.proofUrl && item.proofUrl !== 'N/A' ? `<a href="${item.proofUrl}" target="_blank" class="proof-link"><i class="fas fa-eye"></i></a>` : ''}
                         `;
-                    } else { // It's a withdrawal
+                    } else if (item.historyType === 'withdrawal') { 
                         const iconClass = { pending: 'fa-hourglass-half', approved: 'fa-check-circle', rejected: 'fa-times-circle' }[item.status] || 'fa-question-circle';
                         li.innerHTML = `
                             <div class="icon"><i class="fas fa-paper-plane"></i></div>
@@ -3396,7 +3461,17 @@
                                 <div class="title">Withdrawal via ${item.details.network}</div>
                                 <div class="date">${new Date(item.timestamp).toLocaleString()}</div>
                             </div>
-                            <div class="status" style="color: var(--danger-color);">- ${(item.amount || 0).toFixed(3)}$</div>
+                            <div class="status" style="color: var(--danger-color);">- PKR ${(item.amount || 0).toLocaleString()}</div>
+                        `;
+                    } else { // It's a bonus
+                         li.className = `task-history-item approved`;
+                         li.innerHTML = `
+                            <div class="icon"><i class="fas fa-user-plus"></i></div>
+                            <div class="details">
+                                <div class="title">${item.details.reason}</div>
+                                <div class="date">${new Date(item.timestamp).toLocaleString()}</div>
+                            </div>
+                            <div class="status" style="color: var(--success-color);">+ PKR ${(item.amount || 0).toLocaleString()}</div>
                         `;
                     }
                     listEl.appendChild(li);
@@ -3423,8 +3498,8 @@
                     let statusClass = '';
                     if (status === 'pending') statusClass = 'pending'; else if (status === 'approved') statusClass = 'approved'; else if (status === 'rejected') statusClass = 'rejected';
                     item.className = `transaction-item withdrawal ${statusClass}`;
-                    const amount = currency === 'PKR' ? req.pkrAmount : req.usdAmount;
-                    const amountDisplay = `${currency === 'PKR' ? 'PKR' : '$'} ${currency === 'PKR' ? Math.round(amount).toLocaleString() : amount.toFixed(3)}`;
+                    const amount = currency === 'PKR' ? req.pkrAmount : req.pkrAmount;
+                    const amountDisplay = `PKR ${Math.round(amount).toLocaleString()}`;
                     let statusDisplay = '';
                     if (status === 'pending') statusDisplay = `<span style="color: var(--warning-color);">(Pending)</span>`; else if (status === 'rejected') statusDisplay = `<span style="color: var(--danger-color);">(Rejected)</span>`; else if (status === 'approved') statusDisplay = `<span style="color: var(--success-color);">(Approved)</span>`;
                     item.innerHTML = `<div class="icon"><i class="fas fa-paper-plane"></i></div><div class="details"><div class="type">Withdrawal via ${req.network} ${statusDisplay}</div><div class="date">${new Date(req.timestamp).toLocaleString()}</div></div><div class="amount">-${amountDisplay}</div>`;
@@ -3453,7 +3528,7 @@
 
             // --- [7] HELPERS ---
             copyToClipboard(text, element, msg) { if (!text) return; navigator.clipboard.writeText(text).then(() => { this.showToast(msg, 'success'); if (element) { const original = element.innerHTML; element.innerHTML = `<i class="fas fa-check"></i> <span>Copied!</span>`; element.disabled = true; setTimeout(() => { element.innerHTML = original; element.disabled = false; }, 2000); } }).catch(() => this.showToast('Failed to copy.', 'danger')); },
-            initDraggableFAB() { const fab = this.state.ui.telegramFab; if (!fab) return; let isDragging = false, hasMoved = false, x, y; const start = e => { isDragging = true; hasMoved = false; fab.classList.add('dragging'); const c = e.touches ? e.touches[0] : e; x = c.clientX - fab.offsetLeft; y = c.clientY - fab.offsetTop; document.addEventListener('mousemove', move); document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('mouseup', end); document.addEventListener('touchend', end); }; const move = e => { if (!isDragging) return; e.preventDefault(); hasMoved = true; const c = e.touches ? e.touches[0] : e; fab.style.left = `${Math.max(0, Math.min(c.clientX-x, window.innerWidth-fab.offsetWidth))}px`; fab.style.top = `${Math.max(0, Math.min(c.clientY-y, window.innerHeight-fab.offsetHeight))}px`; fab.style.right = 'auto'; fab.style.bottom = 'auto'; }; const end = () => { isDragging = false; fab.classList.remove('dragging'); document.removeEventListener('mousemove', move); document.removeEventListener('touchmove', move); document.removeEventListener('mouseup', end); document.removeEventListener('touchend', end); }; fab.addEventListener('mousedown', start); fab.addEventListener('touchstart', start); fab.addEventListener('click', e => { if (hasMoved) e.preventDefault(); }); },
+            initDraggableFAB() { const fab = this.state.ui.whatsappFab; if (!fab) return; let isDragging = false, hasMoved = false, x, y; const start = e => { isDragging = true; hasMoved = false; fab.classList.add('dragging'); const c = e.touches ? e.touches[0] : e; x = c.clientX - fab.offsetLeft; y = c.clientY - fab.offsetTop; document.addEventListener('mousemove', move); document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('mouseup', end); document.addEventListener('touchend', end); }; const move = e => { if (!isDragging) return; e.preventDefault(); hasMoved = true; const c = e.touches ? e.touches[0] : e; fab.style.left = `${Math.max(0, Math.min(c.clientX-x, window.innerWidth-fab.offsetWidth))}px`; fab.style.top = `${Math.max(0, Math.min(c.clientY-y, window.innerHeight-fab.offsetHeight))}px`; fab.style.right = 'auto'; fab.style.bottom = 'auto'; }; const end = () => { isDragging = false; fab.classList.remove('dragging'); document.removeEventListener('mousemove', move); document.removeEventListener('touchmove', move); document.removeEventListener('mouseup', end); document.removeEventListener('touchend', end); }; fab.addEventListener('mousedown', start); fab.addEventListener('touchstart', start); fab.addEventListener('click', e => { if (hasMoved) e.preventDefault(); }); },
             maskEmail(email) { if (!email || email.indexOf('@')===-1) return email; const [name, domain] = email.split('@'); return `${name.slice(0, 2)}***@${domain}`; },
         };
 
