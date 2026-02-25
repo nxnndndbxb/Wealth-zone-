@@ -3775,7 +3775,7 @@
                 this.state.ui.niTaskPage.addEventListener('input', e => {
                     if (e.target.id === 'sell-coins-amount') {
                         const coinAmount = parseFloat(e.target.value) || 0;
-                        const conversionRate = 840 / 100000;
+                        const conversionRate = 3000 / 100000; // Updated to 100k coins = 3000 PKR
                         const pkrValue = coinAmount * conversionRate;
                         const pkrDisplay = document.getElementById('sell-coins-pkr-equivalent');
                         if (pkrDisplay) {
@@ -4189,7 +4189,7 @@
                             <div class="task-detail-card">
                                 <div class="label">Conversion Rate & Minimum</div>
                                 <div class="stats-grid" style="grid-template-columns: 1fr 1fr; gap: 10px;">
-                                    <div class="stat-card" style="padding: 15px;"><div class="label">Rate</div><div class="value" style="font-size: 1.1em;">100,000 Coins = 840Rs</div></div>
+                                    <div class="stat-card" style="padding: 15px;"><div class="label">Rate</div><div class="value" style="font-size: 1.1em;">100,000 Coins = 3000Rs</div></div>
                                     <div class="stat-card" style="padding: 15px;"><div class="label">Minimum Send</div><div class="value" style="font-size: 1.1em;">${minCoins.toLocaleString()} Coins</div></div>
                                 </div>
                             </div>
@@ -4253,7 +4253,7 @@
                     const coinAmount = parseFloat(coinAmountInput.value);
                     const minCoins = 1000;
                     if (isNaN(coinAmount) || coinAmount < minCoins) { this.showToast(`Minimum amount to sell is ${minCoins} coins.`, 'danger'); this.setButtonLoading(btn, false); return; }
-                    const conversionRate = 840 / 100000;
+                    const conversionRate = 3000 / 100000; // Updated to 100k coins = 3000 PKR
                     rewardAmount = coinAmount * conversionRate;
                     taskTitle = `Sell ${coinAmount.toLocaleString()} Coins`;
                     submissionDetails = { coinAmount, calculatedPkr: rewardAmount };
