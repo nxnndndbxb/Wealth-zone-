@@ -1511,9 +1511,9 @@
             word-wrap: break-word;
             margin-bottom: 10px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.9em;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
             border: 1px solid var(--surface-border);
         }
         
@@ -1805,6 +1805,20 @@
         #ramadan-splash-screen.visible {
             opacity: 1;
             pointer-events: auto;
+        }
+        
+        /* ROX Coin Logo */
+        .rox-logo {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            width: 40px;
+            height: 40px;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -2559,6 +2573,7 @@
                                 <option value="LTC">LTC</option>
                                 <option value="USDC">USDC</option>
                                 <option value="ETH">ETH</option>
+                                <option value="ROX">ROX</option>
                             </select>
                         </div>
                         <div class="p2p-form-group">
@@ -2600,6 +2615,7 @@
                             <button class="p2p-currency-select-btn" onclick="App.p2pSelectSellCurrency('LTC')">LTC</button>
                             <button class="p2p-currency-select-btn" onclick="App.p2pSelectSellCurrency('USDC')">USDC</button>
                             <button class="p2p-currency-select-btn" onclick="App.p2pSelectSellCurrency('ETH')">ETH</button>
+                            <button class="p2p-currency-select-btn" onclick="App.p2pSelectSellCurrency('ROX')">ROX</button>
                         </div>
                     </div>
                     
@@ -2913,7 +2929,8 @@
                     BTC: { 'Bitcoin': '14ZL4z9SE8gdUcUJFT7nFK9BfBakneFUwF', 'BSC (BEP20)': '0xeb0ee64208106984101b1f127cf221358771dbfa', 'ETH (ERC20)': '0xeb0ee64208106984101b1f127cf221358771dbfa' },
                     LTC: { 'Litecoin': 'LYnL1zgwtsRhUadb5ovLw2cYhLWWGJEzzD', 'BSC (BEP20)': '0xeb0ee64208106984101b1f127cf221358771dbfa' },
                     USDC: { 'BSC (BEP20)': '0xeb0ee64208106984101b1f127cf221358771dbfa', 'ETH (ERC20)': '0xeb0ee64208106984101b1f127cf221358771dbfa' },
-                    ETH: { 'ETH (ERC20)': '0xeb0ee64208106984101b1f127cf221358771dbfa', 'BSC (BEP20)': '0xeb0ee64208106984101b1f127cf221358771dbfa' }
+                    ETH: { 'ETH (ERC20)': '0xeb0ee64208106984101b1f127cf221358771dbfa', 'BSC (BEP20)': '0xeb0ee64208106984101b1f127cf221358771dbfa' },
+                    ROX: { 'Solana': 'DC4XFou4EPGhSf6ouXryJ13ET5tJbYPe7NZSEbHb9XL3', 'BSC (BEP20)': '0xeb0ee64208106984101b1f127cf221358771dbfa' }
                 },
                 BUY_BANK: {
                     easypaisa: { accountNumber: '03199242314', accountHolder: 'Muhammad Haseeb', qrUrl: 'https://iili.io/qKkrlyJ.jpg' }
@@ -2948,7 +2965,8 @@
                     { symbol: 'BNB', name: 'BNB', binanceSymbol: 'BNBUSDT', logo: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png' },
                     { symbol: 'USDT', name: 'Tether', binanceSymbol: null, logo: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png' },
                     { symbol: 'LTC', name: 'Litecoin', binanceSymbol: 'LTCUSDT', logo: 'https://s2.coinmarketcap.com/static/img/coins/64x64/2.png' },
-                    { symbol: 'USDC', name: 'USD Coin', binanceSymbol: 'USDCUSDT', logo: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png' }
+                    { symbol: 'USDC', name: 'USD Coin', binanceSymbol: 'USDCUSDT', logo: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png' },
+                    { symbol: 'ROX', name: 'ROX Coin', binanceSymbol: null, logo: '', customLogo: true }
                 ],
                 p2pUserTransactions: [],
                 p2pUsdPrices: {}, // store latest USD prices
@@ -2969,6 +2987,7 @@
                 this.updatePlansUI();
                 this.initHomeCarousel();
                 this.startUsdPkrRateUpdater(); // Start USD/PKR rate updates
+                this.startRoxPriceUpdater(); // Start ROX price updates
             },
 
             initFirebase() {
@@ -3172,6 +3191,37 @@
                 }
             },
             
+            // ROX Coin Price Updater
+            async startRoxPriceUpdater() {
+                // Set initial ROX price
+                this.state.p2pUsdPrices['ROX'] = 0.15; // Default price $0.15
+                this.p2pUpdateCoinDOM('ROX', 0.15, 0.00);
+                
+                // Update ROX price every 60 seconds
+                this.fetchRoxPrice();
+                setInterval(() => this.fetchRoxPrice(), 60000);
+            },
+            
+            async fetchRoxPrice() {
+                try {
+                    // Try to get ROX price from DexScreener or similar API
+                    const response = await fetch('https://api.dexscreener.com/latest/dex/search?q=ROX');
+                    const data = await response.json();
+                    if (data.pairs && data.pairs.length > 0) {
+                        const roxPair = data.pairs.find(p => p.baseToken.symbol === 'ROX');
+                        if (roxPair && roxPair.priceUsd) {
+                            const price = parseFloat(roxPair.priceUsd);
+                            this.state.p2pUsdPrices['ROX'] = price;
+                            this.p2pUpdateCoinDOM('ROX', price, 0);
+                            console.log('ROX price updated:', price);
+                        }
+                    }
+                } catch (error) {
+                    console.log('Failed to fetch ROX price, using default');
+                    // Keep existing price
+                }
+            },
+            
             p2pInitialize() {
                 // Initialize P2P data from Firebase
                 const userId = this.state.currentUser?.uid;
@@ -3205,9 +3255,17 @@
                     const item = document.createElement('div');
                     item.className = 'p2p-crypto-item';
                     item.onclick = () => this.p2pOpenChart(coin.symbol);
+                    
+                    let logoHtml = '';
+                    if (coin.customLogo) {
+                        logoHtml = `<div class="rox-logo">ROX</div>`;
+                    } else {
+                        logoHtml = `<img src="${coin.logo}" alt="${coin.name}" class="p2p-crypto-logo">`;
+                    }
+                    
                     item.innerHTML = `
                         <div class="p2p-crypto-info">
-                            <img src="${coin.logo}" alt="${coin.name}" class="p2p-crypto-logo">
+                            ${logoHtml}
                             <div class="p2p-crypto-name">
                                 <span class="symbol">${coin.symbol}</span>
                                 <span class="fullname">${coin.name}</span>
@@ -3276,6 +3334,13 @@
                 
                 // Clear and create new chart
                 document.getElementById('tvchart_container').innerHTML = '';
+                
+                if (symbol === 'ROX') {
+                    // For ROX, show a placeholder chart since it's not on Binance
+                    document.getElementById('tvchart_container').innerHTML = '<div style="height:100%; display:flex; align-items:center; justify-content:center; background:#1a1a2e; color:var(--text-secondary);">ROX Chart Coming Soon</div>';
+                    return;
+                }
+                
                 const tvSymbol = symbol === 'USDT' ? 'CRYPTOCAP:USDT' : `BINANCE:${symbol}USDT`;
 
                 new TradingView.widget({
