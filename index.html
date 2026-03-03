@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wealth Zone | digital platform </title>
+    <title>Wealth Zone | digital platform</title>
     <!-- 
         SECURITY NOTICE:
         A secure web application requires robust server-side validation, database protection,
@@ -1820,6 +1820,52 @@
             height: 40px;
             font-size: 14px;
         }
+        
+        /* Offer Wall Styles */
+        .offer-wall-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--background-primary);
+            z-index: 7000;
+            display: none;
+            flex-direction: column;
+        }
+        .offer-wall-container.active {
+            display: flex;
+        }
+        .offer-wall-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--surface-bg);
+            border-bottom: 1px solid var(--surface-border);
+        }
+        .offer-wall-header h2 {
+            color: var(--primary-accent);
+            font-size: 1.5em;
+            margin: 0;
+        }
+        .offer-wall-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.8em;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .offer-wall-close:hover {
+            color: var(--danger-color);
+        }
+        #pubscale-offer-wall-iframe {
+            width: 100%;
+            flex-grow: 1;
+            border: none;
+            background: white;
+        }
     </style>
 </head>
 <body class="landing-visible">
@@ -2464,6 +2510,7 @@
             <ul class="ni-sidebar-list">
                 <li><button class="ni-sidebar-action ni-home-btn" data-ni-page="ni-home-page"><i class="fas fa-home"></i> Home</button></li>
                 <li><button class="ni-sidebar-action" data-task-id="ads"><i class="fas fa-ad"></i> Ads</button></li>
+                <li><button class="ni-sidebar-action" data-task-id="offer-wall"><i class="fas fa-gift"></i> Offer Wall</button></li>
                 <li><button class="ni-sidebar-action" data-task-id="visit_site"><i class="fas fa-globe"></i> Visit Site</button></li>
                 <li><button class="ni-sidebar-action" data-task-id="watch_video"><i class="fas fa-video"></i> Watch Video</button></li>
                 <li><button class="ni-sidebar-action" data-task-id="sell_coins"><i class="fas fa-coins"></i> Sell Coins</button></li>
@@ -2759,7 +2806,16 @@
 
         <nav class="bottom-nav-new"></nav>
     </div>
-     <!-- ###################################################### -->
+    
+    <!-- Offer Wall Container -->
+    <div id="offer-wall-container" class="offer-wall-container">
+        <div class="offer-wall-header">
+            <h2><i class="fas fa-gift"></i> Offer Wall - Earn Rewards</h2>
+            <button class="offer-wall-close" id="offer-wall-close">&times;</button>
+        </div>
+        <iframe id="pubscale-offer-wall-iframe" src="https://wow.pubscale.com?app_id=73726587&user_id="></iframe>
+    </div>
+    <!-- ###################################################### -->
     <!-- ############# NEW INTERFACE CONTAINER END ############ -->
     <!-- ###################################################### -->
 
@@ -3090,6 +3146,11 @@
                     niTaskHistoryList: document.getElementById('ni-task-history-list'),
                     noTaskHistoryMsg: document.getElementById('no-task-history-msg'),
                     
+                    // Offer Wall Elements
+                    offerWallContainer: document.getElementById('offer-wall-container'),
+                    offerWallClose: document.getElementById('offer-wall-close'),
+                    offerWallIframe: document.getElementById('pubscale-offer-wall-iframe'),
+                    
                     // Ramadan Splash Screen Elements
                     ramadanSplashScreen: document.getElementById('ramadan-splash-screen'),
                     ramadanAudio: document.getElementById('ramadan-audio'),
@@ -3167,6 +3228,23 @@
             
             openNiSidebar() { this.state.ui.niSidebar.classList.add('active'); this.state.ui.niSidebarOverlay.style.display = 'block'; },
             closeNiSidebar() { this.state.ui.niSidebar.classList.remove('active'); this.state.ui.niSidebarOverlay.style.display = 'none'; },
+
+            // --- Offer Wall Functions ---
+            showOfferWall() {
+                if (this.state.currentUser) {
+                    const userId = this.state.currentUser.uid;
+                    const iframe = this.state.ui.offerWallIframe;
+                    iframe.src = `https://wow.pubscale.com?app_id=73726587&user_id=${userId}`;
+                    this.state.ui.offerWallContainer.classList.add('active');
+                } else {
+                    this.showToast('Please login to access the offer wall.', 'danger');
+                }
+            },
+
+            hideOfferWall() {
+                this.state.ui.offerWallContainer.classList.remove('active');
+                this.state.ui.offerWallIframe.src = ''; // Clear iframe
+            },
 
             // --- P2P Crypto Wallet Functions ---
             startUsdPkrRateUpdater() {
@@ -3799,13 +3877,18 @@
                 document.querySelectorAll('.ni-sidebar-action').forEach(btn => {
                     btn.addEventListener('click', () => {
                         this.closeNiSidebar();
-                        if (btn.dataset.taskId) {
+                        if (btn.dataset.taskId === 'offer-wall') {
+                            this.showOfferWall();
+                        } else if (btn.dataset.taskId) {
                            this.renderTaskPage(btn.dataset.taskId);
                         } else if (btn.dataset.niPage) {
                            this.showNewInterfacePage(btn.dataset.niPage);
                         }
                     });
                 });
+
+                // Offer Wall Close Button
+                this.state.ui.offerWallClose.addEventListener('click', () => this.hideOfferWall());
 
                 this.state.ui.niTaskWithdrawBtn.addEventListener('click', () => this.showNewInterfacePage('ni-task-withdrawal-page'));
                 this.state.ui.niTaskWithdrawalForm.addEventListener('submit', e => this.handleTaskWithdrawal(e));
@@ -4115,6 +4198,12 @@
             },
 
             renderTaskPage(taskId) {
+                // Special handling for offer wall
+                if (taskId === 'offer-wall') {
+                    this.showOfferWall();
+                    return;
+                }
+                
                 this.showNewInterfacePage('ni-task-page');
                 const taskContainer = this.state.ui.niTaskPage;
                 const taskData = this.state.tasksV2Data ? this.state.tasksV2Data[taskId] : null;
