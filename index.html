@@ -1866,6 +1866,31 @@
             border: none;
             background: white;
         }
+
+        /* Network Status Indicator */
+        .network-status {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: var(--surface-bg);
+            border: 1px solid var(--surface-border);
+            color: var(--text-secondary);
+            font-size: 0.85em;
+            z-index: 1060;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .network-status.online .status-dot { background: var(--success-color); }
+        .network-status.offline .status-dot { background: var(--danger-color); }
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
     </style>
 </head>
 <body class="landing-visible">
@@ -1874,6 +1899,11 @@
         <div class="aurora-background"></div>
     </div>
     <div id="toast-container"></div>
+    <!-- Network Status Indicator -->
+    <div id="network-status" class="network-status online" style="display: none;">
+        <span class="status-dot"></span>
+        <span class="status-text">Connected</span>
+    </div>
 
     <!-- Preloader -->
     <div id="preloader"><div class="spinner"></div></div>
@@ -2934,6 +2964,7 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
     <script>
+    // Complete App JavaScript (fully integrated with all fixes)
     document.addEventListener('DOMContentLoaded', () => {
         const App = {
             // --- [1] CONFIG & INITIALIZATION ---
@@ -2947,38 +2978,29 @@
                     messagingSenderId: "123456789012",
                     appId: "1:123456789012:web:abcdefg123456789"
                 },
-                imgbbApiKey: "31c324eeef3df98e593e1897b02cc37b", // Image Hosting API Key
+                imgbbApiKey: "31c324eeef3df98e593e1897b02cc37b",
                 WITHDRAWAL_FEE_PERCENT: 0.05,
                 PRELOADER_TIMEOUT: 8000,
-                
                 BASIC_PLAN_COST: 670,
                 PRO_PLAN_COST: 12500,
                 PRO_PLAN_DAILY_RATE: 0.01,
                 MINIMUM_PROFIT_CLAIM: 1,
-                
                 REFERRAL_LEVELS: 9,
                 REFERRAL_DIRECT_BONUS_PERCENT: 0.30,
                 REFERRAL_INDIRECT_BONUS_PERCENT: 0.03,
-                
-                TASK_REFERRAL_BONUS_PERCENT: 0.03, // 3% commission for task earnings
-                
+                TASK_REFERRAL_BONUS_PERCENT: 0.03,
                 FREE_PLAN_REQUIRED_REFERRALS: 2, 
                 RANKING_LIMIT: 50,
-                
                 NFT_DAILY_RATE_PERCENT: 0.03, 
                 NFT_TOTAL_RETURN_PERCENT: 3.00, 
                 NFT_DURATION_DAYS: 100,
                 NFT_REQUIRED_ACTIVE_REFERRALS: 10,
-                
                 PAYMENT_METHODS: {
                     easypaisa: { name: 'Easypaisa', accountNumber: '03184336430', accountHolder: 'Sonia Eman', qrUrl: 'https://iili.io/KLcZF5B.jpg' },
                     jazzcash: { name: 'JazzCash', accountNumber: '03199242314', accountHolder: 'Kinza Tariq', qrUrl: 'https://iili.io/KLcpcla.jpg' }
                 },
-
-                AUTOMATIC_TASK_TIMER: 5, // 5 seconds
-                
-                // P2P Configuration
-                P2P_PKR_RATE: 278.50, // will be updated live
+                AUTOMATIC_TASK_TIMER: 5,
+                P2P_PKR_RATE: 278.50,
                 P2P_DEPOSIT_ADDRESSES: {
                     USDT: { 'BSC (BEP20)': '0xeb0ee64208106984101b1f127cf221358771dbfa', 'TRX (TRC20)': 'TKEmWeig1jtWLgPZp4pX4PHAsPsrFNdqf2', 'ETH (ERC20)': '0xeb0ee64208106984101b1f127cf221358771dbfa' },
                     BNB: { 'BSC (BEP20)': '0xeb0ee64208106984101b1f127cf221358771dbfa', 'ETH (ERC20)': '0xeb0ee64208106984101b1f127cf221358771dbfa' },
@@ -3012,7 +3034,6 @@
                 tasksV2Data: null, 
                 taskSubmissions: null,
                 taskWithdrawals: null,
-                // P2P State
                 p2pCurrentSellRequest: {},
                 p2pCurrentBuyRequest: {},
                 p2pCryptoData: [
@@ -3025,8 +3046,8 @@
                     { symbol: 'ROX', name: 'ROX Coin', binanceSymbol: null, logo: '', customLogo: true }
                 ],
                 p2pUserTransactions: [],
-                p2pUsdPrices: {}, // store latest USD prices
-                p2pUsdPkrRate: 278.50 // will be updated
+                p2pUsdPrices: {},
+                p2pUsdPkrRate: 278.50
             },
 
             async init() {
@@ -3042,8 +3063,32 @@
                 this.checkForRefCode();
                 this.updatePlansUI();
                 this.initHomeCarousel();
-                this.startUsdPkrRateUpdater(); // Start USD/PKR rate updates
-                this.startRoxPriceUpdater(); // Start ROX price updates
+                this.startUsdPkrRateUpdater();
+                this.startRoxPriceUpdater();
+                this.initNetworkMonitor();
+            },
+
+            // --- Network Status Monitor ---
+            initNetworkMonitor() {
+                const updateNetworkStatus = () => {
+                    const statusEl = document.getElementById('network-status');
+                    if (!statusEl) return;
+                    if (navigator.onLine) {
+                        statusEl.className = 'network-status online';
+                        statusEl.querySelector('.status-text').textContent = 'Connected';
+                        statusEl.style.display = 'flex';
+                        setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+                    } else {
+                        statusEl.className = 'network-status offline';
+                        statusEl.querySelector('.status-text').textContent = 'No Internet!';
+                        statusEl.style.display = 'flex';
+                        this.showToast('No Internet Connection! Please check your network.', 'danger');
+                    }
+                };
+                window.addEventListener('online', updateNetworkStatus);
+                window.addEventListener('offline', updateNetworkStatus);
+                // Check initial status
+                if (!navigator.onLine) updateNetworkStatus();
             },
 
             initFirebase() {
@@ -3053,7 +3098,7 @@
                     this.db = firebase.database();
                 } catch (error) {
                     console.error("Firebase initialization failed:", error);
-                    this.showToast('Application failed to load.', 'danger');
+                    this.showToast('Application failed to load. Please check your connection.', 'danger');
                 }
             },
             
@@ -3070,7 +3115,10 @@
                         this.state.allUsersData = rankedUsers;
                         if (this.state.currentUser) this.updateRankingUI(); 
                     }
-                }, (error) => console.error("Firebase all user data error for ranking:", error));
+                }, (error) => {
+                    console.error("Firebase all user data error for ranking:", error);
+                    this.showToast('Network error loading ranking data.', 'warning');
+                });
             },
 
             initParticles() {
@@ -3220,9 +3268,23 @@
 
             showModal(modalId) { document.getElementById(modalId)?.classList.add('active'); },
             hideModal(modalId) { document.getElementById(modalId)?.classList.remove('active'); },
-            showToast(message, type = 'success') { const toast = document.createElement('div'); toast.className = `toast ${type}`; toast.textContent = message; this.state.ui.toastContainer.appendChild(toast); setTimeout(() => toast.remove(), 4000); },
-            hidePreloader() { if (this.state.preloaderTimeoutId) clearTimeout(this.state.preloaderTimeoutId); this.state.ui.preloader.classList.add('hidden'); },
-            setButtonLoading(btn, isLoading) { if (btn) { btn.classList.toggle('loading', isLoading); btn.disabled = isLoading; } },
+            showToast(message, type = 'success') { 
+                const toast = document.createElement('div'); 
+                toast.className = `toast ${type}`; 
+                toast.textContent = message; 
+                this.state.ui.toastContainer.appendChild(toast); 
+                setTimeout(() => toast.remove(), 4000); 
+            },
+            hidePreloader() { 
+                if (this.state.preloaderTimeoutId) clearTimeout(this.state.preloaderTimeoutId); 
+                this.state.ui.preloader.classList.add('hidden'); 
+            },
+            setButtonLoading(btn, isLoading) { 
+                if (btn) { 
+                    btn.classList.toggle('loading', isLoading); 
+                    btn.disabled = isLoading; 
+                } 
+            },
             openSidebar() { this.state.ui.appSidebar.classList.add('active'); this.state.ui.sidebarOverlay.style.display = 'block'; },
             closeSidebar() { this.state.ui.appSidebar.classList.remove('active'); this.state.ui.sidebarOverlay.style.display = 'none'; },
             
@@ -3248,41 +3310,32 @@
 
             // --- P2P Crypto Wallet Functions ---
             startUsdPkrRateUpdater() {
-                // Fetch initial rate and update every 60 seconds
                 this.fetchUsdPkrRate();
                 setInterval(() => this.fetchUsdPkrRate(), 60000);
             },
             
             async fetchUsdPkrRate() {
                 try {
-                    // Using a free API (exchangerate-api.com) – you can replace with your preferred source
                     const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
                     const data = await response.json();
                     if (data.rates && data.rates.PKR) {
                         this.state.p2pUsdPkrRate = data.rates.PKR;
-                        console.log('USD/PKR rate updated:', this.state.p2pUsdPkrRate);
                     }
                 } catch (error) {
                     console.error('Failed to fetch USD/PKR rate, using fallback:', error);
-                    // Fallback to config rate
                     this.state.p2pUsdPkrRate = this.config.P2P_PKR_RATE;
                 }
             },
             
-            // ROX Coin Price Updater
             async startRoxPriceUpdater() {
-                // Set initial ROX price
-                this.state.p2pUsdPrices['ROX'] = 0.15; // Default price $0.15
+                this.state.p2pUsdPrices['ROX'] = 0.15;
                 this.p2pUpdateCoinDOM('ROX', 0.15, 0.00);
-                
-                // Update ROX price every 60 seconds
                 this.fetchRoxPrice();
                 setInterval(() => this.fetchRoxPrice(), 60000);
             },
             
             async fetchRoxPrice() {
                 try {
-                    // Try to get ROX price from DexScreener or similar API
                     const response = await fetch('https://api.dexscreener.com/latest/dex/search?q=ROX');
                     const data = await response.json();
                     if (data.pairs && data.pairs.length > 0) {
@@ -3291,21 +3344,17 @@
                             const price = parseFloat(roxPair.priceUsd);
                             this.state.p2pUsdPrices['ROX'] = price;
                             this.p2pUpdateCoinDOM('ROX', price, 0);
-                            console.log('ROX price updated:', price);
                         }
                     }
                 } catch (error) {
                     console.log('Failed to fetch ROX price, using default');
-                    // Keep existing price
                 }
             },
             
             p2pInitialize() {
-                // Initialize P2P data from Firebase
                 const userId = this.state.currentUser?.uid;
                 if (!userId) return;
                 
-                // Load user's P2P transactions from Firebase
                 this.db.ref(`p2p_transactions/${userId}`).on('value', (snapshot) => {
                     const data = snapshot.val();
                     this.state.p2pUserTransactions = data ? Object.values(data).sort((a, b) => b.timestamp - a.timestamp) : [];
@@ -3313,7 +3362,6 @@
                     this.p2pUpdateBalance();
                 });
                 
-                // Initialize P2P dashboard
                 this.p2pRenderCryptoList();
                 this.p2pInitBinanceLive();
             },
@@ -3357,7 +3405,6 @@
                     container.appendChild(item);
                 });
                 
-                // Set static value for USDT
                 this.p2pUpdateCoinDOM('USDT', 1.00, 0.00);
             },
             
@@ -3367,7 +3414,6 @@
                 if (priceEl && changeEl) {
                     const formattedPrice = price < 10 ? price.toFixed(4) : price.toFixed(2);
                     priceEl.textContent = `$${formattedPrice}`;
-                    // Store in state for later use
                     if (!this.state.p2pUsdPrices) this.state.p2pUsdPrices = {};
                     this.state.p2pUsdPrices[symbol] = price;
                     changeEl.textContent = `${change > 0 ? '+' : ''}${change.toFixed(2)}%`;
@@ -3378,7 +3424,6 @@
             async p2pInitBinanceLive() {
                 const symbols = this.state.p2pCryptoData.filter(c => c.binanceSymbol).map(c => c.binanceSymbol);
                 
-                // Fetch initial prices
                 try {
                     const symbolsParam = encodeURIComponent(JSON.stringify(symbols));
                     const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbols=${symbolsParam}`);
@@ -3388,10 +3433,9 @@
                         if (coin) this.p2pUpdateCoinDOM(coin.symbol, parseFloat(ticker.lastPrice), parseFloat(ticker.priceChangePercent));
                     });
                 } catch (e) {
-                    console.log("REST fetch failed. Waiting for WebSocket...");
+                    console.log("Binance REST fetch failed. Trying WebSocket...");
                 }
 
-                // WebSocket connection
                 const wsUrl = 'wss://stream.binance.com:9443/ws/' + symbols.map(s => s.toLowerCase() + '@ticker').join('/');
                 const ws = new WebSocket(wsUrl);
                 
@@ -3402,6 +3446,11 @@
                         this.p2pUpdateCoinDOM(coin.symbol, parseFloat(data.c), parseFloat(data.P));
                     }
                 };
+
+                ws.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    this.showToast('Live price updates temporarily unavailable.', 'warning');
+                };
             },
             
             p2pOpenChart(symbol) {
@@ -3410,11 +3459,9 @@
                     this.state.ui.p2pChartHeader.textContent = `${symbol}/USDT Live Chart`;
                 }
                 
-                // Clear and create new chart
                 document.getElementById('tvchart_container').innerHTML = '';
                 
                 if (symbol === 'ROX') {
-                    // For ROX, show a placeholder chart since it's not on Binance
                     document.getElementById('tvchart_container').innerHTML = '<div style="height:100%; display:flex; align-items:center; justify-content:center; background:#1a1a2e; color:var(--text-secondary);">ROX Chart Coming Soon</div>';
                     return;
                 }
@@ -3456,11 +3503,9 @@
                         networkSelect.appendChild(option);
                     });
                     
-                    // Trigger change to populate address
                     networkSelect.dispatchEvent(new Event('change'));
                 }
                 
-                // Reset form
                 if (this.state.ui.p2pAmountInput) this.state.ui.p2pAmountInput.value = '';
                 if (this.state.ui.p2pProofInput) this.state.ui.p2pProofInput.value = '';
                 if (this.state.ui.p2pPkrRateDisplay) this.state.ui.p2pPkrRateDisplay.textContent = '';
@@ -3549,7 +3594,6 @@
                     this.state.ui.p2pSellSubmitError.textContent = '';
                 }
 
-                // Upload proof image to ImgBB
                 const formData = new FormData();
                 formData.append('image', proofFile);
                 
@@ -3568,7 +3612,6 @@
                     
                     const proofUrl = result.data.url;
                     
-                    // Get live USD price for this currency
                     const currency = this.state.p2pCurrentSellRequest.currency;
                     const usdPrice = this.state.p2pUsdPrices[currency] || 0;
                     if (usdPrice === 0) {
@@ -3592,12 +3635,10 @@
                         timestamp: Date.now()
                     };
 
-                    // Save to Firebase
                     const userId = this.state.currentUser?.uid;
                     if (userId) {
                         await this.db.ref(`p2p_transactions/${userId}/${transaction.id}`).set(transaction);
                         
-                        // Also save to a separate admin queue for review
                         await this.db.ref(`p2p_review_queue/${userId}/${transaction.id}`).set({
                             ...transaction,
                             userEmail: this.state.currentUser.email,
@@ -3608,7 +3649,6 @@
                     this.showToast('Sell request submitted for review! Proof uploaded successfully.');
                     this.p2pShowScreen('p2pDashboardScreen');
                     
-                    // Clear form
                     if (this.state.ui.p2pAmountInput) this.state.ui.p2pAmountInput.value = '';
                     if (this.state.ui.p2pProofInput) this.state.ui.p2pProofInput.value = '';
                     if (this.state.ui.p2pSellAccountNumber) this.state.ui.p2pSellAccountNumber.value = '';
@@ -3647,7 +3687,6 @@
                     this.state.ui.p2pBuySubmitError.textContent = '';
                 }
 
-                // Upload proof
                 const formData = new FormData();
                 formData.append('image', proofFile);
                 
@@ -3666,7 +3705,6 @@
                     
                     const proofUrl = result.data.url;
                     
-                    // Get live USD price for this currency
                     const usdPrice = this.state.p2pUsdPrices[currency] || 0;
                     if (usdPrice === 0) {
                         throw new Error('Unable to get live price for ' + currency);
@@ -3685,12 +3723,10 @@
                         timestamp: Date.now()
                     };
 
-                    // Save to Firebase
                     const userId = this.state.currentUser?.uid;
                     if (userId) {
                         await this.db.ref(`p2p_transactions/${userId}/${transaction.id}`).set(transaction);
                         
-                        // Also save to a separate admin queue for review
                         await this.db.ref(`p2p_review_queue/${userId}/${transaction.id}`).set({
                             ...transaction,
                             userEmail: this.state.currentUser.email,
@@ -3701,7 +3737,6 @@
                     this.showToast('Buy request submitted for review! Proof uploaded successfully.');
                     this.p2pShowScreen('p2pDashboardScreen');
                     
-                    // Clear form
                     if (this.state.ui.p2pBuyAmount) this.state.ui.p2pBuyAmount.value = '';
                     if (this.state.ui.p2pBuyProofInput) this.state.ui.p2pBuyProofInput.value = '';
                     
@@ -3923,7 +3958,7 @@
                 this.state.ui.niTaskPage.addEventListener('input', e => {
                     if (e.target.id === 'sell-coins-amount') {
                         const coinAmount = parseFloat(e.target.value) || 0;
-                        const conversionRate = 3000 / 100000; // Updated to 100k coins = 3000 PKR
+                        const conversionRate = 3000 / 100000;
                         const pkrValue = coinAmount * conversionRate;
                         const pkrDisplay = document.getElementById('sell-coins-pkr-equivalent');
                         if (pkrDisplay) {
@@ -3948,7 +3983,6 @@
                 }
                 if (this.state.ui.p2pBuyButton) {
                     this.state.ui.p2pBuyButton.addEventListener('click', () => {
-                        // Reset buy form
                         if (this.state.ui.p2pBuyAmount) this.state.ui.p2pBuyAmount.value = '';
                         if (this.state.ui.p2pBuyProofInput) this.state.ui.p2pBuyProofInput.value = '';
                         if (this.state.ui.p2pBuyPkrRateDisplay) this.state.ui.p2pBuyPkrRateDisplay.textContent = '';
@@ -4003,7 +4037,6 @@
                 }
                 if (this.state.ui.p2pBuyCurrencySelect) {
                     this.state.ui.p2pBuyCurrencySelect.addEventListener('change', () => {
-                        // Trigger update when currency changes
                         const event = new Event('input');
                         this.state.ui.p2pBuyAmount.dispatchEvent(event);
                     });
@@ -4198,7 +4231,6 @@
             },
 
             renderTaskPage(taskId) {
-                // Special handling for offer wall
                 if (taskId === 'offer-wall') {
                     this.showOfferWall();
                     return;
@@ -4407,7 +4439,7 @@
                     const coinAmount = parseFloat(coinAmountInput.value);
                     const minCoins = 1000;
                     if (isNaN(coinAmount) || coinAmount < minCoins) { this.showToast(`Minimum amount to sell is ${minCoins} coins.`, 'danger'); this.setButtonLoading(btn, false); return; }
-                    const conversionRate = 3000 / 100000; // Updated to 100k coins = 3000 PKR
+                    const conversionRate = 3000 / 100000;
                     rewardAmount = coinAmount * conversionRate;
                     taskTitle = `Sell ${coinAmount.toLocaleString()} Coins`;
                     submissionDetails = { coinAmount, calculatedPkr: rewardAmount };
@@ -4490,7 +4522,6 @@
                             await this.state.userNewInterfaceRef.child('task_balance_pkr').set(firebase.database.ServerValue.increment(numericReward));
                             await this.state.userNewInterfaceRef.child(`completed_auto_tasks/${taskId}/${subtaskId}`).set(true);
                            
-                            // Process referral bonus
                             await this.processTaskReferralBonus(this.state.currentUser.uid, numericReward);
 
                             this.showToast(`+${this.formatSwitchCurrency(numericReward)} added to your balance!`, 'success');
@@ -4572,7 +4603,7 @@
                         this.updateUI(); 
                         if (this.state.ui.kycModal.classList.contains('active')) this.updateKycModalUI(this.state.userData.kyc_status);
                     } else this.auth.signOut(); 
-                }, err => { console.error("Firebase user data error:", err); this.showToast("Could not sync user data.", "danger"); }); 
+                }, err => { console.error("Firebase user data error:", err); this.showToast("Could not sync user data.", "warning"); }); 
                 this.state.txRef.limitToLast(100).on('value', snapshot => this.updateAllHistories(snapshot.val())); 
             },
 
