@@ -381,6 +381,7 @@
         .sidebar-action-list button.about-btn i { color: var(--tertiary-accent); }
         .sidebar-action-list button.security-btn i { color: var(--primary-accent); }
         .sidebar-action-list button.profile-btn i { color: var(--warning-color); }
+        .sidebar-action-list button.admin-btn i { color: var(--tertiary-accent); }
 
         .content-panel { 
             background: var(--surface-bg); border: 1px solid var(--surface-border); 
@@ -1183,173 +1184,11 @@
         }
         .ni-home-hero p { font-size: 1.2em; color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px; }
 
-        /* ========== BEAUTIFUL COIN CONVERSION SECTION ========== */
-        .coin-conversion-section {
-            margin-top: 40px;
-            padding: 30px 20px;
-            background: linear-gradient(135deg, rgba(246, 211, 101, 0.1) 0%, rgba(253, 160, 133, 0.1) 100%);
-            border-radius: 30px;
-            border: 2px solid var(--primary-accent);
-            box-shadow: var(--coin-glow);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .coin-conversion-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(253, 160, 133, 0.1) 0%, transparent 70%);
-            animation: rotateCoinBg 20s linear infinite;
-        }
-        
-        @keyframes rotateCoinBg {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .coin-title {
-            text-align: center;
-            font-size: 2.2em;
-            font-weight: 800;
-            margin-bottom: 30px;
-            background: linear-gradient(135deg, #f6d365, #fda085);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .coin-stats {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .coin-stat-card {
-            flex: 1;
-            min-width: 200px;
-            background: rgba(15, 35, 60, 0.8);
-            backdrop-filter: blur(10px);
-            border: 2px solid var(--primary-accent);
-            border-radius: 20px;
-            padding: 25px 20px;
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .coin-stat-card::after {
-            content: '💰';
-            position: absolute;
-            bottom: -20px;
-            right: -20px;
-            font-size: 5em;
-            opacity: 0.1;
-            transform: rotate(15deg);
-        }
-        
-        .coin-stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(253, 160, 133, 0.3);
-        }
-        
-        .coin-stat-card .label {
-            font-size: 1.2em;
-            color: var(--text-secondary);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .coin-stat-card .value {
-            font-size: 2.5em;
-            font-weight: 800;
-            background: linear-gradient(135deg, #f6d365, #fda085);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1.2;
-        }
-        
-        .coin-stat-card .sub-value {
-            font-size: 1.1em;
-            color: var(--text-secondary);
-            margin-top: 5px;
-        }
-        
-        .coin-conversion-form {
-            margin-top: 30px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .coin-input-group {
-            flex: 1;
-            min-width: 250px;
-            position: relative;
-        }
-        
-        .coin-input-group input {
-            width: 100%;
-            padding: 18px 20px;
-            background: var(--surface-bg-darker);
-            border: 2px solid var(--primary-accent);
-            border-radius: 15px;
-            color: var(--text-primary);
-            font-size: 1.1em;
-            transition: all 0.3s ease;
-        }
-        
-        .coin-input-group input:focus {
-            outline: none;
-            box-shadow: 0 0 20px rgba(253, 160, 133, 0.5);
-            border-color: #fda085;
-        }
-        
-        .coin-convert-btn {
-            padding: 18px 40px;
-            background: linear-gradient(135deg, #f6d365, #fda085);
-            border: none;
-            border-radius: 15px;
-            color: var(--background-primary);
-            font-weight: 700;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .coin-convert-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(253, 160, 133, 0.6);
-        }
-        
-        .coin-conversion-result {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 1.3em;
-            font-weight: 600;
-            color: var(--success-color);
-            background: rgba(46, 204, 113, 0.1);
-            padding: 15px;
-            border-radius: 15px;
-            border: 1px solid var(--success-color);
-        }
+        .ni-points-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .ni-points-card { background: var(--surface-bg); border: 2px solid var(--primary-accent); border-radius: 20px; padding: 25px; text-align: center; }
+        .ni-points-card .label { font-size: 1.1em; color: var(--text-secondary); margin-bottom: 10px; }
+        .ni-points-card .value { font-size: 2.5em; font-weight: 800; }
+        .ni-points-history { background: var(--surface-bg); border: 1px solid var(--surface-border); border-radius: 20px; padding: 25px; margin-bottom: 30px; }
 
         .p2p-container {
             max-width: 100%;
@@ -1502,7 +1341,6 @@
             .plan-series-grid { grid-template-columns: 1fr; }
             .ni-points-grid { grid-template-columns: 1fr; }
             .ni-points-card .value { font-size: 1.5em; }
-            .coin-stat-card { min-width: 100%; }
         }
         
         @media (max-width: 480px) {
@@ -1701,6 +1539,52 @@
         .network-status.offline .status-dot { background: var(--danger-color); }
         
         .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+        /* Admin Panel */
+        #admin-settings-page .settings-grid {
+            display: grid;
+            gap: 30px;
+        }
+        .settings-group {
+            background: var(--surface-bg-darker);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid var(--surface-border);
+        }
+        .settings-group h4 {
+            margin-bottom: 20px;
+            color: var(--primary-accent);
+            font-weight: 600;
+        }
+        .admin-input {
+            background: var(--background-secondary);
+            border: 1px solid var(--surface-border);
+            border-radius: 10px;
+            padding: 12px 15px;
+            color: var(--text-primary);
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .admin-input:focus {
+            outline: none;
+            border-color: var(--primary-accent);
+        }
+        .admin-qr-preview {
+            max-width: 150px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border: 2px solid var(--primary-accent);
+        }
+        .admin-btn {
+            background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+            color: var(--text-on-accent);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body class="landing-visible">
@@ -1893,6 +1777,7 @@
                 <li><button class="action-card free-mining-btn" data-page-target="free-mining-page"><i class="fas fa-bolt-lightning"></i><span>Free Plan</span></button></li>
                 <li><button class="action-card about-btn" data-page-target="about-us-page"><i class="fas fa-info-circle"></i><span>About Us</span></button></li>
                 <li><button class="action-card security-btn" data-page-target="security-page"><i class="fas fa-shield-halved"></i><span>Security</span></button></li>
+                <li><button class="action-card admin-btn" data-page-target="admin-settings-page" style="display: none;"><i class="fas fa-cog"></i><span>Admin Panel</span></button></li>
                 <li><button class="action-card logout-btn" id="sidebar-logout-btn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button></li>
             </ul>
         </aside>
@@ -1991,40 +1876,7 @@
                 <div id="marketing-plans-container" class="plan-series-grid"></div>
             </div>
 
-            <!-- Beautiful Coin Conversion Section on Home Page -->
-            <div class="coin-conversion-section">
-                <div class="coin-title">
-                    <i class="fas fa-coins"></i> Coin Converter <i class="fas fa-exchange-alt"></i>
-                </div>
-                <div class="coin-stats">
-                    <div class="coin-stat-card">
-                        <div class="label">Your Coins</div>
-                        <div class="value" id="user-coins-display">0</div>
-                        <div class="sub-value">Available to Convert</div>
-                    </div>
-                    <div class="coin-stat-card">
-                        <div class="label">Conversion Rate</div>
-                        <div class="value">100,000</div>
-                        <div class="sub-value">Coins = 3000 Rs</div>
-                    </div>
-                    <div class="coin-stat-card">
-                        <div class="label">USD Value</div>
-                        <div class="value" id="coin-usd-value">$0.00</div>
-                        <div class="sub-value">1 Coin = $0.000107</div>
-                    </div>
-                </div>
-                <div class="coin-conversion-form">
-                    <div class="coin-input-group">
-                        <input type="number" id="coin-amount-input" placeholder="Enter coins to convert" min="1000" step="1">
-                    </div>
-                    <button class="coin-convert-btn" id="convert-coins-btn">
-                        <i class="fas fa-sync-alt"></i> Convert to USD
-                    </button>
-                </div>
-                <div class="coin-conversion-result" id="coin-conversion-result" style="display: none;">
-                    You will receive: <span id="converted-usd-amount">$0.00</span>
-                </div>
-            </div>
+            <!-- Coin conversion section removed as requested -->
         </main>
 
         <!-- History Page -->
@@ -2397,6 +2249,54 @@
             </div>
         </section>
 
+        <!-- Admin Settings Page (hidden for non-admin) -->
+        <section id="admin-settings-page" class="page">
+            <div class="page-header">
+                <h3>Admin Panel</h3>
+            </div>
+            <div class="content-panel">
+                <h3>Payment Addresses & QR Codes</h3>
+                <p class="info-text">Update deposit addresses and QR codes for PKR and USDT. Changes take effect immediately.</p>
+                
+                <div class="settings-grid">
+                    <div class="settings-group">
+                        <h4>Easypaisa</h4>
+                        <label>Account Number</label>
+                        <input type="text" id="admin-easypaisa-number" class="admin-input" placeholder="03xxxxxxxxx">
+                        <label>Account Holder</label>
+                        <input type="text" id="admin-easypaisa-holder" class="admin-input" placeholder="Full Name">
+                        <label>QR Code Image</label>
+                        <input type="file" id="admin-easypaisa-qr" accept="image/*" class="admin-input">
+                        <img id="admin-easypaisa-qr-preview" class="admin-qr-preview" style="display: none;">
+                        <button class="admin-btn" id="admin-update-easypaisa">Update Easypaisa</button>
+                    </div>
+
+                    <div class="settings-group">
+                        <h4>JazzCash</h4>
+                        <label>Account Number</label>
+                        <input type="text" id="admin-jazzcash-number" class="admin-input" placeholder="03xxxxxxxxx">
+                        <label>Account Holder</label>
+                        <input type="text" id="admin-jazzcash-holder" class="admin-input" placeholder="Full Name">
+                        <label>QR Code Image</label>
+                        <input type="file" id="admin-jazzcash-qr" accept="image/*" class="admin-input">
+                        <img id="admin-jazzcash-qr-preview" class="admin-qr-preview" style="display: none;">
+                        <button class="admin-btn" id="admin-update-jazzcash">Update JazzCash</button>
+                    </div>
+
+                    <div class="settings-group">
+                        <h4>USDT Addresses</h4>
+                        <label>BEP20 Address</label>
+                        <input type="text" id="admin-usdt-bep20" class="admin-input" placeholder="0x...">
+                        <label>TRC20 Address</label>
+                        <input type="text" id="admin-usdt-trc20" class="admin-input" placeholder="T...">
+                        <label>ERC20 Address</label>
+                        <input type="text" id="admin-usdt-erc20" class="admin-input" placeholder="0x...">
+                        <button class="admin-btn" id="admin-update-usdt">Update USDT Addresses</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Bottom Navigation -->
         <nav class="bottom-nav">
             <button class="nav-btn active" data-page="home-page"><i class="fas fa-home"></i><span>Home</span></button>
@@ -2447,25 +2347,25 @@
                 <p>Explore new ways to earn by completing simple tasks. Points auto-convert to USD!</p>
             </div>
 
-            <!-- POINTS CARD SECTION - NOW IN SWITCH SYSTEM -->
-            <div class="ni-points-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
-                <div class="ni-points-card" style="background: var(--surface-bg); border: 2px solid var(--primary-accent); border-radius: 20px; padding: 25px; text-align: center;">
-                    <div class="label" style="font-size: 1.1em; color: var(--text-secondary); margin-bottom: 10px;">💰 USD Balance</div>
-                    <div class="value" id="ni-usd-balance" style="font-size: 2.5em; font-weight: 800; color: var(--success-color);">$0.00</div>
+            <!-- POINTS CARD SECTION -->
+            <div class="ni-points-grid">
+                <div class="ni-points-card">
+                    <div class="label">💰 USD Balance</div>
+                    <div class="value" id="ni-usd-balance">$0.00</div>
                 </div>
-                <div class="ni-points-card" style="background: var(--surface-bg); border: 2px solid var(--tertiary-accent); border-radius: 20px; padding: 25px; text-align: center;">
-                    <div class="label" style="font-size: 1.1em; color: var(--text-secondary); margin-bottom: 10px;">⭐ Total Points Earned</div>
-                    <div class="value" id="ni-total-points" style="font-size: 2.5em; font-weight: 800; color: var(--primary-accent);">0</div>
+                <div class="ni-points-card">
+                    <div class="label">⭐ Total Points Earned</div>
+                    <div class="value" id="ni-total-points">0</div>
                 </div>
-                <div class="ni-points-card" style="background: var(--surface-bg); border: 2px solid var(--warning-color); border-radius: 20px; padding: 25px; text-align: center;">
-                    <div class="label" style="font-size: 1.1em; color: var(--text-secondary); margin-bottom: 10px;">🔄 Conversion Rate</div>
-                    <div class="value" style="font-size: 2.5em; font-weight: 800; color: var(--warning-color);">70 Points</div>
-                    <div class="sub-value" style="color: var(--text-secondary);">= $1 USD</div>
+                <div class="ni-points-card">
+                    <div class="label">🔄 Conversion Rate</div>
+                    <div class="value">70 Points</div>
+                    <div class="sub-value">= $1 USD</div>
                 </div>
             </div>
 
-            <!-- POINTS HISTORY SECTION - IN SWITCH SYSTEM -->
-            <div class="ni-points-history" style="background: var(--surface-bg); border: 1px solid var(--surface-border); border-radius: 20px; padding: 25px; margin-bottom: 30px;">
+            <!-- POINTS HISTORY SECTION -->
+            <div class="ni-points-history">
                 <h3 style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                     <i class="fas fa-history" style="color: var(--primary-accent);"></i> Points Conversion History
                 </h3>
@@ -2573,14 +2473,8 @@
                         
                         <div class="p2p-form-group">
                             <label>Bank Details for Payment (Easypaisa)</label>
-                            <div class="p2p-address-box" style="flex-direction: column; align-items: flex-start; gap:10px;">
-                                <span><strong>Account Number:</strong> 03199242314</span>
-                                <span><strong>Account Holder:</strong> Muhammad Haseeb</span>
-                                <img src="https://iili.io/qnPN2Xn.jpg" alt="QR Code" style="max-width:150px; border-radius:8px; margin-top:10px;">
-                                <div style="display: flex; gap: 10px; width: 100%;">
-                                    <button onclick="navigator.clipboard.writeText('03199242314'); App.showToast('Account number copied!')">Copy Number</button>
-                                    <button onclick="window.open('https://iili.io/qnPN2Xn.jpg', '_blank')">View QR</button>
-                                </div>
+                            <div class="p2p-address-box" id="p2p-buy-bank-details" style="flex-direction: column; align-items: flex-start; gap:10px;">
+                                <!-- Dynamically loaded from config -->
                             </div>
                         </div>
                         
@@ -2879,7 +2773,7 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
     <script>
-    // ========== COMPLETE APP WITH CURRENCY SWITCHER (PKR/USD) ==========
+    // ========== COMPLETE APP WITH ADMIN-CONFIGURABLE ADDRESSES ==========
     document.addEventListener('DOMContentLoaded', () => {
         const App = {
             // --- CONFIG ---
@@ -2907,14 +2801,8 @@
                 NFT_TOTAL_RETURN_PERCENT: 3.00,
                 NFT_REQUIRED_ACTIVE_REFERRALS: 10,
                 AUTOMATIC_TASK_TIMER: 5,
-                USDT_DEPOSIT_ADDRESSES: {
-                    bep20: "0xeb0ee64208106984101b1f127cf221358771dbfa",
-                    trc20: "TKEmWeig1jtWLgPZp4pX4PHAsPsrFNdqf2",
-                    erc20: "0xeb0ee64208106984101b1f127cf221358771dbfa"
-                },
-                EASYPAISA_NUMBER: "03199242314",
-                EASYPAISA_HOLDER: "Muhammad Haseeb",
-                QR_CODE_URL: "https://iili.io/qnPN2Xn.jpg"
+                // Admin UID (change to your admin's UID)
+                ADMIN_UID: "YOUR_ADMIN_UID_HERE" // Replace with actual admin UID after first login
             },
 
             // --- STATE ---
@@ -2949,7 +2837,12 @@
                     { symbol: 'ROX', name: 'ROX Coin', binanceSymbol: null, logo: '', customLogo: true }
                 ],
                 currentCurrency: 'PKR',
-                userCoins: 1000000 // Example coins for demo - in real app, this would come from database
+                // Admin config
+                paymentConfig: {
+                    easypaisa: { number: '03199242314', holder: 'Muhammad Haseeb', qrUrl: 'https://iili.io/qnPN2Xn.jpg' },
+                    jazzcash: { number: '03199242314', holder: 'Muhammad Haseeb', qrUrl: 'https://iili.io/qnPN2Xn.jpg' },
+                    usdt: { bep20: '0xeb0ee64208106984101b1f127cf221358771dbfa', trc20: 'TKEmWeig1jtWLgPZp4pX4PHAsPsrFNdqf2', erc20: '0xeb0ee64208106984101b1f127cf221358771dbfa' }
+                }
             },
 
             // --- INIT ---
@@ -2970,9 +2863,8 @@
                 this.startRoxPriceUpdater();
                 this.initNetworkMonitor();
                 this.initCurrencySwitcher();
-                
-                // Initialize coin conversion
-                this.initCoinConversion();
+                // Load payment config
+                this.listenToPaymentConfig();
             },
 
             // --- CACHE DOM ELEMENTS ---
@@ -3051,14 +2943,6 @@
                     viewMyNftsBtn: document.getElementById('view-my-nfts-btn'),
                     nftRequirementPanel: document.getElementById('nft-requirement-panel'),
                     historyLists: { combined: { list: document.getElementById('history-list-combined'), msg: document.getElementById('no-transactions-msg') } },
-                    
-                    // Coin conversion
-                    userCoinsDisplay: document.getElementById('user-coins-display'),
-                    coinUsdValue: document.getElementById('coin-usd-value'),
-                    coinAmountInput: document.getElementById('coin-amount-input'),
-                    convertCoinsBtn: document.getElementById('convert-coins-btn'),
-                    coinConversionResult: document.getElementById('coin-conversion-result'),
-                    convertedUsdAmount: document.getElementById('converted-usd-amount'),
                     
                     // Currency Switcher
                     currencySwitcher: document.getElementById('currency-switcher'),
@@ -3149,80 +3033,149 @@
                     p2pProofInput: document.getElementById('p2pProofInput'),
                     p2pSubmitSellButton: document.getElementById('p2pSubmitSellButton'),
                     p2pSellSubmitError: document.getElementById('p2pSellSubmitError'),
-                    p2pHistoryListContainer: document.getElementById('p2pHistoryListContainer')
+                    p2pHistoryListContainer: document.getElementById('p2pHistoryListContainer'),
+                    
+                    // Admin UI elements
+                    adminBtn: document.querySelector('.admin-btn'),
+                    adminSettingsPage: document.getElementById('admin-settings-page'),
+                    adminEasypaisaNumber: document.getElementById('admin-easypaisa-number'),
+                    adminEasypaisaHolder: document.getElementById('admin-easypaisa-holder'),
+                    adminEasypaisaQr: document.getElementById('admin-easypaisa-qr'),
+                    adminEasypaisaQrPreview: document.getElementById('admin-easypaisa-qr-preview'),
+                    adminJazzcashNumber: document.getElementById('admin-jazzcash-number'),
+                    adminJazzcashHolder: document.getElementById('admin-jazzcash-holder'),
+                    adminJazzcashQr: document.getElementById('admin-jazzcash-qr'),
+                    adminJazzcashQrPreview: document.getElementById('admin-jazzcash-qr-preview'),
+                    adminUsdtBep20: document.getElementById('admin-usdt-bep20'),
+                    adminUsdtTrc20: document.getElementById('admin-usdt-trc20'),
+                    adminUsdtErc20: document.getElementById('admin-usdt-erc20'),
+                    p2pBuyBankDetails: document.getElementById('p2p-buy-bank-details')
                 };
             },
 
-            // --- INIT COIN CONVERSION ---
-            initCoinConversion() {
-                // Set initial values
-                this.updateCoinDisplay();
-                
-                // Add event listener for convert button
-                if (this.state.ui.convertCoinsBtn) {
-                    this.state.ui.convertCoinsBtn.addEventListener('click', () => this.handleCoinConversion());
-                }
-                
-                // Real-time input validation
-                if (this.state.ui.coinAmountInput) {
-                    this.state.ui.coinAmountInput.addEventListener('input', () => {
-                        const coins = parseInt(this.state.ui.coinAmountInput.value) || 0;
-                        if (coins < 1000) {
-                            this.state.ui.coinAmountInput.style.borderColor = 'var(--danger-color)';
-                        } else {
-                            this.state.ui.coinAmountInput.style.borderColor = 'var(--success-color)';
-                        }
-                    });
-                }
-            },
-
-            // --- UPDATE COIN DISPLAY ---
-            updateCoinDisplay() {
-                if (this.state.ui.userCoinsDisplay) {
-                    this.state.ui.userCoinsDisplay.textContent = this.state.userCoins.toLocaleString();
-                }
-                
-                if (this.state.ui.coinUsdValue) {
-                    const usdValue = (this.state.userCoins * 0.000107).toFixed(2);
-                    this.state.ui.coinUsdValue.textContent = `$${usdValue}`;
-                }
-            },
-
-            // --- HANDLE COIN CONVERSION ---
-            handleCoinConversion() {
-                const coins = parseInt(this.state.ui.coinAmountInput?.value) || 0;
-                
-                if (coins < 1000) {
-                    this.showToast('Minimum conversion is 1000 coins.', 'danger');
-                    return;
-                }
-                
-                if (coins > this.state.userCoins) {
-                    this.showToast('Insufficient coins.', 'danger');
-                    return;
-                }
-                
-                // Calculate USD value (100,000 coins = 3000 Rs, then convert to USD)
-                const pkrValue = (coins / 100000) * 3000;
-                const usdValue = (pkrValue / this.config.PKR_TO_USD_RATE).toFixed(2);
-                
-                // Show result
-                if (this.state.ui.coinConversionResult && this.state.ui.convertedUsdAmount) {
-                    this.state.ui.coinConversionResult.style.display = 'block';
-                    this.state.ui.convertedUsdAmount.textContent = `$${usdValue}`;
-                    
-                    // Add to task balance (switch system)
-                    if (this.state.currentUser) {
-                        this.db.ref(`users_new_interface/${this.state.currentUser.uid}/task_balance_pkr`)
-                            .set(firebase.database.ServerValue.increment(pkrValue));
-                        
-                        // Subtract coins
-                        this.state.userCoins -= coins;
-                        this.updateCoinDisplay();
-                        
-                        this.showToast(`Converted ${coins} coins to $${usdValue}!`, 'success');
+            // --- LISTEN TO PAYMENT CONFIG ---
+            listenToPaymentConfig() {
+                this.db.ref('config/payment_addresses').on('value', (snapshot) => {
+                    const config = snapshot.val();
+                    if (config) {
+                        this.state.paymentConfig = config;
+                    } else {
+                        // Initialize with defaults if not set
+                        this.db.ref('config/payment_addresses').set(this.state.paymentConfig);
                     }
+                    this.updatePaymentUI();
+                });
+            },
+
+            // --- UPDATE PAYMENT UI BASED ON CONFIG ---
+            updatePaymentUI() {
+                const cfg = this.state.paymentConfig;
+                if (!cfg) return;
+                
+                // Update P2P buy bank details
+                if (this.state.ui.p2pBuyBankDetails) {
+                    this.state.ui.p2pBuyBankDetails.innerHTML = `
+                        <span><strong>Account Number:</strong> ${cfg.easypaisa.number}</span>
+                        <span><strong>Account Holder:</strong> ${cfg.easypaisa.holder}</span>
+                        ${cfg.easypaisa.qrUrl ? `<img src="${cfg.easypaisa.qrUrl}" alt="QR Code" style="max-width:150px; border-radius:8px; margin-top:10px;">` : ''}
+                        <div style="display: flex; gap: 10px; width: 100%;">
+                            <button onclick="navigator.clipboard.writeText('${cfg.easypaisa.number}'); App.showToast('Account number copied!')">Copy Number</button>
+                            ${cfg.easypaisa.qrUrl ? `<button onclick="window.open('${cfg.easypaisa.qrUrl}', '_blank')">View QR</button>` : ''}
+                        </div>
+                    `;
                 }
+                
+                // Update admin input fields
+                if (this.state.ui.adminEasypaisaNumber) this.state.ui.adminEasypaisaNumber.value = cfg.easypaisa.number;
+                if (this.state.ui.adminEasypaisaHolder) this.state.ui.adminEasypaisaHolder.value = cfg.easypaisa.holder;
+                if (this.state.ui.adminEasypaisaQrPreview && cfg.easypaisa.qrUrl) {
+                    this.state.ui.adminEasypaisaQrPreview.src = cfg.easypaisa.qrUrl;
+                    this.state.ui.adminEasypaisaQrPreview.style.display = 'block';
+                }
+                if (this.state.ui.adminJazzcashNumber) this.state.ui.adminJazzcashNumber.value = cfg.jazzcash.number;
+                if (this.state.ui.adminJazzcashHolder) this.state.ui.adminJazzcashHolder.value = cfg.jazzcash.holder;
+                if (this.state.ui.adminJazzcashQrPreview && cfg.jazzcash.qrUrl) {
+                    this.state.ui.adminJazzcashQrPreview.src = cfg.jazzcash.qrUrl;
+                    this.state.ui.adminJazzcashQrPreview.style.display = 'block';
+                }
+                if (this.state.ui.adminUsdtBep20) this.state.ui.adminUsdtBep20.value = cfg.usdt.bep20;
+                if (this.state.ui.adminUsdtTrc20) this.state.ui.adminUsdtTrc20.value = cfg.usdt.trc20;
+                if (this.state.ui.adminUsdtErc20) this.state.ui.adminUsdtErc20.value = cfg.usdt.erc20;
+            },
+
+            // --- ADMIN UPDATE FUNCTIONS ---
+            async uploadQR(file) {
+                const formData = new FormData();
+                formData.append('image', file);
+                try {
+                    const response = await fetch(`https://api.imgbb.com/1/upload?key=${this.config.imgbbApiKey}`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        return result.data.url;
+                    } else {
+                        throw new Error('Upload failed');
+                    }
+                } catch (error) {
+                    this.showToast('QR upload failed: ' + error.message, 'danger');
+                    return null;
+                }
+            },
+
+            async updateEasypaisa() {
+                const number = this.state.ui.adminEasypaisaNumber.value.trim();
+                const holder = this.state.ui.adminEasypaisaHolder.value.trim();
+                const qrFile = this.state.ui.adminEasypaisaQr.files[0];
+                
+                if (!number || !holder) {
+                    this.showToast('Please fill all fields', 'danger');
+                    return;
+                }
+                
+                let qrUrl = this.state.paymentConfig.easypaisa.qrUrl;
+                if (qrFile) {
+                    qrUrl = await this.uploadQR(qrFile);
+                    if (!qrUrl) return;
+                }
+                
+                await this.db.ref('config/payment_addresses/easypaisa').set({ number, holder, qrUrl });
+                this.showToast('Easypaisa updated', 'success');
+            },
+
+            async updateJazzcash() {
+                const number = this.state.ui.adminJazzcashNumber.value.trim();
+                const holder = this.state.ui.adminJazzcashHolder.value.trim();
+                const qrFile = this.state.ui.adminJazzcashQr.files[0];
+                
+                if (!number || !holder) {
+                    this.showToast('Please fill all fields', 'danger');
+                    return;
+                }
+                
+                let qrUrl = this.state.paymentConfig.jazzcash.qrUrl;
+                if (qrFile) {
+                    qrUrl = await this.uploadQR(qrFile);
+                    if (!qrUrl) return;
+                }
+                
+                await this.db.ref('config/payment_addresses/jazzcash').set({ number, holder, qrUrl });
+                this.showToast('JazzCash updated', 'success');
+            },
+
+            async updateUsdt() {
+                const bep20 = this.state.ui.adminUsdtBep20.value.trim();
+                const trc20 = this.state.ui.adminUsdtTrc20.value.trim();
+                const erc20 = this.state.ui.adminUsdtErc20.value.trim();
+                
+                if (!bep20 || !trc20 || !erc20) {
+                    this.showToast('Please fill all fields', 'danger');
+                    return;
+                }
+                
+                await this.db.ref('config/payment_addresses/usdt').set({ bep20, trc20, erc20 });
+                this.showToast('USDT addresses updated', 'success');
             },
 
             // --- INIT CURRENCY SWITCHER ---
@@ -4029,7 +3982,7 @@
                         const selectedNetwork = this.state.ui.p2pNetworkSelect.value;
                         const currency = this.state.p2pCurrentSellRequest.currency;
                         if (currency === 'USDT') {
-                            this.state.ui.p2pDepositAddress.textContent = this.config.USDT_DEPOSIT_ADDRESSES[selectedNetwork] || '';
+                            this.state.ui.p2pDepositAddress.textContent = this.state.paymentConfig.usdt[selectedNetwork] || '';
                         }
                     });
                 }
@@ -4082,6 +4035,33 @@
                 if (this.state.ui.p2pSubmitBuyButton) {
                     this.state.ui.p2pSubmitBuyButton.addEventListener('click', () => this.p2pHandleBuySubmit());
                 }
+
+                // Admin panel listeners
+                document.getElementById('admin-update-easypaisa')?.addEventListener('click', () => this.updateEasypaisa());
+                document.getElementById('admin-update-jazzcash')?.addEventListener('click', () => this.updateJazzcash());
+                document.getElementById('admin-update-usdt')?.addEventListener('click', () => this.updateUsdt());
+
+                // QR preview on file select
+                this.state.ui.adminEasypaisaQr?.addEventListener('change', (e) => {
+                    if (e.target.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            this.state.ui.adminEasypaisaQrPreview.src = event.target.result;
+                            this.state.ui.adminEasypaisaQrPreview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
+                this.state.ui.adminJazzcashQr?.addEventListener('change', (e) => {
+                    if (e.target.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            this.state.ui.adminJazzcashQrPreview.src = event.target.result;
+                            this.state.ui.adminJazzcashQrPreview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
             },
 
             // --- HANDLE AUTH ---
@@ -4106,6 +4086,13 @@
                         this.listenToUserData();
                         this.listenToNewInterfaceData();
                         this.listenToWithdrawalHistory();
+                        
+                        // Show admin button if user is admin
+                        if (user.uid === this.config.ADMIN_UID) {
+                            this.state.ui.adminBtn.style.display = 'block';
+                        } else {
+                            this.state.ui.adminBtn.style.display = 'none';
+                        }
                         
                         this.db.ref(`users/${user.uid}/preferred_currency`).once('value', (snapshot) => {
                             const pref = snapshot.val();
@@ -4413,20 +4400,7 @@
             showRechargeStep2PKR(network, amount) {
                 document.getElementById('recharge-step-1').style.display = 'none';
                 
-                const methodData = {
-                    easypaisa: {
-                        name: 'Easypaisa',
-                        accountNumber: this.config.EASYPAISA_NUMBER,
-                        accountHolder: this.config.EASYPAISA_HOLDER,
-                        qrUrl: this.config.QR_CODE_URL
-                    },
-                    jazzcash: {
-                        name: 'JazzCash',
-                        accountNumber: this.config.EASYPAISA_NUMBER,
-                        accountHolder: this.config.EASYPAISA_HOLDER,
-                        qrUrl: this.config.QR_CODE_URL
-                    }
-                }[network];
+                const methodData = network === 'easypaisa' ? this.state.paymentConfig.easypaisa : this.state.paymentConfig.jazzcash;
                 
                 const content = document.querySelector('#recharge-modal .modal-content');
                 content.innerHTML = `
@@ -4436,20 +4410,20 @@
                         <p class="info-text">Send <b>PKR ${amount.toLocaleString()}</b> to the account below:</p>
                         
                         <div class="address-box" style="margin: 20px 0; flex-direction: column; align-items: flex-start;">
-                            <span class="address" style="font-size: 1.2em;">${methodData.accountNumber}</span>
+                            <span class="address" style="font-size: 1.2em;">${methodData.number}</span>
                             <div style="display: flex; gap: 10px; margin-top: 10px;">
-                                <button onclick="navigator.clipboard.writeText('${methodData.accountNumber}'); App.showToast('Account number copied!')">Copy Number</button>
+                                <button onclick="navigator.clipboard.writeText('${methodData.number}'); App.showToast('Account number copied!')">Copy Number</button>
                             </div>
                         </div>
                         
-                        <p><strong>Account Holder:</strong> ${methodData.accountHolder}</p>
+                        <p><strong>Account Holder:</strong> ${methodData.holder}</p>
                         
-                        <div style="text-align: center; margin: 20px 0;">
+                        ${methodData.qrUrl ? `<div style="text-align: center; margin: 20px 0;">
                             <img src="${methodData.qrUrl}" alt="QR Code" style="max-width: 200px; border-radius: 10px;">
                             <div style="margin-top: 10px;">
                                 <button onclick="window.open('${methodData.qrUrl}', '_blank')">View Full QR</button>
                             </div>
-                        </div>
+                        </div>` : ''}
                         
                         <p class="info-text" style="color: var(--warning-color);">After sending, please contact support on WhatsApp with your transaction details.</p>
                         
@@ -4466,7 +4440,7 @@
             showRechargeStep2USD(network, amount) {
                 document.getElementById('recharge-step-1-usd').style.display = 'none';
                 
-                const address = this.config.USDT_DEPOSIT_ADDRESSES[network];
+                const address = this.state.paymentConfig.usdt[network];
                 const pkrValue = amount * this.config.PKR_TO_USD_RATE;
                 
                 const content = document.querySelector('#recharge-modal .modal-content');
@@ -5555,7 +5529,6 @@
                 this.updateNFTRequirementUI();
                 this.updateMyNftsUI();
                 this.updateRankingUI();
-                this.updateCoinDisplay();
                 
                 if (this.state.ui.emailVerificationPage?.classList.contains('active') && email) {
                     if (this.state.ui.verificationEmailDisplay) {
