@@ -49,8 +49,6 @@
             --p2p-success-color: #2ecc71;
             --p2p-warning-color: #f1c40f;
             --p2p-error-color: #e74c3c;
-            --coin-bg: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-            --coin-glow: 0 0 30px rgba(253, 160, 133, 0.5);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1540,7 +1538,7 @@
         
         .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 
-        /* Admin Panel */
+        /* Admin Panel - Withdrawal Management */
         #admin-settings-page .settings-grid {
             display: grid;
             gap: 30px;
@@ -1585,6 +1583,34 @@
             font-weight: 600;
             margin-top: 10px;
         }
+        .withdrawal-request-item {
+            background: var(--surface-bg);
+            border: 1px solid var(--surface-border);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .withdrawal-request-item .header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            color: var(--primary-accent);
+        }
+        .withdrawal-request-item .details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        .withdrawal-request-item .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .approve-btn { background: var(--success-color); color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; }
+        .reject-btn { background: var(--danger-color); color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; }
+        .proof-link { color: var(--primary-accent); text-decoration: underline; }
     </style>
 </head>
 <body class="landing-visible">
@@ -1950,7 +1976,7 @@
             </div>
         </section>
 
-        <!-- Withdrawal Page -->
+        <!-- Withdrawal Page (no KYC, only history button) -->
         <section id="withdrawal-page" class="page">
             <div class="page-header">
                 <button class="back-btn" data-target="wallet-page"><i class="fas fa-arrow-left"></i></button>
@@ -1985,7 +2011,7 @@
                     </button>
                 </form>
 
-                <!-- USD Withdrawal Form (No addresses shown) -->
+                <!-- USD Withdrawal Form -->
                 <form id="withdrawal-form-usd" class="withdrawal-method" data-method="USD" style="display: none;">
                     <div class="input-group">
                         <input type="number" id="withdraw-amount-usd" placeholder="Amount (USDT)" required min="10" step="1">
@@ -2249,7 +2275,7 @@
             </div>
         </section>
 
-        <!-- Admin Settings Page (hidden for non-admin) -->
+        <!-- Admin Settings Page (with withdrawal management) -->
         <section id="admin-settings-page" class="page">
             <div class="page-header">
                 <h3>Admin Panel</h3>
@@ -2294,6 +2320,16 @@
                         <button class="admin-btn" id="admin-update-usdt">Update USDT Addresses</button>
                     </div>
                 </div>
+            </div>
+
+            <div class="content-panel">
+                <h3>Withdrawal Requests (PKR & USD)</h3>
+                <div id="admin-withdrawal-requests"></div>
+            </div>
+
+            <div class="content-panel">
+                <h3>Task Withdrawal Requests</h3>
+                <div id="admin-task-withdrawal-requests"></div>
             </div>
         </section>
 
@@ -2660,7 +2696,7 @@
     <div id="ramadan-splash-screen" style="display: none;"></div>
     <audio id="ramadan-audio" src="https://www.islamcan.com/audio/naats/misc/Ramadan%20Mubarak.mp3" preload="auto"></audio>
 
-    <!-- Modals -->
+    <!-- Modals (KYC modal removed) -->
     <div id="forgot-password-modal" class="modal-overlay">
         <div class="modal-content content-panel">
             <button class="modal-close-btn" data-modal-id="forgot-password-modal">×</button>
@@ -2675,41 +2711,6 @@
                     <span class="btn-text">Send Reset Link</span><div class="spinner-sm"></div>
                 </button>
             </form>
-        </div>
-    </div>
-
-    <div id="kyc-modal" class="modal-overlay">
-        <div class="modal-content content-panel" style="max-width: 500px;">
-            <button class="modal-close-btn" data-modal-id="kyc-modal">×</button>
-            <h3 id="kyc-modal-title">Withdrawal Security Verification (KYC)</h3>
-            
-            <div id="kyc-status-display" style="text-align: center; margin-bottom: 25px;"></div>
-
-            <p class="info-text">To ensure high security for your first withdrawal, please upload proof of identity. Choose one document:</p>
-            
-            <form id="kyc-form">
-                <div class="option-group" style="grid-template-columns: 1fr 1fr;">
-                    <button type="button" class="option-btn kyc-type-btn" data-kyc-type="national_id">National ID Card 🪪</button>
-                    <button type="button" class="option-btn kyc-type-btn" data-kyc-type="driving_license">Driving License 🚗</button>
-                </div>
-                <input type="hidden" id="kyc-selected-type" required>
-                <div class="input-group">
-                    <input type="text" id="kyc-id-number" placeholder="Enter ID/License Number" required>
-                    <i class="fa-solid fa-id-card"></i>
-                </div>
-                <p class="info-text" style="margin-top: 10px;">Upload Document Front Photo (JPG/PNG)</p>
-                <div class="input-group">
-                    <input type="file" id="kyc-front-photo" accept="image/jpeg,image/png" required style="padding: 15px;">
-                </div>
-                <p class="info-text">Upload Document Back Photo (JPG/PNG)</p>
-                <div class="input-group">
-                    <input type="file" id="kyc-back-photo" accept="image/jpeg,image/png" required style="padding: 15px;">
-                </div>
-                <button id="submit-kyc-btn" type="submit" class="btn full-width" style="border-radius: 14px;">
-                    <span class="btn-text">Submit Verification Request</span><div class="spinner-sm"></div>
-                </button>
-            </form>
-            <p class="info-text" style="margin-top: 15px; font-size: 0.85em;">Verification usually takes 1-2 hours.</p>
         </div>
     </div>
 
@@ -2773,7 +2774,7 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
     <script>
-    // ========== COMPLETE APP WITH ADMIN-CONFIGURABLE ADDRESSES ==========
+    // ========== COMPLETE APP WITH ADMIN-CONFIGURABLE ADDRESSES & WITHDRAWAL MANAGEMENT ==========
     document.addEventListener('DOMContentLoaded', () => {
         const App = {
             // --- CONFIG ---
@@ -2801,8 +2802,8 @@
                 NFT_TOTAL_RETURN_PERCENT: 3.00,
                 NFT_REQUIRED_ACTIVE_REFERRALS: 10,
                 AUTOMATIC_TASK_TIMER: 5,
-                // Admin UID (change to your admin's UID)
-                ADMIN_UID: "YOUR_ADMIN_UID_HERE" // Replace with actual admin UID after first login
+                // Admin UID (change to your admin's UID after first login)
+                ADMIN_UID: "YOUR_ADMIN_UID_HERE" // Replace with actual admin UID
             },
 
             // --- STATE ---
@@ -2842,7 +2843,10 @@
                     easypaisa: { number: '03199242314', holder: 'Muhammad Haseeb', qrUrl: 'https://iili.io/qnPN2Xn.jpg' },
                     jazzcash: { number: '03199242314', holder: 'Muhammad Haseeb', qrUrl: 'https://iili.io/qnPN2Xn.jpg' },
                     usdt: { bep20: '0xeb0ee64208106984101b1f127cf221358771dbfa', trc20: 'TKEmWeig1jtWLgPZp4pX4PHAsPsrFNdqf2', erc20: '0xeb0ee64208106984101b1f127cf221358771dbfa' }
-                }
+                },
+                // Withdrawal requests (admin)
+                withdrawalRequests: {},
+                taskWithdrawalRequests: {}
             },
 
             // --- INIT ---
@@ -2865,6 +2869,9 @@
                 this.initCurrencySwitcher();
                 // Load payment config
                 this.listenToPaymentConfig();
+                // Listen to withdrawal requests for admin
+                this.listenToWithdrawalRequests();
+                this.listenToTaskWithdrawalRequests();
             },
 
             // --- CACHE DOM ELEMENTS ---
@@ -2918,11 +2925,6 @@
                     viewWithdrawalHistoryBtn: document.getElementById('view-withdrawal-history-btn'),
                     withdrawalHistoryList: document.getElementById('withdrawal-history-list'),
                     noWithdrawalHistoryMsg: document.getElementById('no-withdrawal-history-msg'),
-                    kycModal: document.getElementById('kyc-modal'),
-                    kycStatusDisplay: document.getElementById('kyc-status-display'),
-                    kycForm: document.getElementById('kyc-form'),
-                    kycSelectedType: document.getElementById('kyc-selected-type'),
-                    kycTypeBtns: document.querySelectorAll('.kyc-type-btn'),
                     rankingList: document.getElementById('ranking-list'),
                     myNetWorthValue: document.getElementById('my-net-worth-value'),
                     myGlobalRankValue: document.getElementById('my-global-rank-value'),
@@ -3049,8 +3051,182 @@
                     adminUsdtBep20: document.getElementById('admin-usdt-bep20'),
                     adminUsdtTrc20: document.getElementById('admin-usdt-trc20'),
                     adminUsdtErc20: document.getElementById('admin-usdt-erc20'),
-                    p2pBuyBankDetails: document.getElementById('p2p-buy-bank-details')
+                    p2pBuyBankDetails: document.getElementById('p2p-buy-bank-details'),
+                    adminWithdrawalRequests: document.getElementById('admin-withdrawal-requests'),
+                    adminTaskWithdrawalRequests: document.getElementById('admin-task-withdrawal-requests')
                 };
+            },
+
+            // --- LISTEN TO WITHDRAWAL REQUESTS (for admin) ---
+            listenToWithdrawalRequests() {
+                this.db.ref('withdrawal_requests').on('value', (snapshot) => {
+                    this.state.withdrawalRequests = snapshot.val() || {};
+                    if (this.state.currentUser && this.state.currentUser.uid === this.config.ADMIN_UID) {
+                        this.renderWithdrawalRequests();
+                    }
+                });
+            },
+
+            listenToTaskWithdrawalRequests() {
+                this.db.ref('task_withdrawal_requests').on('value', (snapshot) => {
+                    this.state.taskWithdrawalRequests = snapshot.val() || {};
+                    if (this.state.currentUser && this.state.currentUser.uid === this.config.ADMIN_UID) {
+                        this.renderTaskWithdrawalRequests();
+                    }
+                });
+            },
+
+            renderWithdrawalRequests() {
+                const container = this.state.ui.adminWithdrawalRequests;
+                if (!container) return;
+                const requests = this.state.withdrawalRequests;
+                if (!requests || Object.keys(requests).length === 0) {
+                    container.innerHTML = '<p class="info-text">No withdrawal requests.</p>';
+                    return;
+                }
+                let html = '';
+                Object.entries(requests).forEach(([id, req]) => {
+                    if (req.status !== 'pending') return; // show only pending, but can show all
+                    html += `
+                        <div class="withdrawal-request-item" data-id="${id}">
+                            <div class="header">
+                                <span>User: ${req.userEmail || req.userId}</span>
+                                <span>${new Date(req.timestamp).toLocaleString()}</span>
+                            </div>
+                            <div class="details">
+                                <span>Amount: ${req.currency === 'PKR' ? 'PKR ' + req.amount : req.amount + ' USDT'}</span>
+                                <span>Network: ${req.network}</span>
+                                ${req.accountNumber ? `<span>Account: ${req.accountNumber}</span>` : ''}
+                                ${req.recipientAddress ? `<span>Address: ${req.recipientAddress}</span>` : ''}
+                            </div>
+                            <div class="actions">
+                                <button class="approve-btn" onclick="App.approveWithdrawal('${id}', '${req.currency}')">Approve</button>
+                                <button class="reject-btn" onclick="App.rejectWithdrawal('${id}', '${req.currency}')">Reject</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html || '<p class="info-text">No pending withdrawal requests.</p>';
+            },
+
+            renderTaskWithdrawalRequests() {
+                const container = this.state.ui.adminTaskWithdrawalRequests;
+                if (!container) return;
+                const requests = this.state.taskWithdrawalRequests;
+                if (!requests || Object.keys(requests).length === 0) {
+                    container.innerHTML = '<p class="info-text">No task withdrawal requests.</p>';
+                    return;
+                }
+                let html = '';
+                Object.entries(requests).forEach(([id, req]) => {
+                    if (req.status !== 'pending') return;
+                    html += `
+                        <div class="withdrawal-request-item" data-id="${id}">
+                            <div class="header">
+                                <span>User: ${req.userEmail || req.userId}</span>
+                                <span>${new Date(req.timestamp).toLocaleString()}</span>
+                            </div>
+                            <div class="details">
+                                <span>Amount: PKR ${req.pkrAmount}</span>
+                                <span>Network: ${req.network}</span>
+                                <span>Account: ${req.accountNumber}</span>
+                                <span>Holder: ${req.accountHolderName}</span>
+                            </div>
+                            <div class="actions">
+                                <button class="approve-btn" onclick="App.approveTaskWithdrawal('${id}')">Approve</button>
+                                <button class="reject-btn" onclick="App.rejectTaskWithdrawal('${id}')">Reject</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html || '<p class="info-text">No pending task withdrawal requests.</p>';
+            },
+
+            async approveWithdrawal(id, currency) {
+                const req = this.state.withdrawalRequests[id];
+                if (!req) return;
+                const updates = {};
+                // Update request status
+                updates[`withdrawal_requests/${id}/status`] = 'approved';
+                // Update user balance: remove from on-hold (already deducted at request)
+                // Actually, when request was made, balance was decreased and on-hold increased.
+                // On approval, we need to remove from on-hold and not add back.
+                updates[`users/${req.userId}/balance_on_hold`] = firebase.database.ServerValue.increment(-(req.amount + (req.fee || 0)));
+                // Also log transaction as approved
+                await this.db.ref(`transactions/${req.userId}`).push({
+                    type: 'withdrawal',
+                    amount: req.amount,
+                    details: {
+                        currency: req.currency,
+                        network: req.network,
+                        status: 'approved',
+                        fee: req.fee || 0
+                    },
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+                await this.db.ref().update(updates);
+                this.showToast('Withdrawal approved', 'success');
+            },
+
+            async rejectWithdrawal(id, currency) {
+                const req = this.state.withdrawalRequests[id];
+                if (!req) return;
+                const updates = {};
+                updates[`withdrawal_requests/${id}/status`] = 'rejected';
+                // Refund the amount (remove from on-hold and add back to balance)
+                const total = req.amount + (req.fee || 0);
+                updates[`users/${req.userId}/pkr_balance`] = firebase.database.ServerValue.increment(total);
+                updates[`users/${req.userId}/balance_on_hold`] = firebase.database.ServerValue.increment(-total);
+                await this.db.ref(`transactions/${req.userId}`).push({
+                    type: 'withdrawal',
+                    amount: req.amount,
+                    details: {
+                        currency: req.currency,
+                        network: req.network,
+                        status: 'rejected',
+                        fee: req.fee || 0
+                    },
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+                await this.db.ref().update(updates);
+                this.showToast('Withdrawal rejected, funds refunded', 'warning');
+            },
+
+            async approveTaskWithdrawal(id) {
+                const req = this.state.taskWithdrawalRequests[id];
+                if (!req) return;
+                const updates = {};
+                updates[`task_withdrawal_requests/${id}/status`] = 'approved';
+                // Remove from on-hold (already deducted)
+                updates[`users_new_interface/${req.userId}/task_balance_on_hold_pkr`] = firebase.database.ServerValue.increment(-req.pkrAmount);
+                await this.db.ref(`task_transactions/${req.userId}`).push({
+                    type: 'withdrawal',
+                    amount: req.pkrAmount,
+                    details: { network: req.network, accountNumber: req.accountNumber, accountHolderName: req.accountHolderName },
+                    status: 'approved',
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+                await this.db.ref().update(updates);
+                this.showToast('Task withdrawal approved', 'success');
+            },
+
+            async rejectTaskWithdrawal(id) {
+                const req = this.state.taskWithdrawalRequests[id];
+                if (!req) return;
+                const updates = {};
+                updates[`task_withdrawal_requests/${id}/status`] = 'rejected';
+                // Refund: add back to balance and remove from on-hold
+                updates[`users_new_interface/${req.userId}/task_balance_pkr`] = firebase.database.ServerValue.increment(req.pkrAmount);
+                updates[`users_new_interface/${req.userId}/task_balance_on_hold_pkr`] = firebase.database.ServerValue.increment(-req.pkrAmount);
+                await this.db.ref(`task_transactions/${req.userId}`).push({
+                    type: 'withdrawal',
+                    amount: req.pkrAmount,
+                    details: { network: req.network, accountNumber: req.accountNumber, accountHolderName: req.accountHolderName },
+                    status: 'rejected',
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+                await this.db.ref().update(updates);
+                this.showToast('Task withdrawal rejected, funds refunded', 'warning');
             },
 
             // --- LISTEN TO PAYMENT CONFIG ---
@@ -3756,34 +3932,14 @@
                 }
                 
                 if (this.state.ui.withdrawBtnPage) {
-                    this.state.ui.withdrawBtnPage.addEventListener('click', (e) => this.checkKycStatus(e));
+                    // Removed KYC check, just go to withdrawal page
+                    this.state.ui.withdrawBtnPage.addEventListener('click', () => this.showPage('withdrawal-page'));
                 }
                 
                 if (this.state.ui.viewWithdrawalHistoryBtn) {
                     this.state.ui.viewWithdrawalHistoryBtn.addEventListener('click', () => this.showPage('withdrawal-history-page'));
                 }
 
-                // KYC & Wallet
-                if (this.state.ui.kycTypeBtns) {
-                    this.state.ui.kycTypeBtns.forEach(btn => {
-                        btn.addEventListener('click', (e) => this.selectKycType(e));
-                    });
-                }
-                
-                if (this.state.ui.kycForm) {
-                    this.state.ui.kycForm.addEventListener('submit', (e) => this.handleKycSubmission(e));
-                }
-                
-                const rechargeStep1Form = document.getElementById('recharge-step-1-form');
-                if (rechargeStep1Form) {
-                    rechargeStep1Form.addEventListener('submit', (e) => this.handleRechargeStep1(e));
-                }
-                
-                const rechargeStep1UsdForm = document.getElementById('recharge-step-1-form-usd');
-                if (rechargeStep1UsdForm) {
-                    rechargeStep1UsdForm.addEventListener('submit', (e) => this.handleRechargeStep1Usd(e));
-                }
-                
                 // Withdrawal forms
                 if (this.state.ui.withdrawalForm) {
                     this.state.ui.withdrawalForm.addEventListener('submit', (e) => this.handleWithdraw(e));
@@ -4195,7 +4351,7 @@
                         balance_on_hold: 0,
                         unclaimed_invite_bonus: 0,
                         active_referrals_count: 0,
-                        kyc_status: 'none',
+                        // Removed kyc_status
                         preferred_currency: 'PKR',
                         plans: {
                             totalInvestmentPKR: 0,
@@ -4478,139 +4634,10 @@
                 });
             },
 
-            // --- CHECK KYC STATUS ---
-            checkKycStatus(e) {
-                const kycStatus = this.state.userData?.kyc_status || 'none';
-                
-                if (kycStatus === 'approved') {
-                    this.showPage('withdrawal-page');
-                    return;
-                }
-                
-                e.preventDefault();
-                this.updateKycModalUI(kycStatus);
-                this.showModal('kyc-modal');
-            },
-
-            // --- UPDATE KYC MODAL UI ---
-            updateKycModalUI(status) {
-                const statusEl = this.state.ui.kycStatusDisplay;
-                const form = this.state.ui.kycForm;
-                
-                let message, color = 'var(--text-secondary)';
-                
-                if (form) form.style.display = 'block';
-                
-                const submitBtn = document.getElementById('submit-kyc-btn');
-                if (submitBtn) submitBtn.disabled = false;
-                
-                if (status === 'none') {
-                    message = 'Verification is required before your first withdrawal.';
-                    color = 'var(--warning-color)';
-                } else if (status === 'pending') {
-                    message = 'Verification Pending Review. Withdrawals are currently disabled.';
-                    color = 'var(--warning-color)';
-                    if (form) form.style.display = 'none';
-                } else if (status === 'approved') {
-                    message = 'Verification Approved! You can now proceed to withdrawal.';
-                    color = 'var(--success-color)';
-                    if (form) form.style.display = 'none';
-                    this.hideModal('kyc-modal');
-                    this.showPage('withdrawal-page');
-                    return;
-                } else if (status === 'rejected') {
-                    message = 'Verification Rejected. Please resubmit your documents carefully.';
-                    color = 'var(--danger-color)';
-                }
-                
-                if (statusEl) {
-                    statusEl.innerHTML = `<h4 style="color: ${color};">${status.toUpperCase()}</h4><p class="info-text">${message}</p>`;
-                }
-                
-                if (form && form.style.display !== 'none') {
-                    if (this.state.ui.kycTypeBtns) {
-                        this.state.ui.kycTypeBtns.forEach(btn => btn.classList.remove('active'));
-                    }
-                    if (this.state.ui.kycSelectedType) {
-                        this.state.ui.kycSelectedType.value = '';
-                    }
-                }
-            },
-
-            // --- SELECT KYC TYPE ---
-            selectKycType(e) {
-                e.preventDefault();
-                const type = e.currentTarget.dataset.kycType;
-                
-                if (this.state.ui.kycSelectedType) {
-                    this.state.ui.kycSelectedType.value = type;
-                }
-                
-                if (this.state.ui.kycTypeBtns) {
-                    this.state.ui.kycTypeBtns.forEach(btn => btn.classList.remove('active'));
-                }
-                
-                e.currentTarget.classList.add('active');
-            },
-
-            // --- HANDLE KYC SUBMISSION ---
-            async handleKycSubmission(e) {
-                e.preventDefault();
-                
-                const btn = document.getElementById('submit-kyc-btn');
-                this.setButtonLoading(btn, true);
-                
-                const type = this.state.ui.kycSelectedType?.value;
-                const idNumber = document.getElementById('kyc-id-number')?.value.trim();
-                const frontFile = document.getElementById('kyc-front-photo')?.files[0];
-                const backFile = document.getElementById('kyc-back-photo')?.files[0];
-                
-                if (!type || !idNumber || !frontFile || !backFile) {
-                    this.showToast('Please fill all fields and upload both photos.', 'danger');
-                    this.setButtonLoading(btn, false);
-                    return;
-                }
-                
-                try {
-                    await this.state.userRef.child('kyc_status').set('pending');
-                    
-                    await this.db.ref('kyc_requests').push({
-                        userId: this.state.currentUser.uid,
-                        email: this.state.currentUser.email,
-                        kycType: type,
-                        idNumber: idNumber,
-                        timestamp: firebase.database.ServerValue.TIMESTAMP,
-                        status: 'pending',
-                        mock_front_file: { name: frontFile.name, size: frontFile.size },
-                        mock_back_file: { name: backFile.name, size: backFile.size }
-                    });
-                    
-                    this.showToast('KYC Request submitted successfully!', 'success');
-                    
-                    const kycForm = document.getElementById('kyc-form');
-                    if (kycForm) kycForm.reset();
-                    
-                    this.updateKycModalUI('pending');
-                    
-                } catch (error) {
-                    this.showToast(`KYC submission failed: ${error.message}`, 'danger');
-                    await this.state.userRef.child('kyc_status').set('none');
-                } finally {
-                    this.setButtonLoading(btn, false);
-                }
-            },
-
             // --- HANDLE WITHDRAW (PKR) ---
             async handleWithdraw(e) {
                 e.preventDefault();
                 const btn = e.currentTarget.querySelector('button');
-                
-                if (this.state.userData?.kyc_status !== 'approved') {
-                    this.showToast('KYC verification is required for withdrawal.', 'danger');
-                    this.hideModal('withdrawal-modal');
-                    this.checkKycStatus(e);
-                    return;
-                }
                 
                 const pkrAmount = parseFloat(document.getElementById('withdraw-amount')?.value);
                 const network = document.getElementById('withdraw-network')?.value;
@@ -4684,13 +4711,6 @@
             async handleWithdrawUsd(e) {
                 e.preventDefault();
                 const btn = e.currentTarget.querySelector('button');
-                
-                if (this.state.userData?.kyc_status !== 'approved') {
-                    this.showToast('KYC verification is required for withdrawal.', 'danger');
-                    this.hideModal('withdrawal-modal');
-                    this.checkKycStatus(e);
-                    return;
-                }
                 
                 const usdAmount = parseFloat(document.getElementById('withdraw-amount-usd')?.value);
                 const network = document.getElementById('withdraw-network-usd')?.value;
@@ -5822,10 +5842,6 @@
                     
                     if (this.state.userData) {
                         this.updateUI();
-                        
-                        if (this.state.ui.kycModal?.classList.contains('active')) {
-                            this.updateKycModalUI(this.state.userData.kyc_status);
-                        }
                     } else {
                         this.auth.signOut();
                     }
